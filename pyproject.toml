@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "blinklinmult"
+version = "1.0.0"
+description = "BlinkLinMulT: Transformer-based Eye Blink Detection."
+keywords = ["blink", "eye state recognition", "blink presence detection", "multimodal", "transformer", "linear-complexity attention"]
+authors = [
+  { name = "fodorad", email = "foauaai@inf.elte.hu" },
+]
+readme = {"file" = "README.md", "content-type" = "text/markdown"}
+requires-python = ">=3.11"
+license = "MIT"
+dynamic = ["dependencies"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Documentation = "https://github.com/fodorad/blinklinmult#readme"
+Issues = "https://github.com/fodorad/blinklinmult/issues"
+Source = "https://github.com/fodorad/blinklinmult"
+
+[tool.hatch.build.targets.wheel]
+packages = ["blinklinmult"]
+exclude = ["blinklinmult/test", "blinklinmult/train", "data/"]
+
+[tool.hatch.build.targets.sdist]
+packages = ["blinklinmult"]
+exclude = ["blinklinmult/test", "blinklinmult/train", "data/"]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+[project.optional-dependencies]
+train = [
+  "pytorch_lightning==1.8.4",
+  "torchsampler"
+]
+all = [
+  "blinklinmult[train]",
+  "clip"
+]

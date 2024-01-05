@@ -1,0 +1,9 @@
+toml
+tqdm
+matplotlib
+opencv-python
+torch
+torchvision
+bbox_visualizer
+linmult
+exordium[tddfa]

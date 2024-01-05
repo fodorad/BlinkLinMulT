@@ -1,3 +1,11 @@
+# project specific
+data/demo*
+data/db_processed
+blinklinmult/train
+blinklinmult/test
+blinklinmult/inference.py
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
