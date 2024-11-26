@@ -5,5 +5,5 @@ opencv-python
 torch
 torchvision
 bbox_visualizer
-linmult
+linmult==1.1.0
 exordium[tddfa]
