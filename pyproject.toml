@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "blinklinmult"
-version = "1.0.1"
+version = "1.0.2"
 description = "BlinkLinMulT: Transformer-based Eye Blink Detection."
 keywords = ["blink", "eye state recognition", "blink presence detection", "multimodal", "transformer", "linear-complexity attention"]
 authors = [
