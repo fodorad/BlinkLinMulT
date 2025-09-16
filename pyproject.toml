@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "blinklinmult"
-version = "1.0.0"
+version = "1.0.1"
 description = "BlinkLinMulT: Transformer-based Eye Blink Detection."
 keywords = ["blink", "eye state recognition", "blink presence detection", "multimodal", "transformer", "linear-complexity attention"]
 authors = [
@@ -40,6 +40,9 @@ files = ["requirements.txt"]
 train = [
   "pytorch_lightning==1.8.4",
   "torchsampler"
+]
+inference = [
+  "exordium[tddfa]"
 ]
 all = [
   "blinklinmult[train]",

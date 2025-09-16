@@ -1,10 +1,15 @@
 # project specific
-data/demo*
 data/db_processed
 blinklinmult/train
-blinklinmult/test
-blinklinmult/inference.py
+data/db/talkingface/norm*
+data/db/talkingface/talking.*
+blinklinmult/preprocess/convert.py
 
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

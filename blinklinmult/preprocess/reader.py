@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 import bbox_visualizer as bbv
-from exordium.video.io import frames2video
+from exordium.video.io_moviepy import frames2video
 from exordium.video.bb import xywh2xyxy
 from blinklinmult import PathType
 

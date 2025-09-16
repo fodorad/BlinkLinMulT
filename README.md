@@ -14,6 +14,13 @@ Our results demonstrate comparable or superior performance compared to state-of-
 pip install blinklinmult
 ```
 
+### Install package from PyPI for inference with preprocessing
+```
+conda create -n blink python=3.11
+conda activate blink
+pip install blinklinmult
+```
+
 ### Install package for training
 ```
 git clone https://github.com/fodorad/BlinkLinMulT
@@ -27,6 +34,7 @@ python -m unittest discover -s test
 | extras tag | description |
 | --- | --- |
 | train | dependencies for training the model from scratch |
+| inference | dependencies for preprocessing and inference |
 | all | extends the train dependencies for development, e.g. to include CLIP models |
 
 # Quick start
