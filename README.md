@@ -33,9 +33,7 @@ python -m unittest discover -s test
 #### Supported extras definitions:
 | extras tag | description |
 | --- | --- |
-| train | dependencies for training the model from scratch |
-| inference | dependencies for preprocessing and inference |
-| all | extends the train dependencies for development, e.g. to include CLIP models |
+| dev | dependencies for training the model from scratch |
 
 # Quick start
 ### Load models from the paper with pre-trained weights

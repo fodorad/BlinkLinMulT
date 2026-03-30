@@ -1,17 +1,15 @@
-from abc import abstractmethod
 from pathlib import Path
 import logging
+import urllib.request
+
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
 from linmult import LinMulT, LinT
-from exordium.utils.ckpt import download_file
-from blinklinmult import PathType, WEIGHTS_DIR
+from blinklinmult import WEIGHTS_DIR
 
 
-logging.basicConfig(level=logging.INFO,
-                    format="%(asctime)s %(levelname)s %(message)s",
-                    datefmt="%Y-%m-%d %H:%M:%S")
+logger = logging.getLogger(__name__)
 
 
 PRETRAINED_WEIGHTS = {
@@ -27,6 +25,29 @@ preprocess_eye_fcn = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
+
+
+def download_file(remote_path: str, local_path: Path | str, overwrite: bool = False) -> None:
+    """Downloads a file to a given local path using urllib.
+
+    Args:
+        remote_path (str): URL of the remote file.
+        local_path (Path | str): Destination path for the downloaded file.
+        overwrite (bool, optional): If True, re-downloads even if the file
+            already exists. Defaults to False.
+
+    Raises:
+        FileNotFoundError: If the file is not present after downloading.
+
+    """
+    local_path = Path(local_path)
+    if not local_path.exists() or overwrite:
+        local_path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Downloading {remote_path} → {local_path}")
+        urllib.request.urlretrieve(str(remote_path), str(local_path))
+
+    if not local_path.exists():
+        raise FileNotFoundError(f"Downloaded file is missing at {local_path}.")
 
 
 class AbstractModule(nn.Module):
@@ -56,7 +77,7 @@ class AbstractModule(nn.Module):
         x = self.classifier(x)
         return x
 
-    def load_weights(self, weights_path: PathType) -> None:
+    def load_weights(self, weights_path: str | Path) -> None:
         local_path = Path(weights_path)
 
         if local_path.name in PRETRAINED_WEIGHTS.keys():
@@ -72,7 +93,7 @@ class AbstractModule(nn.Module):
 class DenseNet121(AbstractModule):
 
     def __init__(self, output_dim: int = 1,
-                       weights: PathType | None = 'densenet121-union',
+                       weights: str | Path | None = 'densenet121-union',
                        freeze: bool = False):
         super().__init__()
         densenet121 = models.densenet121(weights=models.DenseNet121_Weights.DEFAULT)
@@ -101,8 +122,8 @@ class BlinkLinMulT(AbstractModule):
 
     def __init__(self, input_dim: int = 160,
                        output_dim: int = 1,
-                       weights: PathType | None = 'blinklinmult-union',
-                       weights_backbone: PathType | None = 'densenet121-union',
+                       weights: str | Path | None = 'blinklinmult-union',
+                       weights_backbone: str | Path | None = 'densenet121-union',
                        **kwargs):
         super().__init__()
         self.img_backbone = DenseNet121(output_dim=output_dim, weights=weights_backbone)

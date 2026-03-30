@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Real-Time Blink Detection Demo using MediaPipe + DenseNet121 + PyTorch
-Ultra-fast face detection (60 fps) with blink inference
+Real-Time Blink Detection Demo using MediaPipe + DenseNet121
 """
 import os
 from collections import deque

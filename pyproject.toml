@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "blinklinmult"
-version = "1.0.2"
+version = "1.0.4"
 description = "BlinkLinMulT: Transformer-based Eye Blink Detection."
 keywords = ["blink", "eye state recognition", "blink presence detection", "multimodal", "transformer", "linear-complexity attention"]
 authors = [
@@ -13,7 +13,11 @@ authors = [
 readme = {"file" = "README.md", "content-type" = "text/markdown"}
 requires-python = ">=3.11"
 license = "MIT"
-dynamic = ["dependencies"]
+dependencies = [
+  "torch",
+  "torchvision",
+  "linmult==1.1.0",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
@@ -33,18 +37,16 @@ exclude = ["blinklinmult/test", "blinklinmult/train", "data/"]
 packages = ["blinklinmult"]
 exclude = ["blinklinmult/test", "blinklinmult/train", "data/"]
 
-[tool.hatch.metadata.hooks.requirements_txt]
-files = ["requirements.txt"]
-
 [project.optional-dependencies]
-train = [
+dev = [
+  "matplotlib",
+  "opencv-python",
+  "scipy",
+  "tqdm",
   "pytorch_lightning==1.8.4",
-  "torchsampler"
-]
-inference = [
-  "exordium[tddfa]"
-]
-all = [
-  "blinklinmult[train]",
-  "clip"
+  "torchsampler",
+  "moviepy",
+  "clip",
+  "exordium[tddfa]",
+  "bbox_visualizer"
 ]
