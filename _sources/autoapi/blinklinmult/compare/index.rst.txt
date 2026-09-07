@@ -1,0 +1,50 @@
+blinklinmult.compare
+====================
+
+.. py:module:: blinklinmult.compare
+
+.. autoapi-nested-parse::
+
+   Statistical comparison of the shipped models.
+
+   A benchmark table of point estimates cannot answer the only question that
+   matters when choosing between models: *is this difference real, or is it noise?*
+   This package answers it, and the answer is frequently "we cannot tell from this
+   much data" -- which is a finding, not a failure.
+
+   Three ideas carry the design.
+
+   **The recording is the unit, not the window.** RN30's test split holds 7312
+   windows drawn from **35 recordings**. Windows from one recording share a
+   subject, a camera, an illuminant and a blink rate, so treating them as 7312
+   independent observations understates the standard error badly. Measured on this
+   repo's own arms: a per-frame bootstrap put the ``fw-focal`` vs ``fw-bce`` gap at
+   ``[-0.024, -0.009]`` -- comfortably "significant" -- while resampling the 35
+   recordings gave ``[-0.067, +0.027]``, which straddles zero. Same data, same
+   statistic, an interval **5.9x too narrow** and the opposite conclusion.
+
+   **The comparison is paired.** Every model scores the same recordings, so one
+   draw of recordings is evaluated by all models at once. Pairing removes
+   between-recording difficulty, which dominates the variance at n=20-35.
+
+   **Low power is reported, never hidden.** With 20-35 clusters many differences
+   will not resolve, and a corpus with one recording gets a point estimate and an
+   explicit refusal rather than a fabricated interval.
+
+   See :mod:`blinklinmult.compare.clusters` for the resampling unit and
+   :mod:`blinklinmult.compare.bootstrap` for the interval itself.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/blinklinmult/compare/bootstrap/index
+   /autoapi/blinklinmult/compare/clusters/index
+   /autoapi/blinklinmult/compare/protocol/index
+   /autoapi/blinklinmult/compare/tests/index
+
+

@@ -1,0 +1,268 @@
+blinklinmult.live
+=================
+
+.. py:module:: blinklinmult.live
+
+.. autoapi-nested-parse::
+
+   Rendering a live view: the frame, and a scrolling plot per eye.
+
+   What the batch pipeline draws
+   (:func:`~blinklinmult.overlay.draw`) needs a finished
+   :class:`~blinklinmult.pipeline.Result` -- a whole-recording object that does not
+   exist while frames are still arriving. So the live view draws its own, reusing
+   :mod:`blinklinmult.overlay`'s colours so the two look like the same product.
+
+   **Everything here is cv2 into a numpy canvas, not matplotlib.** Measured, a
+   matplotlib redraw of two small subplots costs **6.1 ms** per frame against
+   **0.13 ms** for a cv2 polyline -- a 47x difference, and the display loop only has
+   about 6 ms of slack once detection and ``imshow`` are paid. A plotting library
+   would spend a third of the remaining headroom drawing two lines.
+
+   The layout is the frame on top, and beneath it two subplots at half the frame
+   width each: the viewer's left eye on the left. A wink then spikes the plot on
+   the same side as the eye that closed, which is the whole point of the view.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.live.DEFAULT_SECONDS
+   blinklinmult.live.PLOT_HEIGHT
+   blinklinmult.live.PLOT_BACKGROUND
+   blinklinmult.live.GRID_COLOUR
+   blinklinmult.live.THRESHOLD_COLOUR
+   blinklinmult.live.AXIS_COLOUR
+   blinklinmult.live.TRACE_COLOUR
+   blinklinmult.live.TRACE_WIDTH
+   blinklinmult.live.PLOT_MARGIN
+   blinklinmult.live.LABEL_HEIGHT
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.live.ScoreHistory
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.live.draw_plot
+   blinklinmult.live.compose
+   blinklinmult.live.draw_overlay
+   blinklinmult.live.eye_crops
+
+
+Module Contents
+---------------
+
+.. py:data:: DEFAULT_SECONDS
+   :value: 10.0
+
+
+   Seconds of score history each plot shows.
+
+.. py:data:: PLOT_HEIGHT
+   :value: 130
+
+
+   Height of one eye's subplot, in pixels.
+
+.. py:data:: PLOT_BACKGROUND
+   :value: (248, 248, 248)
+
+
+   Near-white behind a plot, matching the readout panel's family.
+
+.. py:data:: GRID_COLOUR
+   :value: (215, 215, 215)
+
+
+   Light grey for the frame around a plot.
+
+.. py:data:: THRESHOLD_COLOUR
+   :value: (120, 120, 200)
+
+
+   Muted blue for the operating-point rule.
+
+   Blue rather than grey: on a near-white panel a mid grey line is easy to miss,
+   and a viewer who cannot see the threshold cannot tell whether a spike counted as
+   a blink -- which is the whole reason the rule is drawn.
+
+.. py:data:: AXIS_COLOUR
+   :value: (205, 205, 205)
+
+
+   The zero line, so the trace has something to sit on.
+
+   Without it an open eye's near-zero score looks like an empty plot rather than a
+   measured one.
+
+.. py:data:: TRACE_COLOUR
+   :value: (200, 60, 60)
+
+
+   The score trace.
+
+   **One colour for the whole line.** Colouring it by whether the score is above
+   the threshold sounds informative and is not: a single spike at the end repaints
+   the entire history, so the plot's colour reports only the newest sample while
+   appearing to describe all ten seconds. The threshold rule already shows where
+   the operating point is, and the eye boxes on the frame carry the open/closed
+   state.
+
+.. py:data:: TRACE_WIDTH
+   :value: 2
+
+
+   Polyline thickness. Two pixels reads clearly without hiding detail.
+
+.. py:data:: PLOT_MARGIN
+   :value: 6
+
+
+   Padding inside a plot, so the trace never touches the border.
+
+.. py:data:: LABEL_HEIGHT
+   :value: 16
+
+
+   Rows reserved at the top for the label and the current reading.
+
+.. py:class:: ScoreHistory
+
+   A bounded, per-eye history of closure scores.
+
+   A ``deque`` with ``maxlen`` rather than a list: a demo left running for an
+   hour uses exactly the same memory as one left running for a second, because
+   the oldest sample falls off as each new one arrives.
+
+   :param capacity: Samples retained -- normally ``fps * seconds``.
+   :type capacity: int
+
+
+   .. py:method:: __post_init__() -> None
+
+      Allocate the bounded queue.
+
+
+
+   .. py:method:: push(value: float) -> None
+
+      Add one score.
+
+      :param value: Closure score in ``[0, 1]``, or ``nan`` for a frame
+                    with no usable eye. **A gap, not a zero**: zero means "open",
+                    which is a claim the pipeline cannot make when it never saw the
+                    eye.
+      :type value: float
+
+
+
+   .. py:property:: latest
+      :type: float
+
+
+      The most recent score.
+
+      :returns: The last value pushed, or ``nan`` when empty.
+      :rtype: float
+
+
+   .. py:method:: as_array() -> numpy.ndarray
+
+      The history, oldest first.
+
+      :returns: ``(n,)`` float32.
+      :rtype: np.ndarray
+
+
+
+.. py:function:: draw_plot(history: ScoreHistory, threshold: float, label: str, width: int, height: int = PLOT_HEIGHT) -> numpy.ndarray
+
+   Draw one eye's scrolling score plot.
+
+   The trace fills only the fraction of the width its samples cover, so a
+   two-second-old session does not stretch to look like a full ten seconds of
+   data. Gaps -- frames where no eye was found -- break the line rather than
+   dropping it to zero.
+
+   :param history: The scores to draw.
+   :type history: ScoreHistory
+   :param threshold: Operating point, drawn as a horizontal rule so a
+                     spike crossing it is visibly a blink rather than just a bump.
+   :type threshold: float
+   :param label: Shown top-left, e.g. ``"left eye"``.
+   :type label: str
+   :param width: Canvas width in pixels.
+   :type width: int
+   :param height: Canvas height in pixels.
+   :type height: int
+
+   :returns: ``(height, width, 3)`` uint8 RGB.
+   :rtype: np.ndarray
+
+
+.. py:function:: compose(frame: numpy.ndarray, left: numpy.ndarray, right: numpy.ndarray) -> numpy.ndarray
+
+   Stack the frame above the two eye plots.
+
+   :param frame: ``(H, W, 3)`` uint8 RGB, already annotated.
+   :type frame: np.ndarray
+   :param left: The viewer's-left eye plot.
+   :type left: np.ndarray
+   :param right: The viewer's-right eye plot.
+   :type right: np.ndarray
+
+   :returns: ``(H + plot_height, W, 3)`` uint8 RGB, the plots side by
+             side beneath the frame at half its width each.
+   :rtype: np.ndarray
+
+
+.. py:function:: draw_overlay(frame: numpy.ndarray, detection, scores: dict[str, float], threshold: float, lines: list[str] | None = None) -> numpy.ndarray
+
+   Annotate a live frame with the face, the eyes and a readout.
+
+   :param frame: ``(H, W, 3)`` uint8 RGB. Not modified.
+   :type frame: np.ndarray
+   :param detection: A ``FaceDetection`` from
+                     :meth:`~blinklinmult.preprocess.extractors.PoseEyeLocator.detect`,
+                     or ``None`` when no face was found.
+   :param scores: Score per side; ``nan`` where unknown.
+   :type scores: dict[str, float]
+   :param threshold: Operating point, deciding an eye box's colour.
+   :type threshold: float
+   :param lines: Extra readout lines, e.g. fps and head pose.
+   :type lines: list[str] | None
+
+   :returns: A new annotated frame.
+   :rtype: np.ndarray
+
+
+.. py:function:: eye_crops(detection, frame: numpy.ndarray, image_size: int = 64) -> numpy.ndarray | None
+
+   Cut both eye crops into the layout the models take.
+
+   :param detection: A ``FaceDetection`` from
+                     :meth:`~blinklinmult.preprocess.extractors.PoseEyeLocator.detect`.
+   :param frame: ``(H, W, 3)`` RGB.
+   :type frame: np.ndarray
+   :param image_size: Crop side the model expects.
+   :type image_size: int
+
+   :returns: ``(2, 3, size, size)`` in ``[0, 1]``, or ``None``
+             unless **both** eyes were located. A one-eye batch is refused rather
+             than scored: the caller reads the two scores positionally, so a missing
+             side would silently shift the right eye's score onto the left.
+   :rtype: np.ndarray | None
+
+

@@ -1,0 +1,223 @@
+blinklinmult.data.collate
+=========================
+
+.. py:module:: blinklinmult.data.collate
+
+.. autoapi-nested-parse::
+
+   The batch-to-model boundary.
+
+   OmniLoader hands back a batch in which every declared key is paired with a
+   ``<name>_mask``. The eye crops arrive in native ``(B, T, C, H, W)`` form — since
+   omniloader 1.1 a spec declares a structured trailing ``shape``, so nothing is
+   flattened on the way in and nothing is reshaped here.
+
+   What remains is folding the time axis into the batch so a 2-D CNN can embed
+   every crop in one pass, and assembling the ``(inputs, masks)`` the sequence
+   model expects. Batching itself is :func:`omniloader.unified_collate`, used
+   unchanged.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.collate.OCCLUSION_YAW
+   blinklinmult.data.collate.YAW_INDEX
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.collate.BatchError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.data.collate.check_eye_images
+   blinklinmult.data.collate.fold_time_into_batch
+   blinklinmult.data.collate.unfold_time_from_batch
+   blinklinmult.data.collate.occluded_eyes
+   blinklinmult.data.collate.apply_occlusion
+   blinklinmult.data.collate.unpack_batch
+   blinklinmult.data.collate.target_and_mask
+
+
+Module Contents
+---------------
+
+.. py:exception:: BatchError
+
+   Bases: :py:obj:`KeyError`
+
+
+   Raised when a batch does not carry what the model was configured for.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: check_eye_images(images: torch.Tensor, image_size: int) -> torch.Tensor
+
+   Verify a batch's eye crops match the configured crop size.
+
+   The crops arrive already in image form, so this validates rather than
+   reshapes — but it validates at the model boundary, where a mismatch between
+   the run's config and the built dataset would otherwise surface as an
+   inscrutable convolution error.
+
+   :param images: ``(B, T, C, H, W)`` as loaded.
+   :type images: torch.Tensor
+   :param image_size: Side length ``H = W`` the run is configured for.
+   :type image_size: int
+
+   :returns: The batch, unchanged.
+   :rtype: torch.Tensor
+
+   :raises BatchError: If the rank or the trailing shape contradicts the config.
+
+
+.. py:function:: fold_time_into_batch(images: torch.Tensor) -> torch.Tensor
+
+   Flatten the batch and time axes so a 2-D CNN can consume the crops.
+
+   A per-frame image backbone has no notion of time; folding both leading axes
+   into the batch lets it process every crop in one pass instead of looping
+   over ``T``, which is what the 1.x code did (a Python loop over the time
+   dimension per forward call).
+
+   :param images: ``(B, T, 3, H, W)``.
+   :type images: torch.Tensor
+
+   :returns: ``(B*T, 3, H, W)``.
+   :rtype: torch.Tensor
+
+
+.. py:function:: unfold_time_from_batch(flat: torch.Tensor, batch: int, time: int) -> torch.Tensor
+
+   Undo :func:`fold_time_into_batch` on the backbone's output.
+
+   :param flat: ``(B*T, D)`` per-crop embeddings.
+   :type flat: torch.Tensor
+   :param batch: Original batch size.
+   :type batch: int
+   :param time: Original window length.
+   :type time: int
+
+   :returns: ``(B, T, D)`` — one embedding per timestep.
+   :rtype: torch.Tensor
+
+
+.. py:data:: OCCLUSION_YAW
+   :value: 45.0
+
+
+   Absolute head yaw, in degrees, beyond which the far eye is self-occluded.
+
+   Past roughly this angle the far eye is behind the nose and its crop shows
+   something that is not an eye — while every geometric check still passes, because
+   the landmarks track a face that is genuinely there.
+
+   **A dataloader rule, not a build-time one.** Head pose is stored in degrees, so
+   this threshold stays a hyperparameter: sweeping it costs a config change rather
+   than re-preprocessing tens of gigabytes. Measured across the corpora, only
+   MPEblink is materially affected (35.7% of frames beyond 45 degrees); RN15, RN30
+   and TalkingFace are near-frontal and lose essentially nothing.
+
+   The value is deliberately provisional. 30 degrees is equally defensible and the
+   choice belongs to inspection — see the head-pose block of
+   ``notebooks/corpus_report.py``, which shows crops binned by yaw beside the
+   original frame.
+
+.. py:data:: YAW_INDEX
+   :value: 0
+
+
+   Column of :data:`~blinklinmult.data.schema.HEAD_POSE` holding yaw.
+
+.. py:function:: occluded_eyes(head_pose: torch.Tensor, eye_side: collections.abc.Sequence[str], threshold: float = OCCLUSION_YAW) -> torch.Tensor
+
+   Which positions show an eye hidden by the head's own rotation.
+
+   Yaw's **sign** says which eye: turning one way hides the left eye, the other
+   way the right. A frame is only occluded for the eye on the far side, so the
+   near eye of the same frame stays fully usable — which is why this returns a
+   per-sample-per-timestep mask rather than dropping the frame.
+
+   :param head_pose: ``(B, T, 3)`` ``[yaw, pitch, roll]`` in degrees.
+   :type head_pose: torch.Tensor
+   :param eye_side: ``B`` eye sides, as the batch records them.
+   :type eye_side: Sequence[str]
+   :param threshold: Absolute yaw beyond which the far eye is occluded.
+   :type threshold: float
+
+   :returns: ``(B, T)`` bool, ``True`` where the eye is occluded.
+   :rtype: torch.Tensor
+
+   :raises BatchError: If the pose is not ``(B, T, 3)`` or the sides do not match
+       the batch.
+
+
+.. py:function:: apply_occlusion(batch: dict[str, Any], threshold: float = OCCLUSION_YAW) -> dict[str, Any]
+
+   Mask the eye-image validity of self-occluded positions.
+
+   Returns a **shallow copy** with the image and target masks replaced, so the
+   crops themselves are untouched and the original batch is not mutated — a
+   caller inspecting the same batch afterwards sees what the loader produced.
+
+   A batch without head pose is returned unchanged: the still corpora have no
+   face to estimate pose from, so there is nothing to rule on.
+
+   :param batch: A collated OmniLoader batch.
+   :type batch: dict
+   :param threshold: Absolute yaw beyond which the far eye is occluded.
+   :type threshold: float
+
+   :returns: The batch, with occluded positions marked invalid.
+   :rtype: dict
+
+
+.. py:function:: unpack_batch(batch: dict[str, Any], feature_names: collections.abc.Sequence[str]) -> tuple[list[torch.Tensor], list[torch.Tensor]]
+
+   Split a batch into the ``(inputs, masks)`` the model consumes.
+
+   Each feature keeps its **own** mask. A frame whose eye crop is usable may
+   still yield no reliable handcrafted descriptors, so the image and feature
+   masks are read independently and never assumed to agree.
+
+   :param batch: A collated OmniLoader batch.
+   :type batch: dict
+   :param feature_names: Features in model input order.
+   :type feature_names: Sequence[str]
+
+   :returns: ``inputs`` of ``(B, T, F)`` and ``masks`` of ``(B, T)`` with
+             ``True`` = valid.
+   :rtype: tuple
+
+   :raises BatchError: If a named feature or its mask is absent.
+
+
+.. py:function:: target_and_mask(batch: dict[str, Any], name: str) -> tuple[torch.Tensor, torch.Tensor]
+
+   Read one target and its validity mask.
+
+   :param batch: A collated OmniLoader batch.
+   :type batch: dict
+   :param name: Target key.
+   :type name: str
+
+   :returns: ``(target, mask)``, both ``(B, T)``. The mask is ``True`` where
+             the corpus that produced the sample actually annotates this target, and
+             ``False`` for samples drawn from a corpus that does not.
+   :rtype: tuple
+
+   :raises BatchError: If the target or its mask is absent.
+
+

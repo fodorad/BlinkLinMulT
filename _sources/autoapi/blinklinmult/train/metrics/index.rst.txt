@@ -1,0 +1,508 @@
+blinklinmult.train.metrics
+==========================
+
+.. py:module:: blinklinmult.train.metrics
+
+.. autoapi-nested-parse::
+
+   Masked classification metrics for the two blink tasks.
+
+   Both tasks are binary detection under heavy class imbalance, so the metrics are
+   chosen accordingly and every one of them reduces over valid positions only —
+   exactly the mask the losses use.
+
+   ``{split}/{target}/f1``
+       Harmonic mean of precision and recall. **The primary metric.** Accuracy is
+       not reported as a headline number: a model predicting "no blink" everywhere
+       scores above 95% accuracy on a continuously-sampled recording, which says
+       nothing about whether it detects blinks.
+   ``{split}/{target}/precision``, ``{split}/{target}/recall``
+       Reported alongside F1 because the two failure modes — missing blinks and
+       hallucinating them — have different costs downstream, and F1 alone hides
+       which one a run has.
+   ``{split}/{target}/average_precision``
+       Area under the precision-recall curve: threshold-free, so it separates a
+       model that ranks well but is badly calibrated from one that genuinely
+       cannot discriminate.
+   ``{split}/{target}/accuracy``, ``{split}/{target}/balanced_accuracy``
+       Kept for comparability with the published 1.x numbers, which reported
+       accuracy. Balanced accuracy is the one to read.
+   ``{split}/mean_f1``
+       Mean F1 across supervised targets. **Drives model selection.**
+
+   **Why not torchmetrics' own classification metrics.** They have no notion of a
+   per-position validity mask, and passing them a flattened, pre-filtered tensor
+   would silently change what "an epoch" means under DDP, where each rank filters a
+   different number of positions. Accumulating raw predictions with their masks and
+   reducing once at epoch end keeps the gathered state exact.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.metrics.logger
+   blinklinmult.train.metrics.EPSILON
+   blinklinmult.train.metrics.DEFAULT_THRESHOLD
+   blinklinmult.train.metrics.PRIMARY_METRIC
+   blinklinmult.train.metrics.NO_GROUP
+   blinklinmult.train.metrics.FRAME_REDUCERS
+   blinklinmult.train.metrics.PRIMARY_FRAME_REDUCER
+   blinklinmult.train.metrics.ESR_METRIC
+   blinklinmult.train.metrics.BPD_METRIC
+   blinklinmult.train.metrics.METRIC_NAMES
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.train.metrics.BlinkMetrics
+   blinklinmult.train.metrics.MultiTargetMetrics
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.metrics.average_precision
+   blinklinmult.train.metrics.binary_metrics
+   blinklinmult.train.metrics.frame_group_ids
+   blinklinmult.train.metrics.aggregate_by_group
+   blinklinmult.train.metrics.frame_level_metrics
+   blinklinmult.train.metrics.window_level_metrics
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: EPSILON
+   :value: 1e-08
+
+
+   Guards division when a class is absent from an epoch.
+
+.. py:data:: DEFAULT_THRESHOLD
+   :value: 0.5
+
+
+   Probability above which a position is predicted positive.
+
+.. py:data:: PRIMARY_METRIC
+   :value: 'mean_f1'
+
+
+   The metric that selects checkpoints and drives early stopping.
+
+   Computed over the **frame-level** scores when frame-group ids are available, so
+   model selection optimises the number the benchmark reports. See
+   :class:`FrameAggregator`.
+
+.. py:data:: NO_GROUP
+   :value: -1
+
+
+   Sentinel frame-group id, meaning "this position cannot be grouped".
+
+   Accumulated when a caller supplies no group ids, which leaves the per-eye
+   metrics intact and simply disables frame-level aggregation for that epoch.
+
+.. py:data:: FRAME_REDUCERS
+   :type:  tuple[str, ...]
+   :value: ('max', 'mean')
+
+
+   Rules for combining the two eyes' predictions into one per frame.
+
+   ``max`` is the primary rule: a blink is a frame-level event that *occurred*, and
+   the annotation marks a frame as a blink when a closure is visible. If one eye is
+   occluded by a head turn while the other is plainly closing, ``max`` recovers the
+   event where ``mean`` halves the score and can push it under the threshold.
+   ``mean`` is logged alongside so the choice is measured rather than assumed.
+
+.. py:data:: PRIMARY_FRAME_REDUCER
+   :value: 'max'
+
+
+   The frame reducer whose F1 drives model selection.
+
+.. py:data:: ESR_METRIC
+   :value: 'mean_f1'
+
+
+   mean frame-level F1 across targets.
+
+   :type: Headline eye-state-recognition score
+
+.. py:data:: BPD_METRIC
+   :value: 'bpd_f1'
+
+
+   window-level F1.
+
+   Reported only when the run supervises blink presence, since a still-image
+   corpus cannot witness a blink.
+
+   :type: Headline blink-presence-detection score
+
+.. py:data:: METRIC_NAMES
+   :type:  tuple[str, ...]
+   :value: ('f1', 'precision', 'recall', 'average_precision', 'accuracy', 'balanced_accuracy')
+
+
+   Per-target metrics computed every epoch, in report order.
+
+.. py:function:: average_precision(probability: torch.Tensor, target: torch.Tensor, mask: torch.Tensor) -> torch.Tensor
+
+   Area under the precision-recall curve over valid positions.
+
+   Computed by the step-wise sum ``sum_k (R_k - R_{k-1}) * P_k`` over positions
+   ranked by predicted probability — the standard estimator, which unlike
+   trapezoidal interpolation does not reward a model for the region between two
+   observed operating points.
+
+   :param probability: Predicted probabilities, any shape.
+   :type probability: torch.Tensor
+   :param target: Binary targets, same shape.
+   :type target: torch.Tensor
+   :param mask: ``True`` where the target is real supervision.
+   :type mask: torch.Tensor
+
+   :returns: Scalar in ``[0, 1]``; ``0`` when no positive is present,
+             for which average precision is undefined.
+   :rtype: torch.Tensor
+
+
+.. py:function:: binary_metrics(probability: torch.Tensor, target: torch.Tensor, mask: torch.Tensor, threshold: float = DEFAULT_THRESHOLD) -> dict[str, torch.Tensor]
+
+   Every per-target metric, over valid positions.
+
+   :param probability: Predicted probabilities.
+   :type probability: torch.Tensor
+   :param target: Binary targets.
+   :type target: torch.Tensor
+   :param mask: ``True`` where the target is real supervision.
+   :type mask: torch.Tensor
+   :param threshold: Decision threshold.
+   :type threshold: float
+
+   :returns: Keyed by :data:`METRIC_NAMES`. Every value is
+             ``0`` when the epoch contained no valid position, rather than NaN, which
+             would poison the epoch average and any checkpoint comparison.
+   :rtype: dict[str, torch.Tensor]
+
+
+.. py:function:: frame_group_ids(sample_ids: collections.abc.Sequence[str]) -> torch.Tensor | None
+
+   Map each sample to an integer id shared by the eyes of the same frames.
+
+   OmniLoader forwards only the sample id into a batch, so the recording and
+   the frame group travel encoded inside it (see
+   :func:`~blinklinmult.data.schema.build_sample_id`). This strips the eye side
+   and interns what remains, so the two eye-wise samples cut from one window
+   receive the same id and :func:`frame_level_metrics` can recombine them.
+
+   **The ids are stable across batches, not batch-local.** They are a hash of
+   the group key rather than an enumeration, because the accumulator persists
+   across every batch of an epoch: ids that restarted at 0 each batch would
+   make window 0 of batch 1 collide with window 0 of batch 0, and the
+   aggregation would silently max together frames from different recordings.
+   Measured on RN30's test split, that collapsed 329 040 positions into a
+   degenerate set and reported ``frame_max/f1 = 1.0`` against a true 0.57.
+
+   :param sample_ids: One id per sample in the batch.
+   :type sample_ids: Sequence[str]
+
+   :returns: ``(B,)`` int64 ids, or ``None`` when the batch
+             carries no ids or any of them is unparseable — in which case the
+             per-eye metrics still run and only frame-level scoring is skipped.
+   :rtype: torch.Tensor | None
+
+
+.. py:function:: aggregate_by_group(values: torch.Tensor, groups: torch.Tensor, reducer: str) -> tuple[torch.Tensor, torch.Tensor]
+
+   Reduce per-position values to one value per frame group.
+
+   :param values: ``(N,)`` per-position values.
+   :type values: torch.Tensor
+   :param groups: ``(N,)`` int64 group id per position.
+   :type groups: torch.Tensor
+   :param reducer: One of :data:`FRAME_REDUCERS`.
+   :type reducer: str
+
+   :returns: ``(reduced, unique_groups)``, both
+             ``(G,)``, ordered by group id.
+   :rtype: tuple[torch.Tensor, torch.Tensor]
+
+   :raises ValueError: If the reducer is unknown or the shapes disagree.
+
+
+.. py:function:: frame_level_metrics(metric: BlinkMetrics) -> dict[str, torch.Tensor]
+
+   Score one target at frame level, aggregating the eyes of each frame.
+
+   This is the **eye state recognition (ESR)** protocol: one decision per
+   frame. Training is eye-wise because that is how the corpora annotate, but
+   the benchmark reports per frame, so the two eye-wise predictions of a frame
+   are recombined here. The same aggregation runs on validation as on test, so
+   model selection optimises the reported number rather than a proxy.
+
+   A position is aggregated only when it is validly supervised; a frame whose
+   every eye was masked out contributes nothing rather than a default.
+
+   :param metric: An accumulator for one target.
+   :type metric: BlinkMetrics
+
+   :returns: ``frame_<reducer>/<metric>`` for every reducer
+             in :data:`FRAME_REDUCERS`. Empty when no group ids were accumulated,
+             which is what a caller checks to know whether frame-level scoring ran.
+   :rtype: dict[str, torch.Tensor]
+
+
+.. py:function:: window_level_metrics(metric: BlinkMetrics) -> dict[str, torch.Tensor]
+
+   Score one target at window level: did this window contain a blink?
+
+   This is the **blink presence detection (BPD)** protocol, and it is a
+   genuinely different task from frame-wise eye-state recognition rather than a
+   coarser view of it. A window is positive when *any* of its frames is
+   annotated as blinking, and a prediction is positive when the model's
+   sequence output crosses the threshold at any timestep — a ``max`` over the
+   window.
+
+   Aggregating a single sequence head, rather than training a second
+   clip-level head, is what keeps the two tasks consistent: a window cannot
+   come out "no frame shows a closed eye" *and* "a blink occurred", which two
+   independent heads would permit.
+
+   BPD is the more error-tolerant protocol, and that is why it is reported
+   alongside ESR: the corpora do not annotate blink boundaries precisely, since
+   a closure is motion that begins before and ends after the frames marked as
+   blinking. A frame-wise score punishes a one-frame boundary disagreement that
+   a window-wise score absorbs.
+
+   :param metric: An accumulator for one target, whose group ids
+                  identify the sample each position came from.
+   :type metric: BlinkMetrics
+
+   :returns: ``window/<metric>``. Empty when no group ids
+             were accumulated.
+   :rtype: dict[str, torch.Tensor]
+
+
+.. py:class:: BlinkMetrics(target_name: str, threshold: float = DEFAULT_THRESHOLD)
+
+   Bases: :py:obj:`torchmetrics.Metric`
+
+
+   Accumulates an epoch of masked predictions for one target.
+
+   A :class:`torchmetrics.Metric` rather than plain lists, so state is gathered
+   across devices automatically. Appending to Python lists on the module would,
+   under DDP, silently report only rank 0's shard.
+
+   :param target_name: The target these metrics describe.
+   :type target_name: str
+   :param threshold: Decision threshold.
+   :type threshold: float
+
+   :raises ValueError: If the threshold is outside ``(0, 1)``.
+
+
+   .. py:method:: update(probability: torch.Tensor, target: torch.Tensor, mask: torch.Tensor, group: torch.Tensor | None = None) -> None
+
+      Accumulate one batch.
+
+      :param probability: Predicted probabilities, ``(B, T)``.
+      :type probability: torch.Tensor
+      :param target: Binary targets, same shape.
+      :type target: torch.Tensor
+      :param mask: ``True`` where the target is real supervision.
+      :type mask: torch.Tensor
+      :param group: ``(B,)`` integer frame-group id per
+                    sample, broadcast across its timesteps. ``None`` accumulates a
+                    sentinel, which disables frame-level aggregation for this epoch
+                    but leaves the per-eye metrics intact.
+      :type group: torch.Tensor | None
+
+      :raises ValueError: If the shapes disagree.
+
+
+
+   .. py:method:: restore(probability: torch.Tensor, target: torch.Tensor, mask: torch.Tensor, group: torch.Tensor, window_length: int) -> None
+
+      Re-accumulate already-flattened state from a previous pass.
+
+      :meth:`update` derives the group ids from the shapes it is handed, which
+      is right for a live batch but wrong for state read back from disk: the
+      ids there already encode the frames they came from and must survive
+      verbatim, or every consumer that groups by frame would regroup the
+      restored positions incorrectly.
+
+      Every metric is an order-independent reduction over per-position values,
+      so state appended here scores identically to state computed in place --
+      which is what makes resuming an interrupted test pass exact rather than
+      approximate.
+
+      :param probability: ``(N,)`` predicted probabilities.
+      :type probability: torch.Tensor
+      :param target: ``(N,)`` binary targets.
+      :type target: torch.Tensor
+      :param mask: ``(N,)`` validity mask.
+      :type mask: torch.Tensor
+      :param group: ``(N,)`` frame-group id per position.
+      :type group: torch.Tensor
+      :param window_length: Timesteps per sample in the restored pass.
+      :type window_length: int
+
+      :raises ValueError: If the shapes disagree.
+
+
+
+   .. py:method:: groups() -> torch.Tensor | None
+
+      Frame-group id of every accumulated position.
+
+      :returns: ``(N,)`` int64, or ``None`` when nothing was
+                accumulated or no group ids were supplied.
+      :rtype: torch.Tensor | None
+
+
+
+   .. py:property:: valid_count
+      :type: int
+
+
+      Number of validly-supervised positions accumulated this epoch.
+
+      Logged so a run makes visible how much supervision each target actually
+      received — a joint run where one head saw almost nothing is a data
+      problem, not a modelling one, and this is what reveals it.
+
+      :returns: Valid position count.
+      :rtype: int
+
+
+   .. py:method:: compute() -> dict[str, torch.Tensor]
+
+      Compute every metric over the accumulated epoch.
+
+      :returns: Keyed ``"<target>/<metric>"``. Zeros
+                throughout when the target received no supervision this epoch, which
+                is a legitimate state for a joint run whose batch mix happened to
+                exclude the annotating corpus.
+      :rtype: dict[str, torch.Tensor]
+
+
+
+   .. py:method:: predictions() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]
+
+      Return the accumulated predictions, targets, and masks.
+
+      Used to dump per-sample test predictions as a run artifact, so
+      downstream threshold tuning and significance testing never need the
+      model re-run.
+
+      :returns: ``(probability, target, mask)``, each ``(N,)``; empty tensors
+                when nothing was accumulated.
+      :rtype: tuple
+
+
+
+.. py:class:: MultiTargetMetrics(target_names: list[str], threshold: float = DEFAULT_THRESHOLD)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   Holds one :class:`BlinkMetrics` per supervised target.
+
+   A ``Module`` rather than a plain dict so Lightning moves the child metrics'
+   state to the right device along with the model.
+
+   :param target_names: Targets to track, in head order.
+   :type target_names: list[str]
+   :param threshold: Decision threshold, shared by every target.
+   :type threshold: float
+
+
+   .. py:method:: __contains__(target_name: object) -> bool
+
+      Whether this accumulator holds one target.
+
+      :param target_name: The target to look for.
+      :type target_name: object
+
+      :returns: Whether it is supervised here. Lets a caller skip an
+                eval-only target on the training split, where no accumulator for
+                it exists, without catching ``KeyError``.
+      :rtype: bool
+
+
+
+   .. py:method:: __getitem__(target_name: str) -> BlinkMetrics
+
+      Look up one target's accumulator.
+
+      ``ModuleDict.__getitem__`` is typed as returning ``Module``, which loses
+      every :class:`BlinkMetrics` method. Narrowing here once means callers —
+      including the prediction-writing callbacks — get the real type instead
+      of casting at each use.
+
+      :param target_name: Which target's accumulator to return.
+      :type target_name: str
+
+      :returns: That target's accumulator.
+      :rtype: BlinkMetrics
+
+      :raises KeyError: If this run does not supervise that target.
+
+
+
+   .. py:method:: update(target_name: str, probability: torch.Tensor, target: torch.Tensor, mask: torch.Tensor, group: torch.Tensor | None = None) -> None
+
+      Accumulate one batch for one target.
+
+      :param target_name: Which target to update.
+      :type target_name: str
+      :param probability: Predicted probabilities.
+      :type probability: torch.Tensor
+      :param target: Binary targets.
+      :type target: torch.Tensor
+      :param mask: Validity mask.
+      :type mask: torch.Tensor
+      :param group: ``(B,)`` frame-group id per sample.
+      :type group: torch.Tensor | None
+
+
+
+   .. py:method:: compute() -> dict[str, torch.Tensor]
+
+      Compute every target's metrics plus the cross-target summary.
+
+      Reports two families of scores. The **eye-level** ones describe what the
+      model was trained on — one prediction per eye. The **frame-level** ones
+      aggregate the two eyes of a frame into a single decision, which is how
+      the corpora are actually scored, and are what drives model selection
+      when they are available.
+
+      :returns: ``<target>/<metric>`` per eye,
+                ``<target>/frame_<reducer>/<metric>`` per frame, a
+                ``<target>/valid_positions`` count, and :data:`PRIMARY_METRIC`.
+      :rtype: dict[str, torch.Tensor]
+
+
+
+   .. py:method:: reset() -> None
+
+      Clear every target's accumulated state.
+
+
+

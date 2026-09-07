@@ -1,0 +1,137 @@
+blinklinmult.train.optim
+========================
+
+.. py:module:: blinklinmult.train.optim
+
+.. autoapi-nested-parse::
+
+   Optimizer and learning-rate schedule construction.
+
+   The one thing here that is specific to this project is the **discriminative
+   learning rate**: an ImageNet-pretrained eye backbone and a randomly-initialised
+   transformer do not want the same step size. Fine-tuning the backbone at the
+   transformer's rate destroys the pretrained features in the first few hundred
+   steps, which shows up as a run that trains stably and scores worse than the
+   frozen-backbone baseline. :func:`build_optimizer` therefore splits parameters
+   into two groups whenever ``optimizer.backbone_lr`` is set.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.optim.logger
+   blinklinmult.train.optim.BACKBONE_GROUP
+   blinklinmult.train.optim.HEAD_GROUP
+   blinklinmult.train.optim.MIN_ONECYCLE_STEPS
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.optim.OptimError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.optim.parameter_groups
+   blinklinmult.train.optim.build_optimizer
+   blinklinmult.train.optim.build_scheduler
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: BACKBONE_GROUP
+   :value: 'backbone'
+
+
+   Name of the parameter group holding the pretrained image backbone.
+
+.. py:data:: HEAD_GROUP
+   :value: 'head'
+
+
+   Name of the parameter group holding everything else.
+
+.. py:data:: MIN_ONECYCLE_STEPS
+   :value: 3
+
+
+   Fewest optimizer steps a one-cycle schedule can be given.
+
+   Below this there is no room for a warmup step, a peak, and an annealing step,
+   and ``OneCycleLR`` divides by a zero-width phase.
+
+.. py:exception:: OptimError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when an optimizer or schedule cannot be built.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: parameter_groups(model: torch.nn.Module, config: blinklinmult.train.config.OptimConfig) -> list[dict[str, Any]]
+
+   Split a model's parameters into backbone and head groups.
+
+   :param model: The model.
+   :type model: nn.Module
+   :param config: Optimizer settings.
+   :type config: OptimConfig
+
+   :returns: Optimizer parameter groups. A single group when
+             ``backbone_lr`` is unset, or when the backbone is frozen and therefore
+             contributes no trainable parameter.
+   :rtype: list[dict]
+
+
+.. py:function:: build_optimizer(config: blinklinmult.train.config.OptimConfig, model: torch.nn.Module) -> torch.optim.Optimizer
+
+   Construct the configured optimizer over the model's parameter groups.
+
+   :param config: Optimizer settings.
+   :type config: OptimConfig
+   :param model: The model whose parameters are optimized.
+   :type model: nn.Module
+
+   :returns: The optimizer.
+   :rtype: Optimizer
+
+   :raises OptimError: If the optimizer name is unknown, or the model has no
+       trainable parameter at all.
+
+
+.. py:function:: build_scheduler(config: blinklinmult.train.config.OptimConfig, optimizer: torch.optim.Optimizer, steps_per_epoch: int, max_epochs: int) -> dict[str, Any] | None
+
+   Construct the configured LR schedule, in Lightning's config format.
+
+   :param config: Optimizer settings.
+   :type config: OptimConfig
+   :param optimizer: The optimizer to schedule.
+   :type optimizer: Optimizer
+   :param steps_per_epoch: Optimizer steps in one epoch.
+   :type steps_per_epoch: int
+   :param max_epochs: Total epochs.
+   :type max_epochs: int
+
+   :returns: Lightning ``lr_scheduler_config``, or ``None`` when no
+             schedule is configured.
+   :rtype: dict | None
+
+   :raises OptimError: If the scheduler name is unknown.
+
+

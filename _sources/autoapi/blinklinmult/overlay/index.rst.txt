@@ -1,0 +1,197 @@
+blinklinmult.overlay
+====================
+
+.. py:module:: blinklinmult.overlay
+
+.. autoapi-nested-parse::
+
+   Draw what the pipeline saw onto the frames it saw it in.
+
+   A number in a log says a model fired; an overlay says *where it was looking* when
+   it did. That distinction is what makes the demo diagnostic rather than decorative
+   -- a red eye box explains a missing score far better than a gap in a plot.
+
+   The colour scheme is the whole legend:
+
+   ============  =====================================================
+   colour        meaning
+   ============  =====================================================
+   **blue**      the tracked face
+   **green**     an eye that was scored
+   **red**       an eye that was found but *suppressed* (head turned)
+   **magenta**   FaceMesh landmarks
+   **grey**      the readout, top-left
+   ============  =====================================================
+
+   The readout sits on a translucent light panel, so it stays legible over any
+   footage without a drop shadow -- which was tried and reads as visual noise.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.overlay.logger
+   blinklinmult.overlay.FACE_COLOUR
+   blinklinmult.overlay.USED_COLOUR
+   blinklinmult.overlay.DROPPED_COLOUR
+   blinklinmult.overlay.LANDMARK_COLOUR
+   blinklinmult.overlay.TEXT_COLOUR
+   blinklinmult.overlay.PANEL_COLOUR
+   blinklinmult.overlay.PANEL_ALPHA
+   blinklinmult.overlay.FONT_SCALE
+   blinklinmult.overlay.LINE_HEIGHT
+   blinklinmult.overlay.TEXT_ORIGIN
+   blinklinmult.overlay.LANDMARK_RADIUS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.overlay.draw
+   blinklinmult.overlay.render
+   blinklinmult.overlay.plot
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: FACE_COLOUR
+   :value: (60, 130, 255)
+
+
+   Blue, RGB, for the tracked face box.
+
+.. py:data:: USED_COLOUR
+   :value: (60, 220, 90)
+
+
+   Green, RGB, for an eye that was scored.
+
+.. py:data:: DROPPED_COLOUR
+   :value: (240, 60, 60)
+
+
+   Red, RGB, for an eye found but suppressed.
+
+.. py:data:: LANDMARK_COLOUR
+   :value: (230, 60, 230)
+
+
+   Magenta, RGB, for the FaceMesh points.
+
+.. py:data:: TEXT_COLOUR
+   :value: (110, 110, 110)
+
+
+   Mid grey, RGB, for the readout.
+
+   Darker than it first appears it should be. The readout is drawn on a **panel**
+   (:data:`PANEL_COLOUR`) rather than straight onto the frame, so it needs contrast
+   against that panel, not against arbitrary video. A light grey chosen to survive a
+   dark background is what made the text vanish on a bright one.
+
+.. py:data:: PANEL_COLOUR
+   :value: (245, 245, 245)
+
+
+   Near-white, RGB, behind the readout.
+
+   Text alone cannot be legible over unknown video: whatever colour is picked, some
+   frame defeats it. A drop shadow is one fix and was rejected as visual noise; a
+   flat panel is the other, and it makes legibility a property of the panel rather
+   than a gamble on the footage.
+
+.. py:data:: PANEL_ALPHA
+   :value: 0.55
+
+
+   How opaque the panel is. Enough for contrast, translucent enough to see through.
+
+.. py:data:: FONT_SCALE
+   :value: 0.5
+
+
+   Text size. Small deliberately -- the readout must not cover the face.
+
+.. py:data:: LINE_HEIGHT
+   :value: 18
+
+
+   Pixels between readout lines.
+
+.. py:data:: TEXT_ORIGIN
+   :value: (8, 38)
+
+
+   Top-left corner of the readout.
+
+   One line lower than the frame's top edge: Gradio draws its own component label
+   over the top of the video, which would hide a first line placed there.
+
+.. py:data:: LANDMARK_RADIUS
+   :value: 1
+
+
+   478 larger dots would hide the face.
+
+   :type: Landmark dot radius. One pixel
+
+.. py:function:: draw(frame: numpy.ndarray, result: blinklinmult.pipeline.Result, index: int) -> numpy.ndarray
+
+   Annotate one frame.
+
+   :param frame: ``(H, W, 3)`` uint8 RGB. Not modified.
+   :type frame: np.ndarray
+   :param result: The finished analysis.
+   :type result: Result
+   :param index: Which frame this is.
+   :type index: int
+
+   :returns: A new annotated frame.
+   :rtype: np.ndarray
+
+
+.. py:function:: render(frames: numpy.ndarray, result: blinklinmult.pipeline.Result, output_path: str | pathlib.Path) -> pathlib.Path
+
+   Write the annotated video.
+
+   :param frames: ``(T, H, W, 3)`` uint8 RGB, the source frames.
+   :type frames: np.ndarray
+   :param result: The finished analysis, same length.
+   :type result: Result
+   :param output_path: Where to write the mp4.
+   :type output_path: str | Path
+
+   :returns: The written file.
+   :rtype: Path
+
+
+.. py:function:: plot(result: blinklinmult.pipeline.Result)
+
+   Plot both eyes: closeness, thresholds and the binary prediction.
+
+   Two stacked panels sharing the frame axis, left eye above right, so the two
+   can be read against each other -- eyes blink together, and a disagreement is
+   usually one eye being suppressed rather than a real difference.
+
+   Suppressed spans are **shaded and the line breaks**, because a gap means the
+   eye was not looked at. Drawing through it would assert a measurement that was
+   never taken.
+
+   :param result: The finished analysis.
+   :type result: Result
+
+   :returns: The figure. The caller owns it and should
+             close it; leaving figures open leaks memory across repeated runs.
+   :rtype: matplotlib.figure.Figure
+
+

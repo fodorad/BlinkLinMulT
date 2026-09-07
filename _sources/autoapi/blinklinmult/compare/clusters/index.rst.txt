@@ -1,0 +1,138 @@
+blinklinmult.compare.clusters
+=============================
+
+.. py:module:: blinklinmult.compare.clusters
+
+.. autoapi-nested-parse::
+
+   The unit of resampling: what counts as one independent observation.
+
+   This module exists because getting this wrong is the most common way a model
+   comparison overstates its own certainty, and it fails silently -- the arithmetic
+   is identical, only the interval is wrong, and it is wrong in the flattering
+   direction.
+
+   **A recording is one observation. A window is not.** Two 15-frame windows cut
+   from the same recording share a subject, a camera, an illuminant, an eyelid
+   shape and a blink rate. They are close to duplicates. Resampling them
+   independently pretends the corpus holds far more information than it does:
+   measured on RN30, 7312 windows come from **35 recordings**, and treating the
+   windows as independent shrank the confidence interval on a model difference by
+   **5.9x** -- turning an inconclusive result into a significant one.
+
+   The same argument applies one level down. The left and right eye of one subject
+   are two samples, but they are not independent: they blink together. So both eyes
+   land in the same cluster, which :func:`cluster_of` enforces by construction.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.compare.clusters.SAMPLE_SEPARATOR
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.compare.clusters.ClusterError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.compare.clusters.cluster_of
+   blinklinmult.compare.clusters.clusters_from_signals
+   blinklinmult.compare.clusters.resample
+
+
+Module Contents
+---------------
+
+.. py:data:: SAMPLE_SEPARATOR
+   :value: '|'
+
+
+   Separator inside a sample id, matching ``data.schema.build_sample_id``.
+
+.. py:exception:: ClusterError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when clusters cannot be determined from the given identifiers.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: cluster_of(sample_id: str) -> str
+
+   Return the cluster a sample belongs to.
+
+   Sample ids are ``video_id|frame_group|eye_side`` (see
+   :func:`~blinklinmult.data.schema.build_sample_id`), so the cluster is the
+   leading component. **Both eyes of one subject map to the same cluster**:
+   they blink together, so resampling them independently would be the
+   window-level error one level down.
+
+   :param sample_id: An id built by
+                     :func:`~blinklinmult.data.schema.build_sample_id`, or a bare
+                     recording name, which is already its own cluster.
+   :type sample_id: str
+
+   :returns: The cluster key.
+   :rtype: str
+
+   :raises ClusterError: If the id is empty, which would silently pool everything
+       into one nameless cluster.
+
+
+.. py:function:: clusters_from_signals(recordings: collections.abc.Sequence[str]) -> list[str]
+
+   Reduce recording keys to their sorted, unique clusters.
+
+   :param recordings: Keys from
+                      :func:`~blinklinmult.train.callbacks.load_signals`. Read the archive
+                      through that function rather than :func:`numpy.load`: it checks
+                      which target the ``truth`` arrays hold, and reading a
+                      ``blink_presence`` archive as ``eye_state`` once fabricated 200 045
+                      phantom false positives.
+   :type recordings: Sequence[str]
+
+   :returns: Unique clusters, sorted so a run is reproducible.
+   :rtype: list[str]
+
+   :raises ClusterError: If no recordings were given, since there is nothing to
+       resample.
+
+
+.. py:function:: resample(n_clusters: int, rounds: int, seed: int) -> numpy.ndarray
+
+   Draw bootstrap resamples of cluster indices.
+
+   One array for every model to share. Drawing once and evaluating every model
+   on the same draw is what makes the comparison **paired**: a resample heavy
+   on hard recordings drags all models down together, so the difference between
+   them is stable where their absolute scores are not. At n=20-35 clusters that
+   between-recording variance dominates, and an unpaired interval would be too
+   wide to resolve anything.
+
+   :param n_clusters: How many clusters the corpus has.
+   :type n_clusters: int
+   :param rounds: Bootstrap replicates.
+   :type rounds: int
+   :param seed: Seed, recorded in the output so a result can be reproduced.
+   :type seed: int
+
+   :returns: ``(rounds, n_clusters)`` indices, drawn with replacement.
+   :rtype: np.ndarray
+
+   :raises ClusterError: If either argument is not positive.
+
+

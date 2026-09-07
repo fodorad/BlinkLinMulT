@@ -1,0 +1,155 @@
+blinklinmult.data.stills
+========================
+
+.. py:module:: blinklinmult.data.stills
+
+.. autoapi-nested-parse::
+
+   Derive single frames from windowed corpora, for the frame-wise model.
+
+   BlinkCNN classifies one eye crop at a time, so it can train on any
+   annotated frame — the still corpora, and equally the video corpora with their
+   time dimension ignored. Rather than build a second set of HDF5 files, this
+   module reduces an already-built window to its individual frames at load time:
+   the same bytes serve both the sequence models and the frame-wise one.
+
+   **Balancing.** Sampled as they fall, video frames are overwhelmingly open-eyed —
+   a blink occupies a handful of frames per second of recording. Training on that
+   distribution teaches "predict open", which scores well on accuracy and detects
+   nothing. Every closed-eye frame is therefore kept and the open-eye frames are
+   subsampled to :attr:`StillConfig.open_to_closed`, giving a set comparable to
+   CEW's natural 1193/1232.
+
+   **Determinism.** The subsample is drawn once, at construction, from a seeded
+   generator. Two runs with the same seed see the same frames, and a frame's
+   identity does not change between epochs.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.stills.logger
+   blinklinmult.data.stills.MASK_SUFFIX
+   blinklinmult.data.stills.CLOSED_THRESHOLD
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.stills.StillsError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.data.stills.StillConfig
+   blinklinmult.data.stills.StillFramesDataset
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: MASK_SUFFIX
+   :value: '_mask'
+
+
+   Suffix OmniLoader appends to a key to name its validity mask.
+
+.. py:data:: CLOSED_THRESHOLD
+   :value: 0.5
+
+
+   Eye-state value above which a frame counts as closed.
+
+   The targets are written as floats so a corpus may express uncertainty, but the
+   balancing only needs the two classes.
+
+.. py:exception:: StillsError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when a windowed corpus cannot be reduced to frames.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: StillConfig
+
+   How to draw single frames from windowed samples.
+
+   :param stride: Keep every Nth frame of a window. Consecutive frames of a
+                  recording are near-identical, so taking all of them inflates the
+                  corpus without adding information. Closed-eye frames ignore the
+                  stride — they are too scarce to thin.
+   :type stride: int
+   :param open_to_closed: Open-eye frames to keep per closed-eye frame.
+                          ``1.0`` balances the classes. Raise it to keep more negatives.
+   :type open_to_closed: float
+   :param seed: Seed for the open-eye subsample.
+   :type seed: int
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the configuration.
+
+      :raises StillsError: If a value is out of range.
+
+
+
+.. py:class:: StillFramesDataset(dataset: omniloader.loader.SizedDataset, config: StillConfig, name: str, balance: bool = True)
+
+   A windowed corpus served one frame at a time.
+
+   Each item is a window collapsed to a single timestep: every sequence-valued
+   key is indexed at the chosen frame and re-wrapped with a length-1 time axis,
+   so the sample satisfies the same schema as a natively still corpus.
+
+   :param dataset: The corpus's split, yielding windowed samples.
+   :type dataset: SizedDataset
+   :param config: Sampling and balancing settings.
+   :type config: StillConfig
+   :param name: Corpus name, for log lines and error messages.
+   :type name: str
+   :param balance: Subsample open-eye frames. Left off for evaluation
+                   splits, which must be scored on the real class distribution.
+   :type balance: bool
+
+   :raises StillsError: If the corpus does not annotate eye state, or no frame
+       survives selection.
+
+
+   .. py:method:: __len__() -> int
+
+      Number of frames served.
+
+      :returns: Frame count.
+      :rtype: int
+
+
+
+   .. py:method:: __getitem__(index: int) -> dict
+
+      Return one frame as a single-timestep sample.
+
+      :param index: Position within the selected frames.
+      :type index: int
+
+      :returns: The window's keys, each reduced to its chosen frame and given
+                a length-1 time axis.
+      :rtype: dict
+
+
+

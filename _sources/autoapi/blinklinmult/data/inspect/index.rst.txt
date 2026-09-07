@@ -1,0 +1,153 @@
+blinklinmult.data.inspect
+=========================
+
+.. py:module:: blinklinmult.data.inspect
+
+.. autoapi-nested-parse::
+
+   Read-only helpers for inspecting a built corpus.
+
+   Separated from the notebook that uses them so they can be tested: a ``# %%``
+   script runs its top-level cells on import, which makes it untestable as a
+   module. :mod:`notebooks.corpus_report` imports these and adds only plotting.
+
+   Nothing here writes to a corpus. It opens, reads, and measures.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.inspect.SPLIT_ORDER
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.data.inspect.populated_splits
+   blinklinmult.data.inspect.sample_keys
+   blinklinmult.data.inspect.read_field
+   blinklinmult.data.inspect.gather_field
+   blinklinmult.data.inspect.occlusion_share
+   blinklinmult.data.inspect.count_events
+
+
+Module Contents
+---------------
+
+.. py:data:: SPLIT_ORDER
+   :type:  tuple[str, ...]
+   :value: ('train', 'valid', 'test')
+
+
+   Splits in the order a report should present them.
+
+.. py:function:: populated_splits(handle: h5py.File) -> list[str]
+
+   Splits that hold at least one sample, in conventional order.
+
+   Not every corpus fills every split: TalkingFace is held out entirely as a
+   test set, so anything hard-coded to ``train`` fails on it.
+
+   :param handle: Open corpus.
+   :type handle: h5py.File
+
+   :returns: Populated split names.
+   :rtype: list[str]
+
+
+.. py:function:: sample_keys(handle: h5py.File, split: str, count: int, offset: int = 0) -> list[str]
+
+   Keys spread evenly across a split, starting at an offset.
+
+   Evenly rather than a head slice: the keys are sorted, so the first N are one
+   recording and their statistics are not the corpus's. The offset is what lets
+   an interactive browser show a *different* set on each re-run, wrapping around
+   rather than running out.
+
+   :param handle: Open corpus.
+   :type handle: h5py.File
+   :param split: Which split.
+   :type split: str
+   :param count: How many keys to return.
+   :type count: int
+   :param offset: How many sets to skip.
+   :type offset: int
+
+   :returns: Sample keys; empty when the split is.
+   :rtype: list[str]
+
+
+.. py:function:: read_field(handle: h5py.File, split: str, key: str, name: str) -> numpy.ndarray | None
+
+   One field of one sample, float16 upcast to float32.
+
+   :param handle: Open corpus.
+   :type handle: h5py.File
+   :param split: Which split.
+   :type split: str
+   :param key: Sample key.
+   :type key: str
+   :param name: Field name.
+   :type name: str
+
+   :returns: The value, or ``None`` when this corpus omits the
+             field -- which is normal, since corpora declare different subsets.
+   :rtype: np.ndarray | None
+
+
+.. py:function:: gather_field(handle: h5py.File, split: str, name: str, limit: int = 4000) -> numpy.ndarray
+
+   Every frame's value of one field across a split.
+
+   Capped at ``limit`` samples so a 40 GB corpus stays interactive; the keys are
+   spread evenly, so the cap costs coverage rather than representativeness.
+
+   :param handle: Open corpus.
+   :type handle: h5py.File
+   :param split: Which split.
+   :type split: str
+   :param name: Field name.
+   :type name: str
+   :param limit: Cap on samples read.
+   :type limit: int
+
+   :returns: Flattened values, empty when the corpus omits the field.
+   :rtype: np.ndarray
+
+
+.. py:function:: occlusion_share(yaw_degrees: numpy.ndarray, threshold: float) -> float
+
+   Fraction of frames a yaw threshold would mask as self-occluded.
+
+   :param yaw_degrees: Yaw per frame, in degrees.
+   :type yaw_degrees: np.ndarray
+   :param threshold: Absolute yaw above which the far eye is occluded.
+   :type threshold: float
+
+   :returns: Share in ``[0, 1]``; ``0`` for an empty input.
+   :rtype: float
+
+
+.. py:function:: count_events(handle: h5py.File, split: str, limit: int = 3000) -> int
+
+   Distinct annotated blink events in a split.
+
+   Counted as ``(recording, event id)`` pairs, because ids are numbered per
+   recording and would otherwise collide across them.
+
+   :param handle: Open corpus.
+   :type handle: h5py.File
+   :param split: Which split.
+   :type split: str
+   :param limit: Cap on samples read.
+   :type limit: int
+
+   :returns: Distinct event count; ``0`` when the corpus has no ``blink_ids``.
+   :rtype: int
+
+

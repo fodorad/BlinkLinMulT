@@ -1,0 +1,224 @@
+blinklinmult.train.calibration
+==============================
+
+.. py:module:: blinklinmult.train.calibration
+
+.. autoapi-nested-parse::
+
+   Per-corpus calibration of the eye-state score.
+
+   The frame-wise model **ranks** closed frames above open ones on the video
+   corpora -- threshold-free AUC 0.857 on RN, 0.917 on TalkingFace -- but places
+   its decision boundary in the wrong place there. Measured, a genuinely closed RN
+   eye scores a median of 0.19, against 0.98 F1 on the still corpora.
+
+   The cause is a class-prior mismatch, not blindness: the sampler shows the model
+   a ~50% closed world (CEW is 49.2% closed, MRL 81.9%) while RN is 1.3-1.6%. A
+   model fitted to the first prior systematically under-predicts under the second.
+
+   Because the ranking is already good, one scalar per corpus recovers most of the
+   loss without touching the weights. Two estimators are provided:
+
+   * :func:`fit_temperature` -- one temperature on the logit, the standard
+     recipe (Guo et al., 2017). Monotone, so it *cannot* change the ranking or the
+     AUC; it moves only where the boundary falls.
+   * :func:`fit_threshold` -- the cheaper baseline: pick the threshold that
+     maximises validation F1 directly.
+
+   **Prefer the threshold unless temperature clearly beats it.** They address the
+   same failure, and a threshold is one number a reader can interpret. Temperature
+   earns its place only when the whole probability curve is needed -- for a
+   downstream expected-value decision, say -- rather than a single cut.
+
+   Every parameter here is fitted on **validation** and applied to test. Fitting on
+   test would report a number no deployment could reproduce. Corpora with no
+   validation split (TalkingFace ships 0 valid windows, and MPEblink annotates no
+   closure at all) therefore cannot be calibrated and must keep the universal
+   parameter -- which is exactly why the universal one is reported beside it.
+
+   Measured result: **calibration does not improve the decision on RN.**
+   ---------------------------------------------------------------------
+
+   Over ten recording-level splits of ``fw-focal``'s RN test signals, fitting on
+   half the recordings and scoring the other half:
+
+   =======================  ====================  ================
+   method                   test F1               beats universal
+   =======================  ====================  ================
+   universal 0.37           **0.4439 +/- 0.035**  --
+   per-corpus threshold     0.4269 +/- 0.027      1 of 10
+   temperature + threshold  0.4261 +/- 0.027      1 of 10
+   =======================  ====================  ================
+
+   The fitted thresholds are *bimodal* across splits -- 0.30-0.36 on six, 0.55-0.56
+   on four -- so the validation optimum is unstable and does not transfer. The
+   temperature, by contrast, is stable at 0.58-0.71 and does what it claims: it
+   cuts expected calibration error from 0.0355 to 0.0109.
+
+   So the probabilities really were mis-scaled, and temperature really does fix
+   them -- but the *decision* was already near its best at the universal
+   threshold, and re-fitting per corpus buys nothing while adding a parameter and
+   its variance.
+
+   **This module is therefore not wired into the benchmark.** It is kept because
+   the ECE numbers are worth reporting and because the video models in Part 3 may
+   sit in a different regime; it should be re-measured there rather than assumed
+   useless. The lesson is that the prior mismatch has to be fixed where it is
+   caused -- in the sampler (Task 4) or by temporal context (Task 6) -- not
+   patched at the output.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.calibration.logger
+   blinklinmult.train.calibration.EPSILON
+   blinklinmult.train.calibration.DEFAULT_TEMPERATURES
+   blinklinmult.train.calibration.DEFAULT_THRESHOLDS
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.calibration.CalibrationError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.calibration.logit
+   blinklinmult.train.calibration.apply_temperature
+   blinklinmult.train.calibration.fit_threshold
+   blinklinmult.train.calibration.fit_temperature
+   blinklinmult.train.calibration.expected_calibration_error
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: EPSILON
+   :value: 1e-06
+
+
+   Clamp keeping ``logit`` finite at probabilities of exactly 0 or 1.
+
+.. py:data:: DEFAULT_TEMPERATURES
+
+   Temperature grid searched by :func:`fit_temperature`.
+
+   Geometric rather than linear: temperature acts multiplicatively on the logit, so
+   0.1-to-0.2 is the same size of change as 5-to-10 and a linear grid would spend
+   most of its points where they alter the score least.
+
+.. py:data:: DEFAULT_THRESHOLDS
+
+   Threshold grid searched by :func:`fit_threshold`.
+
+.. py:exception:: CalibrationError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when calibration is asked for something it cannot fit.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: logit(probability: numpy.ndarray) -> numpy.ndarray
+
+   Inverse sigmoid, clamped away from the asymptotes.
+
+   :param probability: Values in ``[0, 1]``.
+   :type probability: np.ndarray
+
+   :returns: Log-odds, finite even at exactly 0 or 1.
+   :rtype: np.ndarray
+
+
+.. py:function:: apply_temperature(probability: numpy.ndarray, temperature: float) -> numpy.ndarray
+
+   Rescale probabilities by a temperature on the logit.
+
+   :param probability: Uncalibrated values in ``[0, 1]``.
+   :type probability: np.ndarray
+   :param temperature: Divisor on the logit. Below 1 sharpens, above 1
+                       softens; 1 is the identity.
+   :type temperature: float
+
+   :returns: Calibrated probabilities, same shape.
+   :rtype: np.ndarray
+
+   :raises CalibrationError: If the temperature is not positive.
+
+
+.. py:function:: fit_threshold(probability: numpy.ndarray, target: numpy.ndarray, thresholds: numpy.ndarray | None = None) -> tuple[float, float]
+
+   Pick the decision boundary that maximises F1.
+
+   :param probability: Validation scores in ``[0, 1]``.
+   :type probability: np.ndarray
+   :param target: Validation labels.
+   :type target: np.ndarray
+   :param thresholds: Grid to search;
+                      :data:`DEFAULT_THRESHOLDS` by default.
+   :type thresholds: np.ndarray | None
+
+   :returns: ``(threshold, its F1)``.
+   :rtype: tuple[float, float]
+
+   :raises CalibrationError: If the inputs disagree in length or hold no positive.
+
+
+.. py:function:: fit_temperature(probability: numpy.ndarray, target: numpy.ndarray, temperatures: numpy.ndarray | None = None) -> tuple[float, float]
+
+   Fit one temperature by validation negative log-likelihood.
+
+   NLL rather than F1: temperature is a *probability* correction, and fitting
+   it to a thresholded score would tune it to one operating point and leave the
+   rest of the curve arbitrary. The threshold is then chosen separately, on the
+   calibrated scores.
+
+   :param probability: Validation scores in ``[0, 1]``.
+   :type probability: np.ndarray
+   :param target: Validation labels.
+   :type target: np.ndarray
+   :param temperatures: Grid to search;
+                        :data:`DEFAULT_TEMPERATURES` by default.
+   :type temperatures: np.ndarray | None
+
+   :returns: ``(temperature, its mean NLL)``.
+   :rtype: tuple[float, float]
+
+   :raises CalibrationError: If the inputs disagree in length or are empty.
+
+
+.. py:function:: expected_calibration_error(probability: numpy.ndarray, target: numpy.ndarray, bins: int = 15) -> float
+
+   Gap between confidence and accuracy, averaged over score bins.
+
+   Reported because F1 alone cannot show *why* a threshold had to move: a model
+   can be perfectly ranked and badly calibrated at the same time, which is
+   exactly the state measured on RN.
+
+   :param probability: Scores in ``[0, 1]``.
+   :type probability: np.ndarray
+   :param target: Binary labels.
+   :type target: np.ndarray
+   :param bins: Equal-width bins over ``[0, 1]``.
+   :type bins: int
+
+   :returns: Weighted mean ``|confidence - accuracy|``; 0 is perfect.
+   :rtype: float
+
+

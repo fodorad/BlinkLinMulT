@@ -1,0 +1,310 @@
+blinklinmult.train.cli
+======================
+
+.. py:module:: blinklinmult.train.cli
+
+.. autoapi-nested-parse::
+
+   Entry point for blink training runs.
+
+   .. rubric:: Example
+
+   Train the joint model over every corpus::
+
+       make train-joint
+
+   Or directly, for control over the individual configs::
+
+       uv run python -m blinklinmult.train.cli \
+           --data config/data/all.yaml \
+           --model config/model/blinklinmult.yaml \
+           --train config/train/joint.yaml
+
+   Override any config value without editing a file. The mixing temperature is
+   a dataloader knob, so this needs no rebuild::
+
+       make train-joint ARGS="--set data.strategy_kwargs.temperature=3.0"
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.cli.logger
+   blinklinmult.train.cli.MONITOR
+   blinklinmult.train.cli.DEFAULT_DATASET_CONFIG_DIR
+   blinklinmult.train.cli.DEFAULT_REPORT_FPS
+   blinklinmult.train.cli.MAX_EPOCHS_FILE
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.cli.run_output_dir
+   blinklinmult.train.cli.report_fps
+   blinklinmult.train.cli.build_callbacks
+   blinklinmult.train.cli.check_max_epochs
+   blinklinmult.train.cli.resume_from
+   blinklinmult.train.cli.unfreeze_module
+   blinklinmult.train.cli.embedding_key_for
+   blinklinmult.train.cli.run
+   blinklinmult.train.cli.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: MONITOR
+   :value: 'valid/mean_f1'
+
+
+   mean F1 across supervised targets.
+
+   :type: Metric that selects the best checkpoint
+
+.. py:data:: DEFAULT_DATASET_CONFIG_DIR
+
+   Directory of per-corpus declarations, resolved by name from the data config.
+
+.. py:function:: run_output_dir(config: blinklinmult.train.config.ExperimentConfig) -> pathlib.Path
+
+   Directory this run writes its outputs into.
+
+   ``<output_dir>/<experiment>/<run_name>``, falling back to the experiment
+   directory when the run is unnamed.
+
+   **Grouped by experiment, not by task**, so that a sweep's runs sit together
+   on disk exactly as they do in MLflow -- one directory per
+   ``mlflow.experiment_name``, matching the experiment the same runs are logged
+   under. Grouping by task instead put every eye-state run ever trained into
+   one directory, which is how a backbone sweep's checkpoints ended up as
+   ``best-v25.ckpt`` .. ``best-v28.ckpt`` with nothing to say which backbone
+   produced which.
+
+   **Named runs get their own subdirectory** because every run writes the same
+   filenames -- ``metrics_test.json``, ``test_events.json``,
+   ``test_predictions_<target>.csv``, ``checkpoints/best.ckpt`` -- so a sweep
+   sharing one directory leaves only the last run's results, which reads as a
+   finished sweep rather than as an error.
+
+   :param config: The run's configuration.
+   :type config: ExperimentConfig
+
+   :returns: Directory for this run's outputs.
+   :rtype: Path
+
+
+.. py:data:: DEFAULT_REPORT_FPS
+   :value: 30.0
+
+
+   Frame rate assumed when no corpus in the run declares one.
+
+.. py:function:: report_fps(specs: list[blinklinmult.data.schema.DatasetSpec] | None) -> float
+
+   Frame rate for turning frame counts into minutes.
+
+   :param specs: The run's corpora.
+   :type specs: list[DatasetSpec] | None
+
+   :returns: The highest rate any of them declares, or
+             :data:`DEFAULT_REPORT_FPS` when none does.
+   :rtype: float
+
+
+.. py:function:: build_callbacks(config: blinklinmult.train.config.ExperimentConfig, output_dir: pathlib.Path, specs: list[blinklinmult.data.schema.DatasetSpec] | None = None, eval_only: bool = False, resumable: bool = False, shared_threshold_dir: pathlib.Path | None = None) -> list[lightning.Callback]
+
+   Assemble a run's callbacks.
+
+   :param config: The run's configuration.
+   :type config: ExperimentConfig
+   :param output_dir: Directory for run outputs.
+   :type output_dir: Path
+   :param specs: The run's resolved corpora, for the
+                 frame rate the event report needs.
+   :type specs: list[DatasetSpec] | None
+   :param shared_threshold_dir: Read and write the event threshold
+                                cache here rather than in the run's own directory, so a per-corpus
+                                evaluation shares one universal operating point.
+   :type shared_threshold_dir: Path | None
+   :param resumable: Periodically checkpoint the test pass so a killed run
+                     can resume it. Off by default: the state file is as large as the
+                     accumulated predictions, and only a very long pass justifies it.
+   :type resumable: bool
+   :param eval_only: Keep only the callbacks that score and dump the test
+                     split. Training-only callbacks -- checkpoints, early stopping, the
+                     LR monitor, epoch propagation, and timing -- are omitted so that an
+                     ``--eval-only`` run re-fits the event threshold and writes the
+                     report artifacts without writing a checkpoint or recording timings.
+   :type eval_only: bool
+
+   :returns: The callbacks.
+   :rtype: list[L.Callback]
+
+
+.. py:data:: MAX_EPOCHS_FILE
+   :value: 'max_epochs.txt'
+
+
+   Name of the file recording a run's planned ``max_epochs``.
+
+   Cosine annealing is a fixed-length curve built at first launch for that total.
+   Resuming with a different ``max_epochs`` would silently change the LR plan
+   mid-run -- the schedule would anneal to the wrong floor, and the only trace
+   would be a loss curve that looks slightly off. Recorded here so the mismatch is
+   rejected instead.
+
+.. py:function:: check_max_epochs(output_dir: pathlib.Path, max_epochs: int, resume: bool) -> None
+
+   Reject a resume that changes the length of the LR schedule.
+
+   :param output_dir: The run's output directory.
+   :type output_dir: Path
+   :param max_epochs: What the config asks for now.
+   :type max_epochs: int
+   :param resume: Whether this launch is a resume.
+   :type resume: bool
+
+   :raises ValueError: If a resumed run's ``max_epochs`` differs from the original.
+
+
+.. py:function:: resume_from(resume: pathlib.Path | bool | None, output_dir: pathlib.Path) -> str | None
+
+   The checkpoint a run should continue from.
+
+   :param resume: ``True`` to continue this run's own
+                  ``last.ckpt``, a path to continue a specific checkpoint, or
+                  ``None``/``False`` to start fresh.
+   :type resume: Path | bool | None
+   :param output_dir: The run's output directory.
+   :type output_dir: Path
+
+   :returns: The checkpoint path, or ``None`` to start at epoch 0.
+   :rtype: str | None
+
+   :raises FileNotFoundError: If a resume was asked for and no checkpoint exists.
+       Silently starting from scratch would waste the hours the run was
+       meant to preserve, and the loss curve is the only place it would
+       show.
+
+
+.. py:function:: unfreeze_module(checkpoint: pathlib.Path, config: blinklinmult.train.config.ExperimentConfig, image_size: int, eye_feature_dim: int | None, steps_per_epoch: int) -> blinklinmult.train.module.BlinkLightningModule
+
+   Load a frozen-stage run and continue it with the encoder trainable.
+
+   The two-stage recipe: train the transformer against a fixed encoder, which
+   is 7.7x cheaper and cannot damage the pretrained features, then refine
+   everything jointly at a much lower rate.
+
+   **Neither existing path does this.** ``model.encoder_weights`` loads *only*
+   the encoder, discarding the transformer that stage 1 spent its whole run
+   training. ``--resume`` keeps the whole model but also restores the stored
+   ``encoder_freeze``, so it continues stage 1 rather than starting stage 2.
+
+   A **fresh optimiser** is deliberate. Stage 1's Adam moments describe a
+   parameter set that excluded the encoder, and its schedule is mid-anneal for
+   a different problem; carrying either forward would apply stage 1's momentum
+   to weights it never saw.
+
+   :param checkpoint: Stage 1's checkpoint, usually its ``best.ckpt``.
+   :type checkpoint: Path
+   :param config: The stage 2 configuration, supplying the low
+                  learning rates.
+   :type config: ExperimentConfig
+   :param image_size: Crop size, from the datasets.
+   :type image_size: int
+   :param eye_feature_dim: Feature width, from the datasets.
+   :type eye_feature_dim: int | None
+   :param steps_per_epoch: Optimizer steps per epoch.
+   :type steps_per_epoch: int
+
+   :returns: The stage 1 model, fully trainable.
+   :rtype: BlinkLightningModule
+
+   :raises FileNotFoundError: If the checkpoint does not exist. Silently starting
+       from scratch would discard the stage it was meant to continue, and
+       only the loss curve would show it.
+
+
+.. py:function:: embedding_key_for(config: blinklinmult.train.config.ExperimentConfig) -> blinklinmult.data.embeddings.CacheKey
+
+   Identity of the embedding cache this run may read.
+
+   Built from a throwaway encoder loaded from the run's own
+   ``model.encoder_weights``, because the cache is keyed by the weights that
+   produced it and the datamodule is constructed before the model. Loading the
+   encoder twice costs a few seconds once per run and removes any chance of the
+   key describing different weights than the run actually uses.
+
+   :param config: The resolved run configuration.
+   :type config: ExperimentConfig
+
+   :returns: What a cache shard must match to be read.
+   :rtype: CacheKey
+
+
+.. py:function:: run(config: blinklinmult.train.config.ExperimentConfig, root: pathlib.Path = PROJECT_ROOT, config_dir: pathlib.Path | None = None, fast_dev_run: bool = False, resume: pathlib.Path | bool | None = None, eval_only: pathlib.Path | None = None, unfreeze_from: pathlib.Path | None = None, reuse_threshold: bool = False, resumable: bool = False, shared_threshold_dir: pathlib.Path | None = None) -> dict[str, Any]
+
+   Train, then test, one configured experiment.
+
+   :param config: The run's configuration.
+   :type config: ExperimentConfig
+   :param root: Repository root that data paths resolve against.
+   :type root: Path
+   :param config_dir: Directory of per-corpus declarations.
+                      Defaults to ``config/data``.
+   :type config_dir: Path | None
+   :param fast_dev_run: Run a single batch through every stage, for
+                        smoke-testing.
+   :type fast_dev_run: bool
+   :param resume: ``True`` continues this run from its own
+                  ``last.ckpt`` and appends to its MLflow run; a path continues a
+                  specific checkpoint; ``None`` starts at epoch 0.
+   :type resume: Path | bool | None
+   :param unfreeze_from: Stage-1 checkpoint to continue with the
+                         encoder trainable, or ``None`` for a single-stage run. See
+                         :func:`unfreeze_module` for why neither ``model.encoder_weights``
+                         nor ``--resume`` does this.
+   :type unfreeze_from: Path | None
+   :param eval_only: Checkpoint to score on the test split without
+                     training. The module is loaded from this file, the event operating
+                     point is fitted on the validation split, and the test split is then
+                     scored -- the same passes a finished run performs, so its artifacts
+                     are directly comparable to one. Use it to recover the benchmark of a
+                     run that was interrupted before its test pass.
+   :type eval_only: Path | None
+   :param reuse_threshold: Skip the validation pass when a cached event
+                           threshold from a previous run is available. Fitting the operating
+                           point is the only thing validation contributes to an eval-only run,
+                           and it costs a full pass over the split, so a retry after an
+                           interrupted test pass can reuse the cached value instead. Falls
+                           back to fitting when no usable cache exists.
+   :type reuse_threshold: bool
+   :param resumable: Checkpoint the test pass periodically so a killed run
+                     can pick it up. The partial state is deleted once the pass
+                     completes, so it costs nothing on disk afterwards.
+   :type resumable: bool
+   :param shared_threshold_dir: Share the fitted event threshold
+                                through this directory. A per-corpus evaluation points every run at
+                                one location, so the corpora that can fit a threshold write it and
+                                the rest -- including those with no validation split -- read the
+                                same value instead of falling back to a fixed default.
+   :type shared_threshold_dir: Path | None
+
+   :returns: The test metrics.
+   :rtype: dict[str, float]
+
+
+.. py:function:: main() -> None
+
+   CLI entry point.
+
+

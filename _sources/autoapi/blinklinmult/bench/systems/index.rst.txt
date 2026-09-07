@@ -1,0 +1,176 @@
+blinklinmult.bench.systems
+==========================
+
+.. py:module:: blinklinmult.bench.systems
+
+.. autoapi-nested-parse::
+
+   The environment a measurement was taken in, and the resources it used.
+
+   A latency figure without its machine is not a measurement, so every benchmark
+   result carries a :class:`MachineSpec`: hardware, library versions, thread
+   settings and the commit that produced it. Without those a reader cannot tell
+   whether a number disagrees with theirs because the code changed or because the
+   laptop did.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.bench.systems.CONTENTION_FRACTION
+   blinklinmult.bench.systems.RSS_DIVISOR
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.bench.systems.MachineSpec
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.bench.systems.peak_rss_mb
+   blinklinmult.bench.systems.artifact_size_bytes
+   blinklinmult.bench.systems.pin_threads
+
+
+Module Contents
+---------------
+
+.. py:data:: CONTENTION_FRACTION
+   :value: 0.5
+
+
+   Share of the cores that, once busy, makes a timing untrustworthy.
+
+   Half rather than all: measured on this machine, a one-minute load of 7.0 against
+   10 cores inflated every model's latency by ~1.7x. A threshold at saturation
+   would have called that idle.
+
+.. py:data:: RSS_DIVISOR
+   :value: 1024
+
+
+   Divisor turning ``ru_maxrss`` into megabytes.
+
+   The units differ by platform and nothing warns about it: macOS reports bytes,
+   Linux reports kibibytes. Hard-coding either gives numbers 1024x wrong on the
+   other, in a field a reader has no way to sanity-check.
+
+.. py:class:: MachineSpec
+
+   Where and with what a measurement was taken.
+
+   :param platform: OS and architecture.
+   :type platform: str
+   :param processor: CPU, where the platform reports one.
+   :type processor: str
+   :param cpu_count: Logical cores visible.
+   :type cpu_count: int
+   :param python: Interpreter version.
+   :type python: str
+   :param torch: Torch version, or empty when absent.
+   :type torch: str
+   :param onnxruntime: onnxruntime version, or empty when absent.
+   :type onnxruntime: str
+   :param numpy: numpy version.
+   :type numpy: str
+   :param threads: Threads the run was pinned to.
+   :type threads: int
+   :param git_sha: Commit the code was at.
+   :type git_sha: str
+   :param load_average: System load at capture, so a
+                        run taken on a busy machine can be recognised as such rather than
+                        quietly reported as the model being slow.
+   :type load_average: tuple[float, float, float]
+
+
+   .. py:method:: capture(threads: int) -> MachineSpec
+      :classmethod:
+
+
+      Record the current environment.
+
+      :param threads: Threads the benchmark was pinned to.
+      :type threads: int
+
+      :returns: The environment block.
+      :rtype: MachineSpec
+
+
+
+   .. py:property:: contended
+      :type: bool
+
+
+      Whether the machine looked busy enough to distort timings.
+
+      The bar is :data:`CONTENTION_FRACTION` of the core count, not full
+      saturation. Measured here: at load 7.0 on 10 cores -- comfortably below
+      saturation -- the same models timed **1.7x slower** than on an idle
+      machine. Waiting for load to exceed the core count would let that pass
+      unremarked, and a benchmark that silently reports contention as model
+      latency is worse than no benchmark.
+
+      :returns: Whether one-minute load crossed the fraction.
+      :rtype: bool
+
+
+   .. py:method:: describe() -> str
+
+      One line naming the machine.
+
+      :returns: Platform, cores, thread pinning.
+      :rtype: str
+
+
+
+.. py:function:: peak_rss_mb() -> float
+
+   Peak resident memory this process has reached, in megabytes.
+
+   A high-water mark, not a current reading, so it never misses a transient
+   spike between samples -- and never falls, which is why callers take a
+   difference around the region they care about.
+
+   :returns: Megabytes.
+   :rtype: float
+
+
+.. py:function:: artifact_size_bytes(path: pathlib.Path | str) -> int
+
+   Size of a weights file on disk.
+
+   :param path: The artifact.
+   :type path: Path | str
+
+   :returns: Bytes.
+   :rtype: int
+
+   :raises FileNotFoundError: If the file is absent, rather than reporting zero and
+       letting a missing artifact look like a very small one.
+
+
+.. py:function:: pin_threads(threads: int) -> None
+
+   Pin every framework's thread pool to one count.
+
+   Sets the environment variables **and** the runtime knobs. The environment
+   ones only take effect before the libraries load, so this is best called
+   early; setting both means a late call still pins torch, which is the one
+   that measurably moves.
+
+   :param threads: Threads to allow.
+   :type threads: int
+
+   :raises ValueError: If ``threads`` is not positive.
+
+

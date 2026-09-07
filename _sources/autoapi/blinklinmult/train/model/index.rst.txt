@@ -1,0 +1,536 @@
+blinklinmult.train.model
+========================
+
+.. py:module:: blinklinmult.train.model
+
+.. autoapi-nested-parse::
+
+   The BlinkLinMulT architecture: an eye-crop CNN feeding a LinMulT sequence model.
+
+   Three families share one construction path, because they are the paper's three
+   rows of the same table:
+
+   ``cnn``
+       The per-frame backbone with a classification head and no sequence model —
+       the DenseNet121 eye-state baseline.
+   ``lint``
+       Backbone embeddings through a single-stream :class:`linmult.LinT` — the
+       BlinkLinT baseline.
+   ``linmult``
+       Backbone embeddings *and* handcrafted eye features through the cross-modal
+       :class:`linmult.LinMulT` — the published BlinkLinMulT.
+
+   **One sample is one eye.** The encoder embeds a single eye's window; the two
+   eyes of a frame are separate samples, recombined only at evaluation time. That
+   matches how the corpora annotate (per eye) and lets the corpora that supply one
+   eye, or label the whole face, be represented honestly.
+
+   **What changed from 1.x.** The old ``BlinkLinMulT.forward`` embedded frames with
+   a Python loop over the time axis, one backbone call per timestep, and hard-coded
+   a 1024-d DenseNet embedding into the LinMulT construction. Here every crop in
+   the batch is embedded in a single fused call
+   (:func:`~blinklinmult.data.collate.fold_time_into_batch`), and the embedding
+   width is *read from the constructed backbone* rather than assumed — so swapping
+   DenseNet121 for ResNet50 is a config edit, not a code edit.
+
+   **Heads.** Both tasks are sequence-level: they predict one value per timestep,
+   not one per clip, so both heads are linmult ``sequence`` heads. The frame- and
+   clip-level decisions the tasks are scored on are aggregations of the sequence
+   (see :mod:`blinklinmult.train.metrics`), which keeps the temporal localisation
+   the model learns rather than discarding it at the head.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.model.logger
+   blinklinmult.train.model.SEQUENCE_HEAD
+   blinklinmult.train.model.EVENT_HEAD
+   blinklinmult.train.model.EVENT_HEAD_TYPES
+   blinklinmult.train.model.EVENT_CONV_KERNEL
+   blinklinmult.train.model.SUPPORTED_TARGETS
+   blinklinmult.train.model.HEAD_OUTPUT_DIM
+   blinklinmult.train.model.IMAGENET_MEAN
+   blinklinmult.train.model.IMAGENET_STD
+   blinklinmult.train.model.TIMM_WEIGHTS
+   blinklinmult.train.model.DENSENET_CUT
+   blinklinmult.train.model.MIN_IMAGE_SIZE
+   blinklinmult.train.model.ENCODER_PREFIX
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.model.ModelError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.train.model.TimmBackbone
+   blinklinmult.train.model.EyeEncoder
+   blinklinmult.train.model.CnnHead
+   blinklinmult.train.model.EventHead
+   blinklinmult.train.model.BlinkModel
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.model.build_backbone
+   blinklinmult.train.model.load_encoder_weights
+   blinklinmult.train.model.check_targets
+   blinklinmult.train.model.build_model
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: SEQUENCE_HEAD
+   :value: 'eye_openness'
+
+
+   Name of the single head every supervised target reads.
+
+   Both tasks are decided from one per-timestep sequence, exactly as in the paper:
+   eye state recognition reads it frame by frame, and blink presence detection
+   takes the ``max`` over a window. Two independent heads would fit the annotation
+   slightly better but could disagree -- a window scored "no frame shows a closed
+   eye" *and* "a blink occurred" is incoherent, and nothing in a two-head model
+   forbids it. One head makes that inconsistency unrepresentable.
+
+.. py:data:: EVENT_HEAD
+   :value: 'blink_event'
+
+
+   Name of the optional head stacked on the ESR signal.
+
+   Reads :data:`SEQUENCE_HEAD`'s per-timestep closure score and predicts the blink
+   *interval* from it, rather than predicting both from one set of parameters.
+
+   **Why stack rather than share or split.** Sharing one head makes the two
+   annotations compete: a blink interval covers 3-4x more frames than actual
+   closure (measured P(closed | inside a blink) = 0.237 / 0.310 / 0.344 on RN15 /
+   RN30 / TalkingFace), so a corpus that annotates only intervals pulls the shared
+   parameters toward a wider target. On the video benchmark 72% of batches did
+   exactly that, and RN30's ESR F1 fell to 0.4107 against the frame-wise model's
+   0.6614.
+
+   Two *parallel* heads would remove the competition but allow incoherence -- one
+   head reporting "no frame shows a closed eye" while the other reports "a blink
+   occurred". Stacking keeps the event prediction a function of the closure signal,
+   so that contradiction stays unrepresentable, which was the reason the single
+   head was chosen in the first place.
+
+.. py:data:: EVENT_HEAD_TYPES
+   :type:  frozenset[str]
+
+   Event-head architectures.
+
+   Both see **neighbouring timesteps**, which a pointwise map cannot. That matters
+   because the closure-to-interval mapping is not a per-frame decision: a blink is
+   a *run* of elevated closure roughly 200-330 ms long, and the interval covers
+   3-4x more frames than the closure itself. A head reading one scalar at a time
+   could only learn a monotone rescaling -- a threshold, which the extractor
+   already applies for free.
+
+   ``conv`` is a temporal convolution over the ESR sequence: local, cheap, and
+   exactly the smoothing-and-widening rule the mapping needs. ``attention`` is one
+   self-attention layer, which can additionally relate distant timesteps -- useful
+   if blink boundaries depend on the wider context rather than a fixed window.
+
+.. py:data:: EVENT_CONV_KERNEL
+   :value: 9
+
+
+   Temporal receptive field of the ``conv`` event head, in frames.
+
+   At 25-30 fps a blink spans roughly 5-10 frames, so a 9-frame window covers one
+   whole blink and its immediate surroundings -- enough to turn a closure apex into
+   the interval around it. Padded to preserve length, so the output stays aligned
+   with the input timestep for timestep.
+
+.. py:data:: SUPPORTED_TARGETS
+   :type:  frozenset[str]
+
+   Targets the single head can serve.
+
+.. py:data:: HEAD_OUTPUT_DIM
+   :value: 1
+
+
+   one value per timestep.
+
+   A sample carries a single eye, so the eye axis lives in the sample identity
+   rather than in the head. Frame-level predictions are recovered by aggregating
+   the two eyes afterwards -- see
+   :class:`~blinklinmult.train.metrics.FrameAggregator`.
+
+   :type: Width of the head
+
+.. py:data:: IMAGENET_MEAN
+   :value: (0.485, 0.456, 0.406)
+
+
+   Per-channel mean the pretrained backbones were trained against.
+
+.. py:data:: IMAGENET_STD
+   :value: (0.229, 0.224, 0.225)
+
+
+   Per-channel standard deviation the pretrained backbones were trained against.
+
+.. py:exception:: ModelError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when a model cannot be built as configured.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: TimmBackbone(network: torch.nn.Module)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   Wraps a timm model so it pools to ``(N, D)`` like the torchvision path.
+
+   timm's ``forward_features`` returns the spatial map, and its own pooling is
+   entangled with a classifier this model does not use. Pooling here keeps both
+   backbone families behind one interface.
+
+   :param network: A timm model created with ``num_classes=0``.
+   :type network: nn.Module
+
+
+   .. py:method:: forward(images: torch.Tensor) -> torch.Tensor
+
+      Embed a batch of crops.
+
+      :param images: ``(N, 3, H, W)``.
+      :type images: torch.Tensor
+
+      :returns: ``(N, D)``.
+      :rtype: torch.Tensor
+
+
+
+.. py:data:: TIMM_WEIGHTS
+   :type:  dict[str, str]
+
+   Backbones served by timm, mapped to the pretrained tag used.
+
+   The tag is pinned rather than left to timm's default so a run is reproducible:
+   ``timm`` moves its default weights between releases, and ``efficientnet_b0``
+   alone ships several checkpoints that differ by several points of ImageNet
+   accuracy.
+
+.. py:data:: DENSENET_CUT
+   :value: 'denseblock4'
+
+
+   First DenseNet block dropped by ``densenet121_truncated``.
+
+.. py:function:: build_backbone(name: str, pretrained: bool = True, wide_stem: bool = False, freeze_hint: bool = False) -> tuple[torch.nn.Module, int]
+
+   Construct an image backbone and report its embedding width.
+
+   The width is read off the constructed network rather than hard-coded, so a
+   library change to a backbone's final layer cannot silently produce a model
+   whose projection expects the wrong size.
+
+   :param name: Backbone name.
+   :type name: str
+   :param pretrained: Start from ImageNet weights.
+   :type pretrained: bool
+   :param wide_stem: Drop one stride-2 reduction, so a 64px crop yields a
+                     ``4x4`` feature map instead of ``2x2``. See :func:`_widen_stem`;
+                     this expects fine-tuning.
+   :type wide_stem: bool
+   :param freeze_hint: Whether the caller intends to freeze the backbone,
+                       used only to warn about the combination with ``wide_stem``.
+   :type freeze_hint: bool
+
+   :returns: The feature extractor, mapping ``(N, 3, H, W)`` to
+             ``(N, D)``, and its width ``D``.
+   :rtype: tuple[nn.Module, int]
+
+   :raises ModelError: If the backbone name is unknown.
+
+
+.. py:data:: MIN_IMAGE_SIZE
+   :value: 32
+
+
+   Smallest eye crop the convolutional backbones accept.
+
+   All three backbones downsample by 32 in total, so a smaller crop collapses to a
+   zero-sized feature map inside their final pooling layer. Torch reports that as
+   ``Calculated output size: (512x0x0)`` from somewhere deep in ``avg_pool2d``,
+   which says nothing about the crop size being the cause — hence the explicit
+   check.
+
+.. py:data:: ENCODER_PREFIX
+   :value: 'model.encoder.'
+
+
+   Prefix the eye encoder's weights carry inside a Lightning checkpoint.
+
+   ``BlinkLightningModule`` holds a ``BlinkModel`` as ``self.model``, whose encoder
+   is ``self.encoder`` -- so a checkpoint's ``state_dict`` names them
+   ``model.encoder.backbone.*`` and ``model.encoder.project.*``.
+
+.. py:function:: load_encoder_weights(encoder: torch.nn.Module, path: str | pathlib.Path) -> None
+
+   Initialise an eye encoder from a trained frame-wise checkpoint.
+
+   The frame-wise BlinkCNN and the sequence models share exactly one component:
+   this encoder, backbone and projection together. Everything after it differs
+   (BlinkCNN has a per-frame head; LinT and LinMulT have a transformer), so
+   only the encoder transfers — and it transfers as a *starting point*, not
+   frozen. The sequence models fine-tune it at ``optimizer.backbone_lr``.
+
+   Loading is **strict about shape and lenient about nothing else**: a
+   checkpoint trained with a different backbone or a different
+   ``backbone_output_dim`` has tensors that cannot be assigned, and silently
+   skipping them would leave a randomly-initialised encoder that looks
+   pretrained. Any mismatch raises.
+
+   :param encoder: The freshly built :class:`EyeEncoder`.
+   :type encoder: nn.Module
+   :param path: A Lightning ``.ckpt`` written by a frame-wise run.
+   :type path: str | Path
+
+   :raises ModelError: If the file is missing, holds no encoder weights, or its
+       tensors do not fit this encoder.
+
+
+.. py:class:: EyeEncoder(config: blinklinmult.train.config.ModelConfig, image_size: int)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   Embeds a window of eye crops into a per-timestep feature sequence.
+
+   :param config: Architecture settings.
+   :type config: ModelConfig
+   :param image_size: Side length of a square eye crop.
+   :type image_size: int
+
+   :raises ModelError: If the backbone cannot be built, or the crop is too small
+       for it.
+
+
+   .. py:method:: train(mode: bool = True) -> EyeEncoder
+
+      Keep a frozen encoder in eval mode.
+
+      Lightning calls ``train()`` on the whole module at the start of every
+      epoch, which would put a frozen encoder's BatchNorm back into training
+      mode. Its running statistics would then keep updating even though no
+      gradient flows, so the "frozen" arm would drift away from the
+      checkpoint it was supposed to hold fixed -- and the comparison against
+      the fine-tuned arm would measure something other than what it claims.
+
+      :param mode: Requested mode, ignored while frozen.
+      :type mode: bool
+
+      :returns: ``self``, as :meth:`torch.nn.Module.train` does.
+      :rtype: EyeEncoder
+
+
+
+   .. py:method:: forward(eye_images: torch.Tensor) -> torch.Tensor
+
+      Embed one batch of windows.
+
+      :param eye_images: ``(B, T, C, H, W)`` as loaded.
+      :type eye_images: torch.Tensor
+
+      :returns: ``(B, T, backbone_output_dim)``.
+      :rtype: torch.Tensor
+
+
+
+.. py:function:: check_targets(target_names: list[str]) -> None
+
+   Reject targets the single head cannot serve.
+
+   :param target_names: Targets this run supervises.
+   :type target_names: list[str]
+
+   :raises ModelError: If a target is not one this model predicts.
+
+
+.. py:class:: CnnHead(input_dim: int, config: blinklinmult.train.config.ModelConfig, target_names: list[str])
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   Per-frame classification head for the ``cnn`` family.
+
+   No sequence model: each timestep is classified from its own embedding,
+   which is the DenseNet121 eye-state baseline of the paper. The output is
+   still a sequence so that every family shares one training step.
+
+   :param input_dim: Encoder output width.
+   :type input_dim: int
+   :param config: Architecture settings.
+   :type config: ModelConfig
+   :param target_names: Targets to predict.
+   :type target_names: list[str]
+
+
+   .. py:method:: forward(sequence: torch.Tensor) -> dict[str, torch.Tensor]
+
+      Classify every timestep.
+
+      :param sequence: ``(B, T, D)`` per-timestep embeddings.
+      :type sequence: torch.Tensor
+
+      :returns: The same ``(B, T, 1)`` logits under every
+                supervised target key -- one decision, read two ways.
+      :rtype: dict[str, torch.Tensor]
+
+
+
+.. py:class:: EventHead(kind: str, hidden_dim: int, dropout: float = 0.1, num_heads: int = 4, detach: bool = True)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   Predicts blink intervals from the ESR closure signal.
+
+   Takes the ``(B, T, 1)`` per-timestep closure score and emits ``(B, T, 1)``
+   interval logits. See :data:`EVENT_HEAD` for why this is stacked on the ESR
+   head rather than sharing it or sitting beside it.
+
+   **The input is detached by default.** Without that, the event loss reaches
+   the ESR head through this module and the parameter competition returns by a
+   longer path -- the thing stacking was meant to remove. Detached, the ESR
+   head is supervised purely by closure and this module learns to interpret
+   whatever signal it is handed.
+
+   Attaching is left configurable rather than forbidden: a little event
+   gradient may help the ESR head sharpen blink boundaries, which is exactly
+   what RN15 under-specifies at 15 fps with a median 1.22 closed frames per
+   blink. That is worth measuring rather than assuming either way.
+
+   :param kind: One of :data:`EVENT_HEAD_TYPES`.
+   :type kind: str
+   :param hidden_dim: Width of the internal representation.
+   :type hidden_dim: int
+   :param dropout: Dropout applied before the output projection.
+   :type dropout: float
+   :param num_heads: Attention heads, for the ``attention`` variant.
+   :type num_heads: int
+   :param detach: Cut the gradient to the ESR head.
+   :type detach: bool
+
+   :raises ModelError: If ``kind`` is not a known variant.
+
+
+   .. py:method:: forward(esr_logits: torch.Tensor, mask: torch.Tensor | None = None) -> torch.Tensor
+
+      Map a closure sequence to interval logits.
+
+      :param esr_logits: ``(B, T, 1)`` from the ESR head.
+      :type esr_logits: torch.Tensor
+      :param mask: ``(B, T)``, ``True`` where the timestep
+                   is valid. Used by the attention variant to ignore padding.
+      :type mask: torch.Tensor | None
+
+      :returns: ``(B, T, 1)`` interval logits.
+      :rtype: torch.Tensor
+
+
+
+.. py:class:: BlinkModel(config: blinklinmult.train.config.ModelConfig, target_names: list[str], image_size: int, eye_feature_dim: int | None = None)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   The full model: eye encoder, optional sequence model, and task heads.
+
+   :param config: Architecture settings.
+   :type config: ModelConfig
+   :param target_names: Targets this run supervises, in head order.
+   :type target_names: list[str]
+   :param image_size: Side length of a square eye crop.
+   :type image_size: int
+   :param eye_feature_dim: Width of the handcrafted eye features, or
+                           ``None`` when the run has none.
+   :type eye_feature_dim: int | None
+
+   :raises ModelError: If the family and the available modalities disagree.
+
+
+   .. py:property:: uses_eye_features
+      :type: bool
+
+
+      Whether this model consumes the handcrafted feature stream.
+
+      :returns: ``True`` only for the ``linmult`` family.
+      :rtype: bool
+
+
+   .. py:method:: forward(eye_images: torch.Tensor, eye_image_mask: torch.Tensor, eye_features: torch.Tensor | None = None, eye_feature_mask: torch.Tensor | None = None, eye_embedding: torch.Tensor | None = None) -> dict[str, torch.Tensor]
+
+      Predict every supervised target over a batch of windows.
+
+      :param eye_images: ``(B, T, C, H, W)`` eye crops.
+      :type eye_images: torch.Tensor
+      :param eye_image_mask: ``(B, T)``, ``True`` = valid timestep.
+      :type eye_image_mask: torch.Tensor
+      :param eye_features: ``(B, T, F)`` handcrafted
+                           features; required by the ``linmult`` family.
+      :type eye_features: torch.Tensor | None
+      :param eye_feature_mask: ``(B, T)`` validity mask.
+      :type eye_feature_mask: torch.Tensor | None
+      :param eye_embedding: ``(B, T, D)`` precomputed eye
+                            embeddings, replacing the encoder pass. Supplied only when a
+                            frozen encoder makes them constant across epochs; see
+                            :mod:`blinklinmult.data.embeddings`. ``None`` encodes live.
+      :type eye_embedding: torch.Tensor | None
+
+      :returns: Raw logits per target, ``(B, T, D)``.
+      :rtype: dict[str, torch.Tensor]
+
+      :raises ModelError: If the cross-modal family is called without its second
+          modality.
+
+
+
+.. py:function:: build_model(config: blinklinmult.train.config.ModelConfig, target_names: list[str], image_size: int, eye_feature_dim: int | None = None) -> BlinkModel
+
+   Construct the model for the configured family.
+
+   :param config: Architecture settings.
+   :type config: ModelConfig
+   :param target_names: Targets this run supervises.
+   :type target_names: list[str]
+   :param image_size: Side length of a square eye crop.
+   :type image_size: int
+   :param eye_feature_dim: Handcrafted feature width, if any.
+   :type eye_feature_dim: int | None
+
+   :returns: The model.
+   :rtype: BlinkModel
+
+

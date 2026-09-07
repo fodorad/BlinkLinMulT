@@ -1,0 +1,1044 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Inference" href="inference.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/index.html">
+        <link rel="prefetch" href="_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="#"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eye_state_events.html">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/blinklinmult/index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/data/index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/schema/index.html">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/train/index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/metrics/index.html">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/blob/main/docs/index.md?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/edit/main/docs/index.md" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="blinklinmult">
+<h1>BlinkLinMulT<a class="headerlink" href="#blinklinmult" title="Link to this heading">¶</a></h1>
+<div align="center">
+<img src="https://raw.githubusercontent.com/fodorad/BlinkLinMulT/main/docs/assets/logo.svg" alt="BlinkLinMulT" width="360"/>
+<br/>
+<p><strong>Transformer-based Eye Blink Detection and Eye State Recognition</strong></p>
+<p><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/fodorad/BlinkLinMulT?color=purple" /></a>
+<a class="reference external" href="https://pypi.org/project/blinklinmult/"><img alt="PyPI" src="https://img.shields.io/pypi/v/blinklinmult?color=purple" /></a>
+<a class="reference external" href="https://github.com/fodorad/BlinkLinMulT/actions"><img alt="CI" src="https://github.com/fodorad/BlinkLinMulT/workflows/CI/badge.svg" /></a>
+<a class="reference external" href="https://codecov.io/gh/fodorad/BlinkLinMulT"><img alt="Coverage" src="https://codecov.io/gh/fodorad/BlinkLinMulT/branch/main/graph/badge.svg" /></a>
+<a class="reference external" href="https://fodorad.github.io/BlinkLinMulT/"><img alt="Docs" src="https://img.shields.io/badge/docs-online-blue?logo=githubpages" /></a>
+<br/>
+<a class="reference external" href="https://www.python.org"><img alt="Python" src="https://img.shields.io/badge/python-3.12+-3776AB?logo=python&amp;logoColor=white" /></a>
+<a class="reference external" href="https://pytorch.org"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-2.12+-EE4C2C?logo=pytorch&amp;logoColor=white" /></a>
+<a class="reference external" href="https://onnxruntime.ai"><img alt="ONNX" src="https://img.shields.io/badge/ONNX%20-supported-6b6b6b?logo=onnx&amp;logoColor=white" /></a>
+<a class="reference external" href="https://github.com/astral-sh/ruff"><img alt="Code style: ruff" src="https://img.shields.io/badge/code%20style-ruff-000000" /></a>
+<a class="reference external" href="https://github.com/fodorad/BlinkLinMulT/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-yellow" /></a></p>
+</div>
+<hr class="docutils" />
+<p>BlinkLinMulT builds on <a class="reference external" href="https://github.com/fodorad/linmult">LinMulT</a>. It is trained across seven public benchmark corpora for two tasks that the literature usually separates: <strong>eye state recognition</strong> (is this eye closed?) and <strong>blink presence detection</strong> (does this window contain a blink?).</p>
+<ul class="simple">
+<li><p>paper: <strong>BlinkLinMulT: Transformer-Based Eye Blink Detection</strong> (<a class="reference external" href="https://adamfodor.com/pdf/2023_Fodor_Adam_MDPI_BlinkLinMulT.pdf">pdf</a>, <a class="reference external" href="https://www.mdpi.com/2313-433X/9/10/196">website</a>)</p></li>
+<li><p>documentation: <strong><a class="reference external" href="https://fodorad.github.io/BlinkLinMulT/">fodorad.github.io/BlinkLinMulT</a></strong> — guides and the full API reference</p></li>
+</ul>
+<p><strong>Four models ship from this repository</strong> — the three from the 2023 paper, frozen as ONNX graphs, plus <code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code>, a new frame-wise model. All four are reachable through one interface, compared under one protocol, benchmarked for latency, and runnable live from a webcam.</p>
+<p>The network predicts <strong>one thing</strong>: a continuous eye-state score in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> per frame, per eye. Everything else is derived from that signal.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>eye crops  →  ESR score (T,)  →  event extraction  →  blink events
+                                                   →  blink parameters
+                                                   →  blink patterns
+</pre></div>
+</div>
+<p>This matters because the corpora do not agree on what they annotate. Some label per-frame closure, others label blink <em>intervals</em>. A model trained on one and scored against the other measures a convention gap rather than its own quality: a <strong>perfect</strong> closure detector scores 0.033 at <code class="docutils literal notranslate"><span class="pre">iou50</span></code> on TalkingFace, because a closure covers only 19–34% of the event it belongs to. Predicting the score and deriving events puts every corpus on one footing.</p>
+<section id="what-s-in-this-repository">
+<h2>What’s in this repository<a class="headerlink" href="#what-s-in-this-repository" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Public inference API</strong> — <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">blinklinmult</span></code>, then <code class="docutils literal notranslate"><span class="pre">BlinkDetector.from_pretrained(&quot;blinkcnn&quot;)</span></code>. Weights download from the Hugging Face Hub on first use; one class serves all four models, ONNX and PyTorch alike.</p></li>
+<li><p><strong>Statistical model comparison</strong> — not a table of point estimates. A recording-clustered paired bootstrap with confidence intervals and Holm-corrected p-values across all six model pairs, because “model A scored higher” is not the same claim as “model A is better”. See <a class="reference internal" href="#model-comparison">Model comparison</a>.</p></li>
+<li><p><strong>ONNX optimization</strong> — the v2 model exported behind a numerical-parity gate, <strong>4.9× faster</strong> (20.19 → 4.15 ms/frame) with accuracy identical to 4.8e-07. See <a class="reference internal" href="#onnx-optimization">ONNX optimization</a>.</p></li>
+<li><p><strong>A real-time pipeline</strong> — face detection, eye localisation, head pose and blink scoring at <strong>42.8 fps on CPU</strong>, reached by profiling rather than guessing. See <a class="reference internal" href="#real-time-pipeline">Real-time pipeline</a>.</p></li>
+<li><p><strong>Runnable demos</strong> — a live webcam window with per-eye plots, an offline video runner, a Gradio app, a showcase notebook, and a Docker REST service. See <a class="reference internal" href="#demos">Demos</a>.</p></li>
+<li><p><strong>Training</strong> — three architectures behind one config key, MLflow-tracked, over a unified masked stream so a corpus that lacks a target contributes an all-<code class="docutils literal notranslate"><span class="pre">False</span></code> mask instead of being dropped.</p></li>
+</ul>
+</section>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">¶</a></h2>
+<section id="install-from-pypi-for-inference">
+<h3>Install from PyPI for inference<a class="headerlink" href="#install-from-pypi-for-inference" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>blinklinmult
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlinkDetector</span>
+
+<span class="n">detector</span> <span class="o">=</span> <span class="n">BlinkDetector</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">"blinkcnn"</span><span class="p">)</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">crops</span><span class="p">)</span>  <span class="c1"># (T, 3, 64, 64) in [0,1] -&gt; (T,) closure</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">crops</span><span class="p">)</span>  <span class="c1"># -&gt; [(start, end), ...] blink intervals</span>
+</pre></div>
+</div>
+<p>The core install is <strong>numpy and pyyaml only</strong>. Add the runtime you want:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>blinklinmult<span class="o">[</span>onnx<span class="o">]</span><span class="w">     </span><span class="c1"># ~100 MB: onnxruntime, no torch</span>
+pip<span class="w"> </span>install<span class="w"> </span>blinklinmult<span class="o">[</span>torch<span class="o">]</span><span class="w">    </span><span class="c1"># to run or fine-tune the blinkcnn checkpoint</span>
+pip<span class="w"> </span>install<span class="w"> </span>blinklinmult<span class="o">[</span>train<span class="o">]</span><span class="w">    </span><span class="c1"># the full training stack</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">blinklinmult[onnx]</span></code> runs all four models — the three 1.x graphs and
+<code class="docutils literal notranslate"><span class="pre">blinkcnn-onnx</span></code> — <strong>without importing torch at all</strong>, which is 469 MB the
+training stack costs and an inference deployment does not need. A test in
+<code class="docutils literal notranslate"><span class="pre">tests/test_packaging.py</span></code> fails if that regresses.</p>
+</section>
+<section id="install-for-development">
+<h3>Install for development<a class="headerlink" href="#install-for-development" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/fodorad/BlinkLinMulT<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>BlinkLinMulT
+make<span class="w"> </span>dev<span class="w">                  </span><span class="c1"># editable install with every extra</span>
+make<span class="w"> </span>check<span class="w">                </span><span class="c1"># ruff + ty + 1767 tests + docs   (~40 s)</span>
+make<span class="w"> </span>check-full<span class="w">           </span><span class="c1"># the above, plus the real Lightning training runs</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">check</span></code> is the gate CI runs. It skips the ~49 s of end-to-end Lightning
+runs so a pre-commit check stays fast; <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">check-full</span></code> includes them.</p>
+</section>
+</section>
+<section id="pretrained-models">
+<h2>Pretrained models<a class="headerlink" href="#pretrained-models" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>id</p></th>
+<th class="head"><p>what it is</p></th>
+<th class="head"><p>runtime</p></th>
+<th class="head"><p>window</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code></p></td>
+<td><p>v2 frame-wise eye state, ConvNeXt-Femto</p></td>
+<td><p>PyTorch</p></td>
+<td><p>per-frame</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blinkcnn-onnx</span></code></p></td>
+<td><p>the same weights, frozen</p></td>
+<td><p>ONNX</p></td>
+<td><p>per-frame</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">densenet121-union</span></code></p></td>
+<td><p>1.x frame-wise baseline</p></td>
+<td><p>ONNX</p></td>
+<td><p>per-frame</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blinklint-union</span></code></p></td>
+<td><p>1.x sequence model, DenseNet121 + LinT</p></td>
+<td><p>ONNX</p></td>
+<td><p>15 frames</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinklinmult-union</span></code></p></td>
+<td><p>1.x two-stream, crops + 160-d iris descriptors</p></td>
+<td><p>ONNX</p></td>
+<td><p>15 frames</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Weights resolve from <a class="reference external" href="https://huggingface.co/fodorad/blink_detection"><code class="docutils literal notranslate"><span class="pre">fodorad/blink_detection</span></code></a> into <code class="docutils literal notranslate"><span class="pre">~/.cache/torch/hub/checkpoints/blinklinmult/</span></code> on first use. <code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code> ships as both a checkpoint (trainable, fine-tunable) and a graph (deployable); the rest are inference-only.</p>
+</section>
+<section id="model-comparison">
+<h2>Model comparison<a class="headerlink" href="#model-comparison" title="Link to this heading">¶</a></h2>
+<p>Average precision on the RN30 test split — <strong>35 held-out recordings</strong>, 54 814 valid frames, 1.04% positive. Intervals are 95%, from a paired bootstrap that resamples <strong>recordings</strong>, not frames.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>model</p></th>
+<th class="head text-right"><p>average precision</p></th>
+<th class="head"><p>95% CI</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code></strong></p></td>
+<td class="text-right"><p><strong>0.7893</strong></p></td>
+<td><p>[0.700, 0.861]</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blinklint-union</span></code></p></td>
+<td class="text-right"><p>0.4338</p></td>
+<td><p>[0.340, 0.540]</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinklinmult-union</span></code></p></td>
+<td class="text-right"><p>0.3815</p></td>
+<td><p>[0.204, 0.585]</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">densenet121-union</span></code></p></td>
+<td class="text-right"><p>0.3569</p></td>
+<td><p>[0.213, 0.617]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>All six pairwise differences, Holm-corrected across the family:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>comparison</p></th>
+<th class="head text-right"><p>Δ AP</p></th>
+<th class="head"><p>95% CI</p></th>
+<th class="head text-right"><p>p (Holm)</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>densenet121 − <strong>blinkcnn</strong></p></td>
+<td class="text-right"><p>−0.4323</p></td>
+<td><p>[−0.568, −0.190]</p></td>
+<td class="text-right"><p>0.0012</p></td>
+<td><p>significant</p></td>
+</tr>
+<tr class="row-odd"><td><p>blinklinmult − <strong>blinkcnn</strong></p></td>
+<td class="text-right"><p>−0.4077</p></td>
+<td><p>[−0.557, −0.236]</p></td>
+<td class="text-right"><p>0.0012</p></td>
+<td><p>significant</p></td>
+</tr>
+<tr class="row-even"><td><p>blinklint − <strong>blinkcnn</strong></p></td>
+<td class="text-right"><p>−0.3555</p></td>
+<td><p>[−0.448, −0.258]</p></td>
+<td class="text-right"><p>0.0012</p></td>
+<td><p>significant</p></td>
+</tr>
+<tr class="row-odd"><td><p>densenet121 − blinklint</p></td>
+<td class="text-right"><p>−0.0768</p></td>
+<td><p>[−0.260, +0.200]</p></td>
+<td class="text-right"><p>1.000</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>blinklint − blinklinmult</p></td>
+<td class="text-right"><p>+0.0522</p></td>
+<td><p>[−0.134, +0.242]</p></td>
+<td class="text-right"><p>1.000</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>densenet121 − blinklinmult</p></td>
+<td class="text-right"><p>−0.0246</p></td>
+<td><p>[−0.237, +0.227]</p></td>
+<td class="text-right"><p>1.000</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong><code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code> beats all three baselines by 36–43 points.</strong> The p-values sit at the bootstrap’s resolution floor: across 50 000 resamples it led in every one.</p>
+<p><strong>The three baselines are statistically indistinguishable from each other.</strong> Their point estimates differ by up to 7.7 points, but every interval overlaps — so this page does not rank them.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>score-models<span class="w">      </span><span class="c1"># score the four models on a corpus</span>
+make<span class="w"> </span>compare-shipped<span class="w">   </span><span class="c1"># the statistics -&gt; results/comparison/shipped-rn30.json</span>
+</pre></div>
+</div>
+<section id="what-this-comparison-is-and-is-not">
+<h3>⚠️ What this comparison is, and is not<a class="headerlink" href="#what-this-comparison-is-and-is-not" title="Link to this heading">¶</a></h3>
+<p><strong>The 1.x models were not retrained.</strong> These are the published 2023 weights, run under v2 conditions. Three things differ from the paper, and all three favour the v2 model:</p>
+<ol class="arabic simple">
+<li><p><strong>Features are computed with different tools.</strong> The 1.x work used <strong>TDDFA_V2</strong> for landmarks and head pose; v2 uses <strong>FaceMesh</strong> (478 landmarks) and <strong>6DRepNet</strong>. <code class="docutils literal notranslate"><span class="pre">blinklinmult-union</span></code> consumes a 160-d descriptor built from those, so it is being fed features <em>analogous to</em> — not identical to — what it trained on.</p></li>
+<li><p><strong>They see data they never trained on</strong>, including MPEblink (921 clips, eval-only here).</p></li>
+<li><p><strong>Operating points differ in origin.</strong> <code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code>’s threshold pair was swept on validation; the 1.x entries shipped with no fitted operating point at all. That is why the headline metric is average precision, which needs no threshold.</p></li>
+</ol>
+<p>So this is a like-for-like comparison of <strong>the models as they are deployable today</strong>, not a claim that the v2 architecture beats the 1.x architecture. A fair architectural comparison would retrain all four on identical features and splits.</p>
+</section>
+<section id="why-recordings-not-frames">
+<h3>Why recordings, not frames<a class="headerlink" href="#why-recordings-not-frames" title="Link to this heading">¶</a></h3>
+<p>RN30’s test split holds 7 312 windows — drawn from 35 recordings. Windows from one recording share a subject, a camera and a blink rate; they are close to duplicates. Resampling them independently claims evidence the corpus does not contain.</p>
+<p>The same comparison, computed both ways:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>resampling unit</p></th>
+<th class="head"><p>95% CI</p></th>
+<th class="head"><p>verdict</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>per frame</p></td>
+<td><p>[−0.024, −0.009]</p></td>
+<td><p>“significant”</p></td>
+</tr>
+<tr class="row-odd"><td><p>per recording</p></td>
+<td><p>[−0.068, +0.027]</p></td>
+<td><p>not significant</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The naive interval is <strong>5.9× too narrow and reverses the conclusion</strong>. A corpus is only as large as its number of independent subjects. Full protocol — including the choice of Holm over Benjamini-Hochberg, and why no interval is reported below ten clusters — in <a class="reference internal" href="comparison.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">docs/comparison.md</span></code></span></a>.</p>
+</section>
+</section>
+<section id="onnx-optimization">
+<h2>ONNX optimization<a class="headerlink" href="#onnx-optimization" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code> is a ConvNeXt-Femto with 5.0 M parameters — <em>smaller</em> than the DenseNet121 behind <code class="docutils literal notranslate"><span class="pre">densenet121-union</span></code> — yet it ran <strong>4.9× slower</strong>. The cause was not the architecture: the 1.x models ship as frozen ONNX graphs and <code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code> ran eager PyTorch.</p>
+<p>15-frame windows, 4 threads, warm, on a 10-core machine:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>model</p></th>
+<th class="head"><p>runtime</p></th>
+<th class="head text-right"><p>ms/frame</p></th>
+<th class="head text-right"><p>throughput</p></th>
+<th class="head text-right"><p>size</p></th>
+<th class="head text-right"><p>cold start</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">densenet121-union</span></code></p></td>
+<td><p>onnx</p></td>
+<td class="text-right"><p>3.95</p></td>
+<td class="text-right"><p>253 fps</p></td>
+<td class="text-right"><p>28.9 MB</p></td>
+<td class="text-right"><p>623 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blinklint-union</span></code></p></td>
+<td><p>onnx</p></td>
+<td class="text-right"><p>4.18</p></td>
+<td class="text-right"><p>239 fps</p></td>
+<td class="text-right"><p>27.6 MB</p></td>
+<td class="text-right"><p>723 ms</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinklinmult-union</span></code></p></td>
+<td><p>onnx</p></td>
+<td class="text-right"><p>4.46</p></td>
+<td class="text-right"><p>224 fps</p></td>
+<td class="text-right"><p>30.1 MB</p></td>
+<td class="text-right"><p>987 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code></p></td>
+<td><p><strong>pytorch</strong></p></td>
+<td class="text-right"><p><strong>20.19</strong></p></td>
+<td class="text-right"><p>50 fps</p></td>
+<td class="text-right"><p>19.1 MB</p></td>
+<td class="text-right"><p><strong>2481 ms</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinkcnn-onnx</span></code></p></td>
+<td><p>onnx</p></td>
+<td class="text-right"><p><strong>4.15</strong></p></td>
+<td class="text-right"><p><strong>241 fps</strong></p></td>
+<td class="text-right"><p>19.1 MB</p></td>
+<td class="text-right"><p><strong>560 ms</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Exporting the same weights closed the gap entirely, with accuracy identical to <strong>4.8e-07</strong>. Note the cold-start inversion: <code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code> was the <strong>smallest artifact on disk and the slowest to load</strong>, because rebuilding a PyTorch module from a checkpoint costs far more than memory-mapping a graph. As ONNX it becomes the fastest — the number that matters for a service that scales to zero.</p>
+<section id="the-export-is-gated-on-parity-not-on-running">
+<h3>The export is gated on parity, not on running<a class="headerlink" href="#the-export-is-gated-on-parity-not-on-running" title="Link to this heading">¶</a></h3>
+<p>A graph that runs proves nothing. The export checks the graph against its checkpoint at three window lengths (1, 15, 30) across three input distributions — uniform <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code>, Gaussian, constant — plus an end-to-end check through <code class="docutils literal notranslate"><span class="pre">BlinkDetector</span></code> that catches a wrong normalisation in the registry entry, which no graph-level check can see. Worst observed deviation: <strong>2.6e-06</strong>.</p>
+<p>One check exists for a failure parity <strong>cannot</strong> catch. <code class="docutils literal notranslate"><span class="pre">EyeEncoder</span></code> standardises its input <em>inside</em> the network, from buffers registered <code class="docutils literal notranslate"><span class="pre">persistent=False</span></code>. If that transform were ever lost, the checkpoint and the graph would both lose it and agree perfectly — every probe green, the model quietly degraded. So the gate also asserts that a black and a white image produce clearly different logits: <strong>1.280</strong> for the shipped graph against <strong>0.117</strong> for a build with the transform removed.</p>
+<p>This was found by deliberately breaking the export and discovering the gate did <strong>not</strong> reject it. A gate never watched failing is not known to work.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>export-blinkcnn-onnx<span class="w">   </span><span class="c1"># export + 9 parity probes</span>
+make<span class="w"> </span>benchmark-runtime<span class="w">      </span><span class="c1"># latency, size, cold start</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="real-time-pipeline">
+<h2>Real-time pipeline<a class="headerlink" href="#real-time-pipeline" title="Link to this heading">¶</a></h2>
+<p>A model-only throughput figure answers the wrong question for a live workload. Reaching real time meant three rounds of profiling, and <strong>the right target changed each time</strong>.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>stage</p></th>
+<th class="head text-right"><p>detect</p></th>
+<th class="head text-right"><p>pose</p></th>
+<th class="head text-right"><p>model</p></th>
+<th class="head text-right"><p>total</p></th>
+<th class="head text-right"><p>detect%</p></th>
+<th class="head text-right"><p>model%</p></th>
+<th class="head"><p>result</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1. initial pipeline</p></td>
+<td class="text-right"><p>50.5</p></td>
+<td class="text-right"><p>32.3</p></td>
+<td class="text-right"><p>11.4</p></td>
+<td class="text-right"><p>94.3 ms</p></td>
+<td class="text-right"><p>54%</p></td>
+<td class="text-right"><p>12%</p></td>
+<td><p>0.29× realtime</p></td>
+</tr>
+<tr class="row-odd"><td><p>2. geometric head pose</p></td>
+<td class="text-right"><p>50.5</p></td>
+<td class="text-right"><p>0.05</p></td>
+<td class="text-right"><p>11.4</p></td>
+<td class="text-right"><p>62.0 ms</p></td>
+<td class="text-right"><p>81%</p></td>
+<td class="text-right"><p>18%</p></td>
+<td><p>0.53× realtime</p></td>
+</tr>
+<tr class="row-even"><td><p>3. detector 640→256 + keypoints</p></td>
+<td class="text-right"><p>12.6</p></td>
+<td class="text-right"><p>0.05</p></td>
+<td class="text-right"><p>10.6</p></td>
+<td class="text-right"><p><strong>23.4 ms</strong></p></td>
+<td class="text-right"><p>54%</p></td>
+<td class="text-right"><p><strong>45%</strong></p></td>
+<td><p><strong>42.8 fps</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Read forwards, this is Amdahl’s law as a working method rather than a slogan:</p>
+<ul class="simple">
+<li><p>At step 1 the blink model was <strong>12%</strong> of the budget, so the 4.9× ONNX win moved end-to-end by <strong>under 2%</strong>. Real for the crops-in service, nearly invisible live.</p></li>
+<li><p><strong>Head pose</strong> cost 26.7 ms via 6DRepNet. The detector already returns five facial keypoints, so roll and pitch can be read from their geometry at <strong>0.05 ms</strong> — 500× cheaper, correlating <strong>+0.94</strong> with 6DRepNet on both axes.</p></li>
+<li><p><strong>The detector was misconfigured, not slow.</strong> It ran at ultralytics’ default <code class="docutils literal notranslate"><span class="pre">imgsz=640</span></code>, upscaling a 576×720 frame. At 256 it costs 8.3 ms instead of 40.3, with the face still found on 60/60 frames, box IoU 0.984, and the blink decision unchanged on every frame.</p></li>
+<li><p>It also <strong>already returned both eye centres</strong> in the same forward pass, so the separate FaceMesh call was recomputing information already in hand. Eye span is estimated from inter-eye distance, measured at <strong>0.412 ± 0.016</strong> across 160 eyes.</p></li>
+</ul>
+<p>After all three, the model’s share rose from 12% to <strong>45%</strong> — it is only <em>now</em> the thing worth optimising further. That inversion is the point.</p>
+<section id="both-model-families-reach-usable-speed-by-different-routes">
+<h3>Both model families reach usable speed, by different routes<a class="headerlink" href="#both-model-families-reach-usable-speed-by-different-routes" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>model</p></th>
+<th class="head text-right"><p>detect</p></th>
+<th class="head text-right"><p>score</p></th>
+<th class="head text-right"><p>total</p></th>
+<th class="head text-right"><p>fps</p></th>
+<th class="head text-right"><p>readout lag</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinkcnn-onnx</span></code></p></td>
+<td class="text-right"><p>12.6 ms</p></td>
+<td class="text-right"><p>10.6 ms</p></td>
+<td class="text-right"><p>23.4 ms</p></td>
+<td class="text-right"><p><strong>42.8</strong></p></td>
+<td class="text-right"><p>none</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">densenet121-union</span></code></p></td>
+<td class="text-right"><p>12.7 ms</p></td>
+<td class="text-right"><p>10.3 ms</p></td>
+<td class="text-right"><p>23.0 ms</p></td>
+<td class="text-right"><p><strong>43.4</strong></p></td>
+<td class="text-right"><p>none</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinklint-union</span></code></p></td>
+<td class="text-right"><p>19.6 ms</p></td>
+<td class="text-right"><p>0.0 ms</p></td>
+<td class="text-right"><p>19.7 ms</p></td>
+<td class="text-right"><p><strong>50.8</strong></p></td>
+<td class="text-right"><p><strong>~233 ms</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Frame-wise models are genuinely real time</strong> — scored inline, zero lag, a wink spikes the plot on the same frame.</p>
+<p><strong>The sequence model is near real time.</strong> One 15-frame call over both eyes costs 77.1 ms — 2.3× the entire 33.3 ms budget — so scoring every frame is not expensive but <em>impossible</em>. Moving it to a background worker decouples it: the capture loop becomes the <strong>fastest of the three at 50.8 fps</strong>, and the honest cost is a <strong>~233 ms</strong> readout delay. The video never stutters; the blink reading trails a quarter second, which the demo displays rather than hides.</p>
+<p>That works because both blocking calls release the GIL — measured, a busy main loop kept <strong>102%</strong> of its idle iterations with an onnxruntime worker running, and <strong>95%</strong> with a capture thread. The worker takes the newest window whenever it is free, so the stride adapts to the machine instead of being tuned for one.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>benchmark-streaming<span class="w">    </span><span class="c1"># the full ladder -&gt; results/comparison/streaming.json</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="demos">
+<h2>Demos<a class="headerlink" href="#demos" title="Link to this heading">¶</a></h2>
+<section id="live-webcam">
+<h3>Live webcam<a class="headerlink" href="#live-webcam" title="Link to this heading">¶</a></h3>
+<p>A single window: the frame on top, and beneath it two subplots at half width each, showing the last ten seconds of per-eye closure score with the operating point drawn as a rule. Wink one eye and only that side spikes — which is also the check that the left/right labelling is not inverted.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>webcam<span class="w">                                  </span><span class="c1"># blinkcnn-onnx, mirrored, 30 fps</span>
+make<span class="w"> </span>webcam<span class="w"> </span><span class="nv">ARGS</span><span class="o">=</span><span class="s2">"--model blinklint-union"</span><span class="w">   </span><span class="c1"># the sequence model, lag shown on screen</span>
+</pre></div>
+</div>
+<p>macOS asks for camera permission on the first run; the demo waits and says so rather than appearing hung.</p>
+</section>
+<section id="offline-video">
+<h3>Offline video<a class="headerlink" href="#offline-video" title="Link to this heading">¶</a></h3>
+<p>The same view over a file — no camera, no permissions, and its output is checkable against the bundled clip’s five annotated blinks (frames 170, 171, 227, 275, 276).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>video-demo<span class="w">                                    </span><span class="c1"># the bundled clip</span>
+make<span class="w"> </span>video-demo<span class="w"> </span><span class="nv">ARGS</span><span class="o">=</span><span class="s2">"--record demo.mp4 --fast"</span><span class="w">    </span><span class="c1"># write a recording</span>
+</pre></div>
+</div>
+<p><strong>Start here</strong> if you are trying the repo for the first time: it is the command most likely to work first try.</p>
+</section>
+<section id="gradio-app">
+<h3>Gradio app<a class="headerlink" href="#gradio-app" title="Link to this heading">¶</a></h3>
+<p>Upload a video, pick a model and an event-extraction rule, get an annotated video and per-eye plots back. Seven observable stages, each timed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>app<span class="w">        </span><span class="c1"># http://127.0.0.1:7860</span>
+</pre></div>
+</div>
+<p>Also deployed as a Hugging Face Space at <a class="reference external" href="https://huggingface.co/spaces/fodorad/blink_detection"><code class="docutils literal notranslate"><span class="pre">fodorad/blink_detection</span></code></a>.</p>
+</section>
+<section id="notebook">
+<h3>Notebook<a class="headerlink" href="#notebook" title="Link to this heading">¶</a></h3>
+<p>All four models on one RN30 window, with the eye-closeness plot and thresholding:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">notebooks</span><span class="o">/</span><span class="n">demo</span><span class="o">/</span><span class="n">blink_detection_rn30</span><span class="o">.</span><span class="n">ipynb</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="data">
+<h2>Data<a class="headerlink" href="#data" title="Link to this heading">¶</a></h2>
+<p>Seven corpora, each processed independently into <code class="docutils literal notranslate"><span class="pre">data/processed/&lt;name&gt;/</span></code> and collected into a single HDF5 file embedding the git SHA and the config that built it.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>corpus</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>train / valid / test</p></th>
+<th class="head"><p>annotates</p></th>
+<th class="head"><p>role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CEW</p></td>
+<td><p>stills</p></td>
+<td><p>3 388 / 726 / 732</p></td>
+<td><p>eye state</p></td>
+<td><p>ESR only</p></td>
+</tr>
+<tr class="row-odd"><td><p>MRL-Eye</p></td>
+<td><p>stills</p></td>
+<td><p>59 520 / 12 680 / 12 698</p></td>
+<td><p>eye state</p></td>
+<td><p>ESR only</p></td>
+</tr>
+<tr class="row-even"><td><p>RN15</p></td>
+<td><p>video, 15 fps</p></td>
+<td><p>2 198 / 2 708 / 4 664</p></td>
+<td><p>eye state + events</p></td>
+<td><p>train + events</p></td>
+</tr>
+<tr class="row-odd"><td><p>RN30</p></td>
+<td><p>video, 30 fps</p></td>
+<td><p>4 102 / 4 194 / 7 312</p></td>
+<td><p>eye state + events</p></td>
+<td><p>train + events</p></td>
+</tr>
+<tr class="row-even"><td><p>TalkingFace</p></td>
+<td><p>video, 25 fps</p></td>
+<td><p>0 / 0 / 524</p></td>
+<td><p>eye state + events</p></td>
+<td><p>eval only</p></td>
+</tr>
+<tr class="row-odd"><td><p>HUST-LEBW</p></td>
+<td><p>clips, 30 fps</p></td>
+<td><p>762 / 134 / 450</p></td>
+<td><p>events (clip-wise)</p></td>
+<td><p>train, ESR masked</p></td>
+</tr>
+<tr class="row-even"><td><p>MPEblink</p></td>
+<td><p>video, 25 fps</p></td>
+<td><p>—</p></td>
+<td><p>events</p></td>
+<td><p>eval only</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Counts are samples, one per eye per window. A corpus is routed by what it annotates, not by preference: <code class="docutils literal notranslate"><span class="pre">eye_state</span></code> is the trained target, so a corpus without it can only supervise the event head. Splits are <strong>subject-disjoint</strong> — verified, zero <code class="docutils literal notranslate"><span class="pre">video_id</span></code> overlap between train, valid and test.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>pull-all<span class="w">          </span><span class="c1"># fetch the prebuilt HDF5 artifacts from Hugging Face</span>
+make<span class="w"> </span>preprocess-all<span class="w">    </span><span class="c1"># or rebuild them from the raw corpora</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="data.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">docs/data.md</span></code></span></a> for licences and the build recipe.</p>
+</section>
+<section id="training">
+<h2>Training<a class="headerlink" href="#training" title="Link to this heading">¶</a></h2>
+<p>Three architectures behind one config key — <code class="docutils literal notranslate"><span class="pre">cnn</span></code> (per-frame, no sequence model), <code class="docutils literal notranslate"><span class="pre">lint</span></code> (single-stream LinMulT), <code class="docutils literal notranslate"><span class="pre">linmult</span></code> (cross-modal fusion over crops and handcrafted eye features).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>train-cnn<span class="w">         </span><span class="c1"># the v2 frame-wise model</span>
+make<span class="w"> </span>train-joint<span class="w">       </span><span class="c1"># both heads over every corpus</span>
+</pre></div>
+</div>
+<p>Both heads train on one masked stream: a corpus that lacks a target contributes an all-<code class="docutils literal notranslate"><span class="pre">False</span></code> mask, and both the loss and the metrics skip those positions. See <a class="reference internal" href="training.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">docs/training.md</span></code></span></a>.</p>
+</section>
+<section id="deployments">
+<h2>Deployments<a class="headerlink" href="#deployments" title="Link to this heading">¶</a></h2>
+<section id="rest-service">
+<h3>REST service<a class="headerlink" href="#rest-service" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>serve<span class="w">                    </span><span class="c1"># http://127.0.0.1:8080</span>
+make<span class="w"> </span>docker-build<span class="w">             </span><span class="c1"># fodorad/blink_detection</span>
+make<span class="w"> </span>docker-run<span class="w">               </span><span class="c1"># runs with --network none: weights are baked in</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/manifest</span></code> reports every model with its weight SHA-256, so a result traces to an artifact rather than to a version string. <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/score</span></code> echoes back the extraction rule it applied, so a blink count is reproducible.</p>
+<p>Two images: a crops-in REST service (~385 MB resident) and a full-pipeline image with the video endpoints and the Gradio demo (~1 GB, flat regardless of clip length).</p>
+</section>
+</section>
+<section id="repository-layout">
+<h2>Repository layout<a class="headerlink" href="#repository-layout" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">blinklinmult</span><span class="o">/</span>        <span class="n">the</span> <span class="n">installable</span> <span class="n">package</span>
+  <span class="n">detector</span><span class="o">.</span><span class="n">py</span>        <span class="n">one</span> <span class="n">interface</span> <span class="n">over</span> <span class="nb">all</span> <span class="n">five</span> <span class="n">models</span>
+  <span class="n">registry</span><span class="o">.</span><span class="n">py</span>        <span class="n">what</span> <span class="n">each</span> <span class="n">model</span> <span class="n">expects</span><span class="p">:</span> <span class="n">normalisation</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">runtime</span>
+  <span class="n">stream</span><span class="o">.</span><span class="n">py</span>          <span class="n">the</span> <span class="n">background</span> <span class="n">scorer</span> <span class="k">for</span> <span class="n">windowed</span> <span class="n">models</span>
+  <span class="n">live</span><span class="o">.</span><span class="n">py</span>            <span class="n">the</span> <span class="n">live</span> <span class="n">view</span><span class="p">:</span> <span class="n">per</span><span class="o">-</span><span class="n">eye</span> <span class="n">plots</span> <span class="ow">and</span> <span class="n">frame</span> <span class="n">overlay</span>
+  <span class="n">pipeline</span><span class="o">.</span><span class="n">py</span>        <span class="n">raw</span> <span class="n">video</span> <span class="o">-&gt;</span> <span class="n">blink</span> <span class="n">events</span><span class="p">,</span> <span class="ow">in</span> <span class="n">seven</span> <span class="n">observable</span> <span class="n">stages</span>
+  <span class="n">paper</span><span class="o">/</span>             <span class="n">the</span> <span class="mf">1.</span><span class="n">x</span> <span class="n">models</span><span class="p">,</span> <span class="n">frozen</span> <span class="k">as</span> <span class="n">ONNX</span> <span class="n">graphs</span>
+  <span class="n">data</span><span class="o">/</span> <span class="n">train</span><span class="o">/</span>       <span class="n">schema</span><span class="p">,</span> <span class="n">h5</span> <span class="n">writer</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">the</span> <span class="n">Lightning</span> <span class="n">CLI</span>
+  <span class="n">preprocess</span><span class="o">/</span>        <span class="n">one</span> <span class="n">module</span> <span class="n">per</span> <span class="n">corpus</span><span class="p">,</span> <span class="n">plus</span> <span class="n">shared</span> <span class="n">geometry</span> <span class="ow">and</span> <span class="n">features</span>
+  <span class="n">bench</span><span class="o">/</span> <span class="n">compare</span><span class="o">/</span>    <span class="n">latency</span> <span class="n">measurement</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">statistical</span> <span class="n">layer</span>
+
+<span class="n">demos</span><span class="o">/</span>               <span class="n">everything</span> <span class="n">you</span> <span class="n">run</span> <span class="n">to</span> <span class="n">SEE</span> <span class="n">it</span> <span class="n">work</span> <span class="o">--</span> <span class="n">see</span> <span class="n">demos</span><span class="o">/</span><span class="n">README</span><span class="o">.</span><span class="n">md</span>
+  <span class="n">video</span><span class="o">.</span><span class="n">py</span> <span class="n">webcam</span><span class="o">.</span><span class="n">py</span> <span class="n">gradio</span><span class="o">/</span> <span class="n">serve</span><span class="o">/</span> <span class="n">notebooks</span><span class="o">/</span>
+
+<span class="n">experiments</span><span class="o">/</span>         <span class="n">everything</span> <span class="n">that</span> <span class="n">produced</span> <span class="n">a</span> <span class="n">NUMBER</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">results</span>
+  <span class="n">the</span> <span class="n">arms</span><span class="p">,</span> <span class="n">the</span> <span class="n">evaluations</span><span class="p">,</span> <span class="n">the</span> <span class="n">report</span> <span class="n">generators</span>
+
+<span class="n">tools</span><span class="o">/</span>               <span class="n">everything</span> <span class="n">that</span> <span class="n">BUILDS</span> <span class="n">an</span> <span class="n">artifact</span>
+  <span class="n">the</span> <span class="n">ONNX</span> <span class="n">exports</span><span class="p">,</span> <span class="n">scoring</span><span class="p">,</span> <span class="n">comparison</span><span class="p">,</span> <span class="n">benchmarks</span><span class="p">,</span> <span class="n">the</span> <span class="n">embedding</span> <span class="n">cache</span>
+</pre></div>
+</div>
+<p>The split is by <strong>what a thing is for</strong>, and inside the package by <strong>what it
+pulls in</strong>: <code class="docutils literal notranslate"><span class="pre">detector</span></code> and <code class="docutils literal notranslate"><span class="pre">registry</span></code> need numpy alone, <code class="docutils literal notranslate"><span class="pre">live</span></code> and <code class="docutils literal notranslate"><span class="pre">pipeline</span></code>
+add opencv, <code class="docutils literal notranslate"><span class="pre">preprocess</span></code> adds the extraction stack, <code class="docutils literal notranslate"><span class="pre">train</span></code> adds torch. That is
+what makes <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">blinklinmult[onnx]</span></code> a ~100 MB install rather than 600.</p>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">¶</a></h2>
+<p>Full API reference (Sphinx + autoapi) and the guides:
+<strong><a class="reference external" href="https://fodorad.github.io/BlinkLinMulT/">fodorad.github.io/BlinkLinMulT</a></strong></p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>path</p></th>
+<th class="head"><p>covers</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="comparison.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">docs/comparison.md</span></code></span></a></p></td>
+<td><p>the statistical protocol, systems benchmarks, streaming design</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="data.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">docs/data.md</span></code></span></a></p></td>
+<td><p>the corpora, licences, and the HDF5 artifact</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="training.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">docs/training.md</span></code></span></a></p></td>
+<td><p>run configurations and the loss/metric design</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="inference.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">docs/inference.md</span></code></span></a></p></td>
+<td><p>the public API</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>docs<span class="w">           </span><span class="c1"># build, warnings-as-errors</span>
+make<span class="w"> </span>docs-serve<span class="w">     </span><span class="c1"># live-reload at http://127.0.0.1:8000</span>
+</pre></div>
+</div>
+</section>
+<section id="related-projects">
+<h2>Related projects<a class="headerlink" href="#related-projects" title="Link to this heading">¶</a></h2>
+<section id="exordium">
+<h3>exordium<a class="headerlink" href="#exordium" title="Link to this heading">¶</a></h3>
+<p>Collection of preprocessing functions and deep learning methods. This repository contains revised codes for fine landmark detection (including face, eye region, iris and pupil landmarks), head pose estimation, and eye feature calculation.</p>
+<ul class="simple">
+<li><p>code: https://github.com/fodorad/exordium</p></li>
+</ul>
+</section>
+<section id="linmult">
+<h3>(2022) LinMulT<a class="headerlink" href="#linmult" title="Link to this heading">¶</a></h3>
+<p>General-purpose Multimodal Transformer with Linear Complexity Attention Mechanism. This base model is further modified and trained for various tasks and datasets. <code class="docutils literal notranslate"><span class="pre">LinT</span></code> is its single-stream form, used by <code class="docutils literal notranslate"><span class="pre">blinklint-union</span></code>.</p>
+<ul class="simple">
+<li><p>code: https://github.com/fodorad/LinMulT</p></li>
+</ul>
+</section>
+<section id="personalitylinmult">
+<h3>(2022) PersonalityLinMulT<a class="headerlink" href="#personalitylinmult" title="Link to this heading">¶</a></h3>
+<p>LinMulT trained for Big Five personality trait and sentiment estimation.</p>
+<ul class="simple">
+<li><p>paper: Multimodal Sentiment and Personality Perception Under Speech: A Comparison of Transformer-based Architectures (<a class="reference external" href="https://proceedings.mlr.press/v173/fodor22a/fodor22a.pdf">pdf</a>, <a class="reference external" href="https://proceedings.mlr.press/v173/fodor22a.html">website</a>)</p></li>
+<li><p>code: https://github.com/fodorad/PersonalityLinMulT</p></li>
+</ul>
+</section>
+</section>
+<section id="citation-bibtex">
+<h2>Citation - BibTex<a class="headerlink" href="#citation-bibtex" title="Link to this heading">¶</a></h2>
+<p>If you found our research helpful or influential please consider citing:</p>
+<section id="blinklinmult-for-blink-presence-detection-and-eye-state-recognition">
+<h3>(2023) BlinkLinMulT for blink presence detection and eye state recognition<a class="headerlink" href="#blinklinmult-for-blink-presence-detection-and-eye-state-recognition" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Article</span><span class="p">{</span><span class="n">fodor2023blinklinmult</span><span class="p">,</span>
+  <span class="n">title</span> <span class="o">=</span> <span class="p">{</span><span class="n">BlinkLinMulT</span><span class="p">:</span> <span class="n">Transformer</span><span class="o">-</span><span class="n">Based</span> <span class="n">Eye</span> <span class="n">Blink</span> <span class="n">Detection</span><span class="p">},</span>
+  <span class="n">author</span> <span class="o">=</span> <span class="p">{</span><span class="n">Fodor</span><span class="p">,</span> <span class="n">Ádám</span> <span class="ow">and</span> <span class="n">Fenech</span><span class="p">,</span> <span class="n">Kristian</span> <span class="ow">and</span> <span class="n">Lőrincz</span><span class="p">,</span> <span class="n">András</span><span class="p">},</span>
+  <span class="n">journal</span> <span class="o">=</span> <span class="p">{</span><span class="n">Journal</span> <span class="n">of</span> <span class="n">Imaging</span><span class="p">},</span>
+  <span class="n">volume</span> <span class="o">=</span> <span class="p">{</span><span class="mi">9</span><span class="p">},</span>
+  <span class="n">year</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2023</span><span class="p">},</span>
+  <span class="n">number</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10</span><span class="p">},</span>
+  <span class="n">article</span><span class="o">-</span><span class="n">number</span> <span class="o">=</span> <span class="p">{</span><span class="mi">196</span><span class="p">},</span>
+  <span class="n">url</span> <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">mdpi</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="mi">2313</span><span class="o">-</span><span class="mi">433</span><span class="n">X</span><span class="o">/</span><span class="mi">9</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="mi">196</span><span class="p">},</span>
+  <span class="n">PubMedID</span> <span class="o">=</span> <span class="p">{</span><span class="mi">37888303</span><span class="p">},</span>
+  <span class="n">ISSN</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2313</span><span class="o">-</span><span class="mi">433</span><span class="n">X</span><span class="p">},</span>
+  <span class="n">DOI</span> <span class="o">=</span> <span class="p">{</span><span class="mf">10.3390</span><span class="o">/</span><span class="n">jimaging9100196</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="linmult-for-personality-trait-and-sentiment-estimation">
+<h3>(2022) LinMulT for personality trait and sentiment estimation<a class="headerlink" href="#linmult-for-personality-trait-and-sentiment-estimation" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@InProceedings</span><span class="p">{</span><span class="n">pmlr</span><span class="o">-</span><span class="n">v173</span><span class="o">-</span><span class="n">fodor22a</span><span class="p">,</span>
+  <span class="n">title</span> <span class="o">=</span> <span class="p">{</span><span class="n">Multimodal</span> <span class="n">Sentiment</span> <span class="ow">and</span> <span class="n">Personality</span> <span class="n">Perception</span> <span class="n">Under</span> <span class="n">Speech</span><span class="p">:</span> <span class="n">A</span> <span class="n">Comparison</span> <span class="n">of</span> <span class="n">Transformer</span><span class="o">-</span><span class="n">based</span> <span class="n">Architectures</span><span class="p">},</span>
+  <span class="n">author</span> <span class="o">=</span> <span class="p">{</span><span class="n">Fodor</span><span class="p">,</span> <span class="p">{</span>\<span class="s1">'A}d{</span><span class="se">\'</span><span class="s1">a}m and Saboundji, Rachid R. and Jacques Junior, Julio C. S. and Escalera, Sergio and Gallardo-Pujol, David and L{\H</span><span class="si">{o}</span><span class="s1">}rincz, Andr{</span><span class="se">\'</span><span class="s1">a}s},</span>
+  <span class="n">booktitle</span> <span class="o">=</span> <span class="p">{</span><span class="n">Understanding</span> <span class="n">Social</span> <span class="n">Behavior</span> <span class="ow">in</span> <span class="n">Dyadic</span> <span class="ow">and</span> <span class="n">Small</span> <span class="n">Group</span> <span class="n">Interactions</span><span class="p">},</span>
+  <span class="n">pages</span> <span class="o">=</span> <span class="p">{</span><span class="mi">218</span><span class="o">--</span><span class="mi">241</span><span class="p">},</span>
+  <span class="n">year</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2022</span><span class="p">},</span>
+  <span class="n">editor</span> <span class="o">=</span> <span class="p">{</span><span class="n">Palmero</span><span class="p">,</span> <span class="n">Cristina</span> <span class="ow">and</span> <span class="n">Jacques</span> <span class="n">Junior</span><span class="p">,</span> <span class="n">Julio</span> <span class="n">C</span><span class="o">.</span> <span class="n">S</span><span class="o">.</span> <span class="ow">and</span> <span class="n">Clapés</span><span class="p">,</span> <span class="n">Albert</span> <span class="ow">and</span> <span class="n">Guyon</span><span class="p">,</span> <span class="n">Isabelle</span> <span class="ow">and</span> <span class="n">Tu</span><span class="p">,</span> <span class="n">Wei</span><span class="o">-</span><span class="n">Wei</span> <span class="ow">and</span> <span class="n">Moeslund</span><span class="p">,</span> <span class="n">Thomas</span> <span class="n">B</span><span class="o">.</span> <span class="ow">and</span> <span class="n">Escalera</span><span class="p">,</span> <span class="n">Sergio</span><span class="p">},</span>
+  <span class="n">volume</span> <span class="o">=</span> <span class="p">{</span><span class="mi">173</span><span class="p">},</span>
+  <span class="n">series</span> <span class="o">=</span> <span class="p">{</span><span class="n">Proceedings</span> <span class="n">of</span> <span class="n">Machine</span> <span class="n">Learning</span> <span class="n">Research</span><span class="p">},</span>
+  <span class="n">month</span> <span class="o">=</span> <span class="p">{</span><span class="mi">16</span> <span class="n">Oct</span><span class="p">},</span>
+  <span class="n">publisher</span> <span class="o">=</span> <span class="p">{</span><span class="n">PMLR</span><span class="p">},</span>
+  <span class="n">pdf</span> <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">proceedings</span><span class="o">.</span><span class="n">mlr</span><span class="o">.</span><span class="n">press</span><span class="o">/</span><span class="n">v173</span><span class="o">/</span><span class="n">fodor22a</span><span class="o">/</span><span class="n">fodor22a</span><span class="o">.</span><span class="n">pdf</span><span class="p">},</span>
+  <span class="n">url</span> <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">proceedings</span><span class="o">.</span><span class="n">mlr</span><span class="o">.</span><span class="n">press</span><span class="o">/</span><span class="n">v173</span><span class="o">/</span><span class="n">fodor22a</span><span class="o">.</span><span class="n">html</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Ádám Fodor (fodorad201&#64;gmail.com) — <a class="reference external" href="https://adamfodor.com">adamfodor.com</a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="inference.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Inference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

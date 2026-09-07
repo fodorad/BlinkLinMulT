@@ -1,0 +1,276 @@
+blinklinmult.data.augment
+=========================
+
+.. py:module:: blinklinmult.data.augment
+
+.. autoapi-nested-parse::
+
+   Augmentation for eye crops, calibrated against the corpora it trains on.
+
+   Every constant here is measured rather than chosen. Rotation matches the roll
+   the corpora actually contain; brightness and contrast match the gap a shared
+   encoder has to absorb between them. Augmenting outside those ranges would teach
+   invariance to variation that never occurs, at the cost of the capacity to
+   separate the variation that does.
+
+   **Measured across the built corpora**
+
+   ===========  ==========  ==========  ==========
+   corpus       roll p05    roll p95    mean level
+   ===========  ==========  ==========  ==========
+   CEW              -12.2         9.8        0.556
+   RN15              -8.9        13.4        0.413
+   RN30              -9.3        11.4        0.403
+   TalkingFace       -9.7         3.7        0.521
+   MRL-Eye              -           -        0.346
+   ===========  ==========  ==========  ==========
+
+   So roll spans roughly ±13 degrees, and corpus mean level spans 0.346 to 0.556 --
+   a 60% gap, which is what a model transferring between them must absorb.
+
+   **One draw per sample, applied to every frame of it.** A sample is one eye's
+   whole window, and geometry and lighting are continuous in time: a head does not
+   jump orientation between adjacent frames, and a light source does not flicker.
+   Sampling per frame would manufacture exactly the chatter that
+   :func:`~blinklinmult.preprocess.quality.box_jitter` measures and that
+   :func:`~blinklinmult.train.losses.temporal_smoothness` penalises. The frame-wise
+   path gets per-frame variation for free, because there a sample *is* one frame.
+
+   **No horizontal flip.** Flipping a left eye produces something that looks like a
+   right eye, which is the usual argument for it -- but here samples are eye-wise
+   precisely so that winks and per-eye patterns are detectable, and the eye side is
+   part of the label. Flipping without swapping the side teaches that side does not
+   matter; flipping with it is a separate decision, deliberately not taken here.
+
+   **No vertical flip**, ever: eyelids close downward and that asymmetry is the
+   signal.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.augment.MAX_ROTATION_DEGREES
+   blinklinmult.data.augment.MAX_BRIGHTNESS_DELTA
+   blinklinmult.data.augment.MAX_CONTRAST_DELTA
+   blinklinmult.data.augment.MAX_TRANSLATE_FRACTION
+   blinklinmult.data.augment.MAX_SCALE_DELTA
+   blinklinmult.data.augment.BLUR_PROBABILITY
+   blinklinmult.data.augment.MAX_BLUR_SIGMA
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.augment.AugmentError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.data.augment.AugmentConfig
+   blinklinmult.data.augment.EyeAugmentation
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.data.augment.augment_window
+
+
+Module Contents
+---------------
+
+.. py:data:: MAX_ROTATION_DEGREES
+   :value: 6.0
+
+
+   Rotation range. Halved from 12.0.
+
+   The corpora's own roll spans ~13 degrees p05-p95, so 12 covered the full
+   observed range -- but sampling the extremes of a distribution as *routine*
+   training noise is stronger than reproducing it. Half the range still covers the
+   bulk of real head roll.
+
+.. py:data:: MAX_BRIGHTNESS_DELTA
+   :value: 0.15
+
+
+   Additive brightness range. Reduced from 0.20.
+
+   Kept near the measured gap between corpus means (0.346 to 0.556): this one
+   describes a genuine domain difference the model must survive, so it is trimmed
+   rather than halved.
+
+.. py:data:: MAX_CONTRAST_DELTA
+   :value: 0.15
+
+
+   Multiplicative contrast range around 1.0. Reduced from 0.20, as brightness.
+
+.. py:data:: MAX_TRANSLATE_FRACTION
+   :value: 0.03
+
+
+   Shift range as a fraction of the crop. Reduced from 0.05.
+
+   Localisation jitter is real, but a 64 px crop shifted 5% moves the lid edge by
+   3 px -- comparable to the closure it is meant to detect.
+
+.. py:data:: MAX_SCALE_DELTA
+   :value: 0.06
+
+
+   Zoom range around 1.0, for box-size error. Reduced from 0.10.
+
+.. py:data:: BLUR_PROBABILITY
+   :value: 0.1
+
+
+   How often to blur. Halved from 0.2 -- blur destroys the lid edge the task reads.
+
+.. py:data:: MAX_BLUR_SIGMA
+   :value: 0.5
+
+
+   Gaussian sigma at full strength, in pixels of a 64 px crop.
+
+   Cut hardest of all (from 0.8). Motion blur is the one corruption that removes
+   the *evidence* rather than transforming it: a blurred closing lid and a blurred
+   open eye look alike, so a strong blur trains the model on frames whose label it
+   cannot see.
+
+.. py:exception:: AugmentError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when an augmentation is configured out of range.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: AugmentConfig
+
+   How strongly to augment, as a fraction of each measured range.
+
+   :param strength: Scales every range. ``0`` disables augmentation
+                    entirely; ``1`` uses the measured ranges above.
+   :type strength: float
+   :param rotate: Rotate within :data:`MAX_ROTATION_DEGREES`.
+   :type rotate: bool
+   :param photometric: Jitter brightness and contrast.
+   :type photometric: bool
+   :param translate: Shift and zoom, for localisation error.
+   :type translate: bool
+   :param blur: Occasionally blur.
+   :type blur: bool
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the configuration.
+
+      :raises AugmentError: If the strength is negative or above one.
+
+
+
+   .. py:property:: geometric
+      :type: bool
+
+
+      Whether this configuration moves pixels around.
+
+      :returns: ``True`` when rotation or translation is on. These are the
+                transforms that invalidate a handcrafted descriptor, because 152 of
+                its 160 dimensions are pixel-space landmark coordinates describing
+                the *unrotated* crop.
+      :rtype: bool
+
+
+   .. py:method:: without_geometry() -> AugmentConfig
+
+      This configuration with the geometry-changing transforms removed.
+
+      Brightness, contrast and blur leave every landmark where it was, so they
+      are safe alongside a handcrafted descriptor; rotation, translation and
+      scale are not.
+
+      :returns: A copy with ``rotate`` and ``translate`` off.
+      :rtype: AugmentConfig
+
+
+
+   .. py:property:: enabled
+      :type: bool
+
+
+      Whether this configuration changes anything.
+
+      :returns: ``False`` when the strength is zero or every transform is off.
+      :rtype: bool
+
+
+.. py:function:: augment_window(images: torch.Tensor, config: AugmentConfig, generator: torch.Generator) -> torch.Tensor
+
+   Augment one eye window, every frame identically.
+
+   :param images: ``(T, C, H, W)`` crops in ``[0, 1]``.
+   :type images: torch.Tensor
+   :param config: How strongly to augment.
+   :type config: AugmentConfig
+   :param generator: The sample's seeded generator, so the same
+                     sample augments the same way given the same epoch.
+   :type generator: torch.Generator
+
+   :returns: The augmented window, same shape, clamped to ``[0, 1]``.
+   :rtype: torch.Tensor
+
+   :raises AugmentError: If the window is not ``(T, C, H, W)``.
+
+
+.. py:class:: EyeAugmentation(config: AugmentConfig | None = None)
+
+   Bases: :py:obj:`omniloader.transforms.base.Transform`
+
+
+   OmniLoader transform applying :func:`augment_window` to a sample.
+
+   Subclasses OmniLoader's :class:`~omniloader.transforms.base.Transform` so
+   the train/eval gate is the loader's own: ``train_only`` means a validation
+   or test loader sees the crops exactly as built, with no flag to forget.
+
+   The generator OmniLoader passes is seeded from ``(seed, epoch, index)``, so
+   a sample augments identically given the same epoch and differently across
+   epochs -- which is what
+   :class:`~blinklinmult.train.callbacks.EpochPropagator` exists to advance.
+
+   :param config: How strongly to augment.
+   :type config: AugmentConfig
+
+
+   .. py:method:: apply(sample: dict, generator: torch.Generator | None) -> dict
+
+      Augment one sample's eye crops.
+
+      :param sample: A unified sample.
+      :type sample: dict
+      :param generator: The sample's seeded generator.
+                        ``None`` leaves the sample untouched rather than drawing from
+                        global state, which would make a run unreproducible.
+      :type generator: torch.Generator | None
+
+      :returns: The sample, with :data:`~blinklinmult.data.schema.EYE_IMAGE`
+                augmented. A shallow copy, so the caller's dict is not mutated.
+      :rtype: dict
+
+
+

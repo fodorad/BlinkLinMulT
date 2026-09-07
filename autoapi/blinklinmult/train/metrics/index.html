@@ -1,0 +1,1041 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html"><link rel="next" title="blinklinmult.train.mlflow_utils" href="../mlflow_utils/index.html"><link rel="prev" title="blinklinmult.train.lr_find" href="../lr_find/index.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/metrics/index.html">
+        <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>blinklinmult.train.metrics - BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../eye_state_events.html">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../data/index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../data/augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/schema/index.html">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data/writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/blob/main/docs/autoapi/blinklinmult/train/metrics/index.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/edit/main/docs/autoapi/blinklinmult/train/metrics/index.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-blinklinmult.train.metrics">
+<span id="blinklinmult-train-metrics"></span><h1>blinklinmult.train.metrics<a class="headerlink" href="#module-blinklinmult.train.metrics" title="Link to this heading">¶</a></h1>
+<p>Masked classification metrics for the two blink tasks.</p>
+<p>Both tasks are binary detection under heavy class imbalance, so the metrics are
+chosen accordingly and every one of them reduces over valid positions only —
+exactly the mask the losses use.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">{split}/{target}/f1</span></code></dt><dd><p>Harmonic mean of precision and recall. <strong>The primary metric.</strong> Accuracy is
+not reported as a headline number: a model predicting “no blink” everywhere
+scores above 95% accuracy on a continuously-sampled recording, which says
+nothing about whether it detects blinks.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">{split}/{target}/precision</span></code>, <code class="docutils literal notranslate"><span class="pre">{split}/{target}/recall</span></code></dt><dd><p>Reported alongside F1 because the two failure modes — missing blinks and
+hallucinating them — have different costs downstream, and F1 alone hides
+which one a run has.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">{split}/{target}/average_precision</span></code></dt><dd><p>Area under the precision-recall curve: threshold-free, so it separates a
+model that ranks well but is badly calibrated from one that genuinely
+cannot discriminate.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">{split}/{target}/accuracy</span></code>, <code class="docutils literal notranslate"><span class="pre">{split}/{target}/balanced_accuracy</span></code></dt><dd><p>Kept for comparability with the published 1.x numbers, which reported
+accuracy. Balanced accuracy is the one to read.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">{split}/mean_f1</span></code></dt><dd><p>Mean F1 across supervised targets. <strong>Drives model selection.</strong></p>
+</dd>
+</dl>
+<p><strong>Why not torchmetrics’ own classification metrics.</strong> They have no notion of a
+per-position validity mask, and passing them a flattened, pre-filtered tensor
+would silently change what “an epoch” means under DDP, where each rank filters a
+different number of positions. Accumulating raw predictions with their masks and
+reducing once at epoch end keeps the gathered state exact.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.logger" title="blinklinmult.train.metrics.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p>Module-level logger.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.EPSILON" title="blinklinmult.train.metrics.EPSILON"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EPSILON</span></code></a></p></td>
+<td><p>Guards division when a class is absent from an epoch.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.DEFAULT_THRESHOLD" title="blinklinmult.train.metrics.DEFAULT_THRESHOLD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_THRESHOLD</span></code></a></p></td>
+<td><p>Probability above which a position is predicted positive.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.PRIMARY_METRIC" title="blinklinmult.train.metrics.PRIMARY_METRIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PRIMARY_METRIC</span></code></a></p></td>
+<td><p>The metric that selects checkpoints and drives early stopping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.NO_GROUP" title="blinklinmult.train.metrics.NO_GROUP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NO_GROUP</span></code></a></p></td>
+<td><p>Sentinel frame-group id, meaning &quot;this position cannot be grouped&quot;.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.FRAME_REDUCERS" title="blinklinmult.train.metrics.FRAME_REDUCERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FRAME_REDUCERS</span></code></a></p></td>
+<td><p>Rules for combining the two eyes' predictions into one per frame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.PRIMARY_FRAME_REDUCER" title="blinklinmult.train.metrics.PRIMARY_FRAME_REDUCER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PRIMARY_FRAME_REDUCER</span></code></a></p></td>
+<td><p>The frame reducer whose F1 drives model selection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.ESR_METRIC" title="blinklinmult.train.metrics.ESR_METRIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ESR_METRIC</span></code></a></p></td>
+<td><p>mean frame-level F1 across targets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.BPD_METRIC" title="blinklinmult.train.metrics.BPD_METRIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BPD_METRIC</span></code></a></p></td>
+<td><p>window-level F1.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.METRIC_NAMES" title="blinklinmult.train.metrics.METRIC_NAMES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">METRIC_NAMES</span></code></a></p></td>
+<td><p>Per-target metrics computed every epoch, in report order.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlinkMetrics</span></code></a></p></td>
+<td><p>Accumulates an epoch of masked predictions for one target.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.MultiTargetMetrics" title="blinklinmult.train.metrics.MultiTargetMetrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiTargetMetrics</span></code></a></p></td>
+<td><p>Holds one <a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlinkMetrics</span></code></a> per supervised target.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.average_precision" title="blinklinmult.train.metrics.average_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_precision</span></code></a>(→ torch.Tensor)</p></td>
+<td><p>Area under the precision-recall curve over valid positions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.binary_metrics" title="blinklinmult.train.metrics.binary_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binary_metrics</span></code></a>(→ dict[str, torch.Tensor])</p></td>
+<td><p>Every per-target metric, over valid positions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.frame_group_ids" title="blinklinmult.train.metrics.frame_group_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_group_ids</span></code></a>(→ torch.Tensor | None)</p></td>
+<td><p>Map each sample to an integer id shared by the eyes of the same frames.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.aggregate_by_group" title="blinklinmult.train.metrics.aggregate_by_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_by_group</span></code></a>(→ tuple[torch.Tensor, torch.Tensor])</p></td>
+<td><p>Reduce per-position values to one value per frame group.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.frame_level_metrics" title="blinklinmult.train.metrics.frame_level_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_level_metrics</span></code></a>(→ dict[str, torch.Tensor])</p></td>
+<td><p>Score one target at frame level, aggregating the eyes of each frame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.window_level_metrics" title="blinklinmult.train.metrics.window_level_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">window_level_metrics</span></code></a>(→ dict[str, torch.Tensor])</p></td>
+<td><p>Score one target at window level: did this window contain a blink?</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.logger">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#blinklinmult.train.metrics.logger" title="Link to this definition">¶</a></dt>
+<dd><p>Module-level logger.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.EPSILON">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">EPSILON</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-08</span></span><a class="headerlink" href="#blinklinmult.train.metrics.EPSILON" title="Link to this definition">¶</a></dt>
+<dd><p>Guards division when a class is absent from an epoch.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.DEFAULT_THRESHOLD">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_THRESHOLD</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></span><a class="headerlink" href="#blinklinmult.train.metrics.DEFAULT_THRESHOLD" title="Link to this definition">¶</a></dt>
+<dd><p>Probability above which a position is predicted positive.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.PRIMARY_METRIC">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">PRIMARY_METRIC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'mean_f1'</span></span><a class="headerlink" href="#blinklinmult.train.metrics.PRIMARY_METRIC" title="Link to this definition">¶</a></dt>
+<dd><p>The metric that selects checkpoints and drives early stopping.</p>
+<p>Computed over the <strong>frame-level</strong> scores when frame-group ids are available, so
+model selection optimises the number the benchmark reports. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FrameAggregator</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.NO_GROUP">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">NO_GROUP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></span><a class="headerlink" href="#blinklinmult.train.metrics.NO_GROUP" title="Link to this definition">¶</a></dt>
+<dd><p>Sentinel frame-group id, meaning “this position cannot be grouped”.</p>
+<p>Accumulated when a caller supplies no group ids, which leaves the per-eye
+metrics intact and simply disables frame-level aggregation for that epoch.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.FRAME_REDUCERS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">FRAME_REDUCERS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('max',</span> <span class="pre">'mean')</span></span><a class="headerlink" href="#blinklinmult.train.metrics.FRAME_REDUCERS" title="Link to this definition">¶</a></dt>
+<dd><p>Rules for combining the two eyes’ predictions into one per frame.</p>
+<p><code class="docutils literal notranslate"><span class="pre">max</span></code> is the primary rule: a blink is a frame-level event that <em>occurred</em>, and
+the annotation marks a frame as a blink when a closure is visible. If one eye is
+occluded by a head turn while the other is plainly closing, <code class="docutils literal notranslate"><span class="pre">max</span></code> recovers the
+event where <code class="docutils literal notranslate"><span class="pre">mean</span></code> halves the score and can push it under the threshold.
+<code class="docutils literal notranslate"><span class="pre">mean</span></code> is logged alongside so the choice is measured rather than assumed.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.PRIMARY_FRAME_REDUCER">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">PRIMARY_FRAME_REDUCER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'max'</span></span><a class="headerlink" href="#blinklinmult.train.metrics.PRIMARY_FRAME_REDUCER" title="Link to this definition">¶</a></dt>
+<dd><p>The frame reducer whose F1 drives model selection.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.ESR_METRIC">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">ESR_METRIC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'mean_f1'</span></span><a class="headerlink" href="#blinklinmult.train.metrics.ESR_METRIC" title="Link to this definition">¶</a></dt>
+<dd><p>mean frame-level F1 across targets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Headline eye-state-recognition score</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BPD_METRIC">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">BPD_METRIC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bpd_f1'</span></span><a class="headerlink" href="#blinklinmult.train.metrics.BPD_METRIC" title="Link to this definition">¶</a></dt>
+<dd><p>window-level F1.</p>
+<p>Reported only when the run supervises blink presence, since a still-image
+corpus cannot witness a blink.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Headline blink-presence-detection score</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.METRIC_NAMES">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">METRIC_NAMES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('f1',</span> <span class="pre">'precision',</span> <span class="pre">'recall',</span> <span class="pre">'average_precision',</span> <span class="pre">'accuracy',</span> <span class="pre">'balanced_accuracy')</span></span><a class="headerlink" href="#blinklinmult.train.metrics.METRIC_NAMES" title="Link to this definition">¶</a></dt>
+<dd><p>Per-target metrics computed every epoch, in report order.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.average_precision">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">average_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.average_precision" title="Link to this definition">¶</a></dt>
+<dd><p>Area under the precision-recall curve over valid positions.</p>
+<p>Computed by the step-wise sum <code class="docutils literal notranslate"><span class="pre">sum_k</span> <span class="pre">(R_k</span> <span class="pre">-</span> <span class="pre">R_{k-1})</span> <span class="pre">*</span> <span class="pre">P_k</span></code> over positions
+ranked by predicted probability — the standard estimator, which unlike
+trapezoidal interpolation does not reward a model for the region between two
+observed operating points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>probability</strong> (<em>torch.Tensor</em>) – Predicted probabilities, any shape.</p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – Binary targets, same shape.</p></li>
+<li><p><strong>mask</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> where the target is real supervision.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scalar in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>; <code class="docutils literal notranslate"><span class="pre">0</span></code> when no positive is present,
+for which average precision is undefined.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.binary_metrics">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">binary_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_THRESHOLD</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.binary_metrics" title="Link to this definition">¶</a></dt>
+<dd><p>Every per-target metric, over valid positions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>probability</strong> (<em>torch.Tensor</em>) – Predicted probabilities.</p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – Binary targets.</p></li>
+<li><p><strong>mask</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> where the target is real supervision.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Decision threshold.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Keyed by <a class="reference internal" href="#blinklinmult.train.metrics.METRIC_NAMES" title="blinklinmult.train.metrics.METRIC_NAMES"><code class="xref py py-data docutils literal notranslate"><span class="pre">METRIC_NAMES</span></code></a>. Every value is
+<code class="docutils literal notranslate"><span class="pre">0</span></code> when the epoch contained no valid position, rather than NaN, which
+would poison the epoch average and any checkpoint comparison.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.frame_group_ids">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">frame_group_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.frame_group_ids" title="Link to this definition">¶</a></dt>
+<dd><p>Map each sample to an integer id shared by the eyes of the same frames.</p>
+<p>OmniLoader forwards only the sample id into a batch, so the recording and
+the frame group travel encoded inside it (see
+<a class="reference internal" href="../../data/schema/index.html#blinklinmult.data.schema.build_sample_id" title="blinklinmult.data.schema.build_sample_id"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_sample_id()</span></code></a>). This strips the eye side
+and interns what remains, so the two eye-wise samples cut from one window
+receive the same id and <a class="reference internal" href="#blinklinmult.train.metrics.frame_level_metrics" title="blinklinmult.train.metrics.frame_level_metrics"><code class="xref py py-func docutils literal notranslate"><span class="pre">frame_level_metrics()</span></code></a> can recombine them.</p>
+<p><strong>The ids are stable across batches, not batch-local.</strong> They are a hash of
+the group key rather than an enumeration, because the accumulator persists
+across every batch of an epoch: ids that restarted at 0 each batch would
+make window 0 of batch 1 collide with window 0 of batch 0, and the
+aggregation would silently max together frames from different recordings.
+Measured on RN30’s test split, that collapsed 329 040 positions into a
+degenerate set and reported <code class="docutils literal notranslate"><span class="pre">frame_max/f1</span> <span class="pre">=</span> <span class="pre">1.0</span></code> against a true 0.57.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample_ids</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – One id per sample in the batch.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(B,)</span></code> int64 ids, or <code class="docutils literal notranslate"><span class="pre">None</span></code> when the batch
+carries no ids or any of them is unparseable — in which case the
+per-eye metrics still run and only frame-level scoring is skipped.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.aggregate_by_group">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">aggregate_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reducer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.aggregate_by_group" title="Link to this definition">¶</a></dt>
+<dd><p>Reduce per-position values to one value per frame group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> per-position values.</p></li>
+<li><p><strong>groups</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> int64 group id per position.</p></li>
+<li><p><strong>reducer</strong> (<em>str</em>) – One of <a class="reference internal" href="#blinklinmult.train.metrics.FRAME_REDUCERS" title="blinklinmult.train.metrics.FRAME_REDUCERS"><code class="xref py py-data docutils literal notranslate"><span class="pre">FRAME_REDUCERS</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(reduced,</span> <span class="pre">unique_groups)</span></code>, both
+<code class="docutils literal notranslate"><span class="pre">(G,)</span></code>, ordered by group id.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[torch.Tensor, torch.Tensor]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the reducer is unknown or the shapes disagree.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.frame_level_metrics">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">frame_level_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><span class="pre">BlinkMetrics</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.frame_level_metrics" title="Link to this definition">¶</a></dt>
+<dd><p>Score one target at frame level, aggregating the eyes of each frame.</p>
+<p>This is the <strong>eye state recognition (ESR)</strong> protocol: one decision per
+frame. Training is eye-wise because that is how the corpora annotate, but
+the benchmark reports per frame, so the two eye-wise predictions of a frame
+are recombined here. The same aggregation runs on validation as on test, so
+model selection optimises the reported number rather than a proxy.</p>
+<p>A position is aggregated only when it is validly supervised; a frame whose
+every eye was masked out contributes nothing rather than a default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metric</strong> (<a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><em>BlinkMetrics</em></a>) – An accumulator for one target.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">frame_&lt;reducer&gt;/&lt;metric&gt;</span></code> for every reducer
+in <a class="reference internal" href="#blinklinmult.train.metrics.FRAME_REDUCERS" title="blinklinmult.train.metrics.FRAME_REDUCERS"><code class="xref py py-data docutils literal notranslate"><span class="pre">FRAME_REDUCERS</span></code></a>. Empty when no group ids were accumulated,
+which is what a caller checks to know whether frame-level scoring ran.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.window_level_metrics">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">window_level_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><span class="pre">BlinkMetrics</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.window_level_metrics" title="Link to this definition">¶</a></dt>
+<dd><p>Score one target at window level: did this window contain a blink?</p>
+<p>This is the <strong>blink presence detection (BPD)</strong> protocol, and it is a
+genuinely different task from frame-wise eye-state recognition rather than a
+coarser view of it. A window is positive when <em>any</em> of its frames is
+annotated as blinking, and a prediction is positive when the model’s
+sequence output crosses the threshold at any timestep — a <code class="docutils literal notranslate"><span class="pre">max</span></code> over the
+window.</p>
+<p>Aggregating a single sequence head, rather than training a second
+clip-level head, is what keeps the two tasks consistent: a window cannot
+come out “no frame shows a closed eye” <em>and</em> “a blink occurred”, which two
+independent heads would permit.</p>
+<p>BPD is the more error-tolerant protocol, and that is why it is reported
+alongside ESR: the corpora do not annotate blink boundaries precisely, since
+a closure is motion that begins before and ends after the frames marked as
+blinking. A frame-wise score punishes a one-frame boundary disagreement that
+a window-wise score absorbs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metric</strong> (<a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><em>BlinkMetrics</em></a>) – An accumulator for one target, whose group ids
+identify the sample each position came from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">window/&lt;metric&gt;</span></code>. Empty when no group ids
+were accumulated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BlinkMetrics">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">BlinkMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_THRESHOLD</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blinklinmult.train.metrics.BlinkMetrics" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">torchmetrics.Metric</span></code></p>
+<p>Accumulates an epoch of masked predictions for one target.</p>
+<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">torchmetrics.Metric</span></code> rather than plain lists, so state is gathered
+across devices automatically. Appending to Python lists on the module would,
+under DDP, silently report only rank 0’s shard.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_name</strong> (<em>str</em>) – The target these metrics describe.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Decision threshold.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the threshold is outside <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">1)</span></code>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BlinkMetrics.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.BlinkMetrics.update" title="Link to this definition">¶</a></dt>
+<dd><p>Accumulate one batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>probability</strong> (<em>torch.Tensor</em>) – Predicted probabilities, <code class="docutils literal notranslate"><span class="pre">(B,</span> <span class="pre">T)</span></code>.</p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – Binary targets, same shape.</p></li>
+<li><p><strong>mask</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> where the target is real supervision.</p></li>
+<li><p><strong>group</strong> (<em>torch.Tensor</em><em> | </em><em>None</em>) – <code class="docutils literal notranslate"><span class="pre">(B,)</span></code> integer frame-group id per
+sample, broadcast across its timesteps. <code class="docutils literal notranslate"><span class="pre">None</span></code> accumulates a
+sentinel, which disables frame-level aggregation for this epoch
+but leaves the per-eye metrics intact.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the shapes disagree.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BlinkMetrics.restore">
+<span class="sig-name descname"><span class="pre">restore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.BlinkMetrics.restore" title="Link to this definition">¶</a></dt>
+<dd><p>Re-accumulate already-flattened state from a previous pass.</p>
+<p><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics.update" title="blinklinmult.train.metrics.BlinkMetrics.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> derives the group ids from the shapes it is handed, which
+is right for a live batch but wrong for state read back from disk: the
+ids there already encode the frames they came from and must survive
+verbatim, or every consumer that groups by frame would regroup the
+restored positions incorrectly.</p>
+<p>Every metric is an order-independent reduction over per-position values,
+so state appended here scores identically to state computed in place –
+which is what makes resuming an interrupted test pass exact rather than
+approximate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>probability</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> predicted probabilities.</p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> binary targets.</p></li>
+<li><p><strong>mask</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> validity mask.</p></li>
+<li><p><strong>group</strong> (<em>torch.Tensor</em>) – <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> frame-group id per position.</p></li>
+<li><p><strong>window_length</strong> (<em>int</em>) – Timesteps per sample in the restored pass.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the shapes disagree.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BlinkMetrics.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.BlinkMetrics.groups" title="Link to this definition">¶</a></dt>
+<dd><p>Frame-group id of every accumulated position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(N,)</span></code> int64, or <code class="docutils literal notranslate"><span class="pre">None</span></code> when nothing was
+accumulated or no group ids were supplied.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.Tensor | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BlinkMetrics.valid_count">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">valid_count</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#blinklinmult.train.metrics.BlinkMetrics.valid_count" title="Link to this definition">¶</a></dt>
+<dd><p>Number of validly-supervised positions accumulated this epoch.</p>
+<p>Logged so a run makes visible how much supervision each target actually
+received — a joint run where one head saw almost nothing is a data
+problem, not a modelling one, and this is what reveals it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Valid position count.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BlinkMetrics.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.BlinkMetrics.compute" title="Link to this definition">¶</a></dt>
+<dd><p>Compute every metric over the accumulated epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Keyed <code class="docutils literal notranslate"><span class="pre">&quot;&lt;target&gt;/&lt;metric&gt;&quot;</span></code>. Zeros
+throughout when the target received no supervision this epoch, which
+is a legitimate state for a joint run whose batch mix happened to
+exclude the annotating corpus.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.BlinkMetrics.predictions">
+<span class="sig-name descname"><span class="pre">predictions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.BlinkMetrics.predictions" title="Link to this definition">¶</a></dt>
+<dd><p>Return the accumulated predictions, targets, and masks.</p>
+<p>Used to dump per-sample test predictions as a run artifact, so
+downstream threshold tuning and significance testing never need the
+model re-run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(probability,</span> <span class="pre">target,</span> <span class="pre">mask)</span></code>, each <code class="docutils literal notranslate"><span class="pre">(N,)</span></code>; empty tensors
+when nothing was accumulated.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.MultiTargetMetrics">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">blinklinmult.train.metrics.</span></span><span class="sig-name descname"><span class="pre">MultiTargetMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_THRESHOLD</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blinklinmult.train.metrics.MultiTargetMetrics" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></p>
+<p>Holds one <a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlinkMetrics</span></code></a> per supervised target.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Module</span></code> rather than a plain dict so Lightning moves the child metrics’
+state to the right device along with the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Targets to track, in head order.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – Decision threshold, shared by every target.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.MultiTargetMetrics.__contains__">
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.MultiTargetMetrics.__contains__" title="Link to this definition">¶</a></dt>
+<dd><p>Whether this accumulator holds one target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_name</strong> (<em>object</em>) – The target to look for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether it is supervised here. Lets a caller skip an
+eval-only target on the training split, where no accumulator for
+it exists, without catching <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.MultiTargetMetrics.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><span class="pre">BlinkMetrics</span></a></span></span><a class="headerlink" href="#blinklinmult.train.metrics.MultiTargetMetrics.__getitem__" title="Link to this definition">¶</a></dt>
+<dd><p>Look up one target’s accumulator.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ModuleDict.__getitem__</span></code> is typed as returning <code class="docutils literal notranslate"><span class="pre">Module</span></code>, which loses
+every <a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlinkMetrics</span></code></a> method. Narrowing here once means callers —
+including the prediction-writing callbacks — get the real type instead
+of casting at each use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_name</strong> (<em>str</em>) – Which target’s accumulator to return.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>That target’s accumulator.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics" title="blinklinmult.train.metrics.BlinkMetrics">BlinkMetrics</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If this run does not supervise that target.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.MultiTargetMetrics.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.MultiTargetMetrics.update" title="Link to this definition">¶</a></dt>
+<dd><p>Accumulate one batch for one target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_name</strong> (<em>str</em>) – Which target to update.</p></li>
+<li><p><strong>probability</strong> (<em>torch.Tensor</em>) – Predicted probabilities.</p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – Binary targets.</p></li>
+<li><p><strong>mask</strong> (<em>torch.Tensor</em>) – Validity mask.</p></li>
+<li><p><strong>group</strong> (<em>torch.Tensor</em><em> | </em><em>None</em>) – <code class="docutils literal notranslate"><span class="pre">(B,)</span></code> frame-group id per sample.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.MultiTargetMetrics.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.MultiTargetMetrics.compute" title="Link to this definition">¶</a></dt>
+<dd><p>Compute every target’s metrics plus the cross-target summary.</p>
+<p>Reports two families of scores. The <strong>eye-level</strong> ones describe what the
+model was trained on — one prediction per eye. The <strong>frame-level</strong> ones
+aggregate the two eyes of a frame into a single decision, which is how
+the corpora are actually scored, and are what drives model selection
+when they are available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">&lt;target&gt;/&lt;metric&gt;</span></code> per eye,
+<code class="docutils literal notranslate"><span class="pre">&lt;target&gt;/frame_&lt;reducer&gt;/&lt;metric&gt;</span></code> per frame, a
+<code class="docutils literal notranslate"><span class="pre">&lt;target&gt;/valid_positions</span></code> count, and <a class="reference internal" href="#blinklinmult.train.metrics.PRIMARY_METRIC" title="blinklinmult.train.metrics.PRIMARY_METRIC"><code class="xref py py-data docutils literal notranslate"><span class="pre">PRIMARY_METRIC</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.train.metrics.MultiTargetMetrics.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#blinklinmult.train.metrics.MultiTargetMetrics.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Clear every target’s accumulated state.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../mlflow_utils/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">blinklinmult.train.mlflow_utils</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../lr_find/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">blinklinmult.train.lr_find</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">blinklinmult.train.metrics</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.EPSILON"><code class="docutils literal notranslate"><span class="pre">EPSILON</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.DEFAULT_THRESHOLD"><code class="docutils literal notranslate"><span class="pre">DEFAULT_THRESHOLD</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.PRIMARY_METRIC"><code class="docutils literal notranslate"><span class="pre">PRIMARY_METRIC</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.NO_GROUP"><code class="docutils literal notranslate"><span class="pre">NO_GROUP</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.FRAME_REDUCERS"><code class="docutils literal notranslate"><span class="pre">FRAME_REDUCERS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.PRIMARY_FRAME_REDUCER"><code class="docutils literal notranslate"><span class="pre">PRIMARY_FRAME_REDUCER</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.ESR_METRIC"><code class="docutils literal notranslate"><span class="pre">ESR_METRIC</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BPD_METRIC"><code class="docutils literal notranslate"><span class="pre">BPD_METRIC</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.METRIC_NAMES"><code class="docutils literal notranslate"><span class="pre">METRIC_NAMES</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.average_precision"><code class="docutils literal notranslate"><span class="pre">average_precision()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.binary_metrics"><code class="docutils literal notranslate"><span class="pre">binary_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.frame_group_ids"><code class="docutils literal notranslate"><span class="pre">frame_group_ids()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.aggregate_by_group"><code class="docutils literal notranslate"><span class="pre">aggregate_by_group()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.frame_level_metrics"><code class="docutils literal notranslate"><span class="pre">frame_level_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.window_level_metrics"><code class="docutils literal notranslate"><span class="pre">window_level_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics"><code class="docutils literal notranslate"><span class="pre">BlinkMetrics</span></code></a><ul>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics.update"><code class="docutils literal notranslate"><span class="pre">BlinkMetrics.update()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics.restore"><code class="docutils literal notranslate"><span class="pre">BlinkMetrics.restore()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics.groups"><code class="docutils literal notranslate"><span class="pre">BlinkMetrics.groups()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics.valid_count"><code class="docutils literal notranslate"><span class="pre">BlinkMetrics.valid_count</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics.compute"><code class="docutils literal notranslate"><span class="pre">BlinkMetrics.compute()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.BlinkMetrics.predictions"><code class="docutils literal notranslate"><span class="pre">BlinkMetrics.predictions()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.MultiTargetMetrics"><code class="docutils literal notranslate"><span class="pre">MultiTargetMetrics</span></code></a><ul>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.MultiTargetMetrics.__contains__"><code class="docutils literal notranslate"><span class="pre">MultiTargetMetrics.__contains__()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.MultiTargetMetrics.__getitem__"><code class="docutils literal notranslate"><span class="pre">MultiTargetMetrics.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.MultiTargetMetrics.update"><code class="docutils literal notranslate"><span class="pre">MultiTargetMetrics.update()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.MultiTargetMetrics.compute"><code class="docutils literal notranslate"><span class="pre">MultiTargetMetrics.compute()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.train.metrics.MultiTargetMetrics.reset"><code class="docutils literal notranslate"><span class="pre">MultiTargetMetrics.reset()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

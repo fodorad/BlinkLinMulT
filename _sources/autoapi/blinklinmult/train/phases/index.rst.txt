@@ -1,0 +1,205 @@
+blinklinmult.train.phases
+=========================
+
+.. py:module:: blinklinmult.train.phases
+
+.. autoapi-nested-parse::
+
+   Derive blink phase and event shape from a predicted eye-state signal.
+
+   The model emits one continuous value per frame. That value alone is ambiguous --
+   0.5 could be an eye halfway shut or halfway open -- but its **trajectory** is
+   not: falling means closing, rising means opening, flat-and-low means closed.
+   This module reads phase off the signal's derivative rather than off the
+   annotation's geometry, which matters because no corpus annotates phase and
+   inventing it from interval position would assert a closure shape rather than
+   measure one.
+
+   The same trajectory separates event *kinds*. A complete blink descends, holds
+   briefly, and ascends; an incomplete one reverses before it bottoms out; a double
+   blink shows two minima inside one elevated span -- which no single-threshold
+   extractor can split, because thresholding sees one run either way.
+
+   **These categories are derived, not annotated.** They are measurements of the
+   predicted signal and carry no ground truth, so they belong in analysis and in
+   downstream state estimation, never in a benchmark column.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.phases.OPEN
+   blinklinmult.train.phases.CLOSING
+   blinklinmult.train.phases.CLOSED
+   blinklinmult.train.phases.OPENING
+   blinklinmult.train.phases.PHASE_NAMES
+   blinklinmult.train.phases.MOTION_EPSILON
+   blinklinmult.train.phases.CLOSED_LEVEL
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.phases.PhaseError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.phases.smooth
+   blinklinmult.train.phases.phases
+   blinklinmult.train.phases.describe_event
+   blinklinmult.train.phases.classify_event
+
+
+Module Contents
+---------------
+
+.. py:data:: OPEN
+   :value: 0
+
+
+   the eye is open and not moving.
+
+   :type: Phase
+
+.. py:data:: CLOSING
+   :value: 1
+
+
+   the lid is descending.
+
+   :type: Phase
+
+.. py:data:: CLOSED
+   :value: 2
+
+
+   the lid is down and still.
+
+   :type: Phase
+
+.. py:data:: OPENING
+   :value: 3
+
+
+   the lid is rising.
+
+   :type: Phase
+
+.. py:data:: PHASE_NAMES
+   :type:  dict[int, str]
+
+   Human-readable phase names, for reports and plots.
+
+.. py:data:: MOTION_EPSILON
+   :value: 0.02
+
+
+   Per-frame change below which the lid counts as still.
+
+   Separates a plateau from a ramp. Small enough that a genuine closure -- which
+   moves through most of its range in three or four frames -- is never called
+   still, large enough that prediction noise on an open eye is not called motion.
+
+.. py:data:: CLOSED_LEVEL
+   :value: 0.5
+
+
+   Signal value above which a still frame is closed rather than open.
+
+.. py:exception:: PhaseError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when a signal cannot be analysed.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: smooth(signal: numpy.ndarray, window: int = 3) -> numpy.ndarray
+
+   Moving average, for a derivative that is not dominated by noise.
+
+   :param signal: ``(T,)`` per-frame values.
+   :type signal: np.ndarray
+   :param window: Frames to average over; ``1`` disables smoothing.
+   :type window: int
+
+   :returns: ``(T,)`` smoothed, same length as the input.
+   :rtype: np.ndarray
+
+   :raises PhaseError: If the window is not a positive odd integer.
+
+
+.. py:function:: phases(signal: numpy.ndarray, window: int = 3, motion_epsilon: float = MOTION_EPSILON, closed_level: float = CLOSED_LEVEL) -> numpy.ndarray
+
+   Label every frame open, closing, closed, or opening.
+
+   Phase comes from the sign of the smoothed derivative, with the value used
+   only to tell a still-and-low frame from a still-and-high one. That ordering
+   is deliberate: the value is ambiguous mid-blink and the direction is not.
+
+   :param signal: ``(T,)`` predicted eye-state values, higher meaning
+                  more closed.
+   :type signal: np.ndarray
+   :param window: Smoothing window before differentiating.
+   :type window: int
+   :param motion_epsilon: Per-frame change below which the lid is still.
+   :type motion_epsilon: float
+   :param closed_level: Value above which a still frame is closed.
+   :type closed_level: float
+
+   :returns: ``(T,)`` int8 of :data:`OPEN`, :data:`CLOSING`,
+             :data:`CLOSED`, :data:`OPENING`.
+   :rtype: np.ndarray
+
+
+.. py:function:: describe_event(signal: numpy.ndarray, start: int, stop: int) -> dict[str, float]
+
+   Measure the shape of one predicted event.
+
+   What distinguishes a complete blink from an incomplete or a double one is
+   the curve, not the extent: peak depth says whether the lid ever really shut,
+   the minima count says whether it shut twice, and the asymmetry says whether
+   it reopened as fast as it closed (real blinks close faster than they open).
+
+   :param signal: ``(T,)`` values for the whole recording.
+   :type signal: np.ndarray
+   :param start: First frame of the event, inclusive.
+   :type start: int
+   :param stop: Last frame, inclusive.
+   :type stop: int
+
+   :returns: ``frames``, ``peak``, ``mean``, ``n_peaks``,
+             ``rise_frames``, ``fall_frames``, and ``asymmetry`` -- the fall minus
+             the rise, in frames, positive when reopening takes longer.
+   :rtype: dict[str, float]
+
+   :raises PhaseError: If the span is empty or outside the signal.
+
+
+.. py:function:: classify_event(shape: dict[str, float], complete_peak: float = 0.7, min_frames: float = 2.0) -> str
+
+   Name an event from its measured shape.
+
+   :param shape: As :func:`describe_event` returns.
+   :type shape: dict[str, float]
+   :param complete_peak: Peak below which the lid never fully shut.
+   :type complete_peak: float
+   :param min_frames: Spans shorter than this are too brief to judge.
+   :type min_frames: float
+
+   :returns: ``"double"``, ``"incomplete"``, ``"long"``, ``"brief"``, or
+             ``"complete"``. Derived from the prediction, never from an annotation.
+   :rtype: str
+
+

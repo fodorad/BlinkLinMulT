@@ -1,0 +1,201 @@
+blinklinmult.bench.timing
+=========================
+
+.. py:module:: blinklinmult.bench.timing
+
+.. autoapi-nested-parse::
+
+   Timing a callable honestly.
+
+   Three decisions, each guarding against a way a benchmark lies.
+
+   **Warm-up runs are discarded.** The first ONNX call allocates its arenas and the
+   first torch call picks kernels; folding that into the average reports startup
+   cost as though it were steady-state throughput. ``bench_workers.py`` already
+   established this convention for the dataloader -- "times the *second* pass ...
+   so the figure reflects steady-state throughput".
+
+   **Percentiles, not just a mean.** A model whose p99 is four times its median
+   drops frames under a deadline even when its average looks fine. For a streaming
+   workload the tail is the number that decides whether it works.
+
+   **A monotonic clock.** :func:`time.perf_counter_ns` cannot go backwards or be
+   adjusted mid-run, unlike :func:`time.time`.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.bench.timing.DEFAULT_WARMUP
+   blinklinmult.bench.timing.DEFAULT_REPEATS
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.bench.timing.BenchError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.bench.timing.Latency
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.bench.timing.time_callable
+
+
+Module Contents
+---------------
+
+.. py:data:: DEFAULT_WARMUP
+   :value: 20
+
+
+   Calls discarded before timing begins.
+
+.. py:data:: DEFAULT_REPEATS
+   :value: 200
+
+
+   Timed calls.
+
+   Enough that p95 rests on ten samples and p99 on two. Reporting p99 from fewer
+   would be reporting the maximum under another name, which is why
+   :meth:`Latency.tail_is_trustworthy` exists.
+
+.. py:exception:: BenchError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when a measurement is asked for on impossible parameters.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: Latency
+
+   Timing of one configuration.
+
+   :param samples_ms: Every timed call, in milliseconds. Kept whole
+                      rather than pre-summarised so a caller can re-derive any statistic.
+   :type samples_ms: np.ndarray
+   :param warmup: Calls discarded before timing.
+   :type warmup: int
+   :param frames: Frames per call, so per-frame cost is comparable between a
+                  frame-wise model and one scoring 15-frame windows.
+   :type frames: int
+
+
+   .. py:property:: p50_ms
+      :type: float
+
+
+      Median call time.
+
+      :returns: Milliseconds.
+      :rtype: float
+
+
+   .. py:property:: p95_ms
+      :type: float
+
+
+      95th percentile call time.
+
+      :returns: Milliseconds.
+      :rtype: float
+
+
+   .. py:property:: p99_ms
+      :type: float
+
+
+      99th percentile call time.
+
+      :returns: Milliseconds.
+      :rtype: float
+
+
+   .. py:property:: ms_per_frame
+      :type: float
+
+
+      Median cost of one frame.
+
+      The only figure comparable across models with different window lengths:
+      a 15-frame sequence model and a frame-wise one do different amounts of
+      work per call.
+
+      :returns: Milliseconds per frame.
+      :rtype: float
+
+
+   .. py:property:: fps
+      :type: float
+
+
+      Frames per second at the median.
+
+      :returns: Frames per second.
+      :rtype: float
+
+
+   .. py:property:: tail_is_trustworthy
+      :type: bool
+
+
+      Whether enough samples were taken for p99 to mean anything.
+
+      With fewer than 100 repeats the 99th percentile is interpolated from the
+      largest one or two samples, which is the maximum wearing a percentile's
+      name.
+
+      :returns: Whether p99 rests on at least a few samples.
+      :rtype: bool
+
+
+   .. py:method:: describe() -> str
+
+      One line for a table.
+
+      :returns: Median, tail and throughput.
+      :rtype: str
+
+
+
+.. py:function:: time_callable(call: collections.abc.Callable[[], object], frames: int, warmup: int = DEFAULT_WARMUP, repeats: int = DEFAULT_REPEATS) -> Latency
+
+   Time a callable at steady state.
+
+   :param call: The work to time. Should allocate nothing
+                it can avoid: build inputs before calling, so allocation does not
+                land inside the timed region.
+   :type call: Callable[[], object]
+   :param frames: Frames processed per call, for the per-frame figure.
+   :type frames: int
+   :param warmup: Calls to discard first.
+   :type warmup: int
+   :param repeats: Calls to time.
+   :type repeats: int
+
+   :returns: The samples and their summary.
+   :rtype: Latency
+
+   :raises BenchError: If ``frames`` or ``repeats`` is not positive, or ``warmup``
+       is negative.
+
+

@@ -1,0 +1,370 @@
+blinklinmult.data.datamodule
+============================
+
+.. py:module:: blinklinmult.data.datamodule
+
+.. autoapi-nested-parse::
+
+   Lightning ``DataModule`` that mixes every blink corpus through OmniLoader.
+
+   This is where the six datasets become one training stream. Per split, each
+   corpus is opened as an :class:`omniloader.HDF5Dataset` over its own file and
+   paired with the schema generated from its
+   :class:`~blinklinmult.data.schema.DatasetSpec`; :class:`omniloader.OmniLoader`
+   takes the union, fills each corpus's gaps with placeholders and all-``False``
+   masks, and a mixing strategy balances corpora whose sizes differ by orders of
+   magnitude (MRL-Eye has ~85k stills; TalkingFace is one recording).
+
+   **Why not OmniLoader's own ``OmniDataModule``.** That class builds its splits
+   from an :class:`omniloader.OmniConfig`, which describes datasets by adapter name
+   and inline schema. Here the schemas are *derived* from the dataset specs the
+   HDF5 files were built with, so declaring them again in a config would be a
+   second source of truth that could drift. This module reuses every other piece of
+   OmniLoader — loader, sampler, strategies, transforms, collate — and only owns
+   the wiring.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.datamodule.logger
+   blinklinmult.data.datamodule.STRATEGIES
+   blinklinmult.data.datamodule.MAX_WORKERS
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.datamodule.DataModuleError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.data.datamodule.StridedSubset
+   blinklinmult.data.datamodule.CachedEmbeddingDataset
+   blinklinmult.data.datamodule.BlinkDataModule
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.data.datamodule.pinning_helps
+   blinklinmult.data.datamodule.worker_count
+   blinklinmult.data.datamodule.build_strategy
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: STRATEGIES
+   :value: ('proportional', 'temperature', 'annealed_temperature', 'fixed', 'round_robin')
+
+
+   Mixing strategies selectable from a data config.
+
+.. py:data:: MAX_WORKERS
+   :value: 8
+
+
+   Dataloader worker processes.
+
+   **Measured on the real corpus mix, not on one corpus.** An earlier value of 0
+   came from a genuine measurement on CEW -- a 123 MB corpus where worker startup
+   cost more than the workers saved, because 64px crops are already decoded in the
+   file and there is little per-sample work to parallelise. That measurement noted
+   its own limit: "Larger corpora may invert that trade."
+
+   It inverts. Re-measured over the six-corpus frame-wise mix (54 GB, of which
+   MPEblink is 45 GB), timing steady-state batches per second after a warm-up:
+
+   =============  =============  ==============
+   num_workers    batches/s      vs in-process
+   =============  =============  ==============
+   0                     10.87            1.00x
+   2                     19.63            1.81x
+   4                     35.14            3.23x
+   6                     40.18            3.70x
+   8                     43.18            3.97x
+   10                    46.65            4.29x
+   12                    45.08            4.15x
+   =============  =============  ==============
+
+   **Set to 8 rather than the fastest 10.** The machine has 10 logical cores (4
+   performance, 6 efficiency), so 10 workers leaves nothing for the training
+   process itself, and 12 is already slower than 8 -- the curve has turned. The
+   gain from 8 to 10 is 8%, against the risk of starving the main process on a
+   machine that is also running the model. 8 keeps two cores free and sits within
+   7% of the peak.
+
+   Reproduce with ``uv run python scripts/bench_workers.py``.
+
+.. py:exception:: DataModuleError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when the configured datasets cannot be served.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: StridedSubset(dataset: Any, keep: int, shifting: bool)
+
+   Bases: :py:obj:`torch.utils.data.Dataset`
+
+
+   An evenly-spaced share of a split, optionally shifting each epoch.
+
+   A **stride** rather than a random draw. Sample ids are sorted by recording
+   and frame, so striding spreads the retained windows across every recording
+   instead of taking a contiguous prefix -- which on these corpora would keep
+   whole recordings and drop others entirely.
+
+   **On the training split the stride's offset advances every epoch**, so a
+   run long enough eventually sees the whole corpus. At 10% and 30 epochs the
+   model meets every one of MPEblink's 63 758 training windows rather than the
+   same 6 376 thirty times, at identical per-epoch cost. The offset wraps, so
+   the count per epoch never changes.
+
+   **Validation and test keep a fixed offset.** A validation subset that moved
+   between epochs would change the metric's meaning from one epoch to the
+   next, and early stopping compares those numbers directly.
+
+   :param dataset: The split to thin.
+   :type dataset: Any
+   :param keep: Windows to retain per epoch.
+   :type keep: int
+   :param shifting: Advance the offset each epoch. Training only.
+   :type shifting: bool
+
+   .. attribute:: epoch
+
+      Current epoch, set by :meth:`set_epoch`.
+
+      :type: int
+
+
+   .. py:method:: set_epoch(epoch: int) -> None
+
+      Advance the stride's offset.
+
+      :param epoch: The upcoming epoch.
+      :type epoch: int
+
+
+
+   .. py:method:: __len__() -> int
+
+      Windows retained per epoch.
+
+      :returns: The fixed per-epoch count.
+      :rtype: int
+
+
+
+   .. py:method:: __getitem__(index: int) -> Any
+
+      One window from this epoch's slice.
+
+      :param index: Position within the retained subset.
+      :type index: int
+
+      :returns: The underlying sample.
+      :rtype: Any
+
+
+
+.. py:class:: CachedEmbeddingDataset(dataset: Any, shard: dict[str, numpy.ndarray], name: str)
+
+   Serves a dataset's samples with a precomputed embedding attached.
+
+   The wrapped dataset still supplies the labels, masks and metadata; only the
+   encoder's output is substituted. That keeps every downstream consumer --
+   losses, metrics, the event report -- reading exactly the fields it already
+   read.
+
+   **Keys are matched, not positions.** A cache row is paired with its sample
+   by id, so a corpus rebuilt in a different order, or a subsampled split,
+   cannot silently pair the wrong embedding with the wrong labels. A sample
+   with no cached row is an error rather than a fallback: encoding it live
+   would mix cached and fresh embeddings in one batch, and if the cache were
+   stale that mix would be invisible.
+
+   :param dataset: The corpus split.
+   :type dataset: Any
+   :param shard: A loaded cache shard.
+   :type shard: dict[str, np.ndarray]
+   :param name: Corpus name, for error messages.
+   :type name: str
+
+   :raises EmbeddingCacheError: If the shard does not cover the dataset.
+
+
+   .. py:method:: __len__() -> int
+
+      Number of samples.
+
+      :returns: Length of the wrapped dataset.
+      :rtype: int
+
+
+
+   .. py:method:: __getitem__(index: int) -> dict[str, Any]
+
+      One sample, with its cached embedding attached.
+
+      :param index: Sample index.
+      :type index: int
+
+      :returns: The sample plus :data:`~blinklinmult.data.schema.EYE_EMBEDDING`.
+      :rtype: dict[str, Any]
+
+      :raises EmbeddingCacheError: If the sample has no cached row.
+
+
+
+.. py:function:: pinning_helps() -> bool
+
+   Whether pinned host memory does anything on this machine.
+
+   Pinning is a CUDA optimisation: it stages batches in page-locked host memory
+   so the copy to the device can run asynchronously. **MPS does not implement
+   it.** PyTorch warns once per loader --
+
+       UserWarning: 'pin_memory' argument is set as true but not supported on
+       MPS now, device pinned memory won't be used.
+
+   -- and then ignores the flag, so the setting is inert rather than harmful.
+   The warning is still worth removing: a config that asks for something the
+   hardware cannot do reads as an oversight, and a benchmark log full of
+   ignorable warnings is one where a real warning goes unread.
+
+   The configs keep ``pin_memory: true`` because it is correct on a CUDA host
+   and these corpora are meant to be portable; this gate turns it off only
+   where it would be a no-op.
+
+   :returns: ``True`` when a CUDA device is present, ``False`` otherwise.
+   :rtype: bool
+
+
+.. py:function:: worker_count(num_workers: int) -> int
+
+   Clamp the configured worker count to what the reader supports.
+
+   :param num_workers: Worker count from the data config.
+   :type num_workers: int
+
+   :returns: The requested count, capped at :data:`MAX_WORKERS`; see it for the
+             measurements behind that ceiling.
+   :rtype: int
+
+
+.. py:function:: build_strategy(name: str, sizes: list[int], kwargs: dict | None = None) -> omniloader.MixingStrategy
+
+   Construct a mixing strategy by config name.
+
+   :param name: One of :data:`STRATEGIES`.
+   :type name: str
+   :param sizes: Sample count per dataset, in dataset order.
+   :type sizes: list[int]
+   :param kwargs: Strategy-specific keyword arguments.
+   :type kwargs: dict | None
+
+   :returns: The strategy.
+   :rtype: MixingStrategy
+
+   :raises DataModuleError: If the name is unknown.
+
+
+.. py:class:: BlinkDataModule(config: blinklinmult.train.config.DataConfig, specs: list[blinklinmult.data.schema.DatasetSpec], root: pathlib.Path)
+
+   Bases: :py:obj:`lightning.LightningDataModule`
+
+
+   Serves the mixed blink corpora to the training loop.
+
+   :param config: Dataloader configuration.
+   :type config: DataConfig
+   :param specs: Corpora to include, in config order.
+   :type specs: list[DatasetSpec]
+   :param root: Repository root that dataset paths resolve against.
+   :type root: Path
+
+   :raises DataModuleError: If no dataset is configured.
+
+
+   .. py:method:: h5_path(spec: blinklinmult.data.schema.DatasetSpec) -> pathlib.Path
+
+      Path of one corpus's built HDF5 file.
+
+      :param spec: The corpus.
+      :type spec: DatasetSpec
+
+      :returns: Absolute path to the file.
+      :rtype: Path
+
+
+
+   .. py:method:: setup(stage: str | None = None) -> None
+
+      Open every split's datasets and build the training sampler.
+
+      :param stage: Lightning stage hint. Splits are built for
+                    whichever stages need them; ``None`` builds all.
+      :type stage: str | None
+
+
+
+   .. py:method:: set_epoch(epoch: int) -> None
+
+      Advance the mixing draw and per-sample augmentation for a new epoch.
+
+      :param epoch: The upcoming epoch number.
+      :type epoch: int
+
+
+
+   .. py:method:: train_dataloader() -> torch.utils.data.DataLoader
+
+      Training loader, drawing through the mixing strategy.
+
+      :returns: The loader.
+      :rtype: DataLoader
+
+
+
+   .. py:method:: val_dataloader() -> torch.utils.data.DataLoader
+
+      Validation loader.
+
+      Every corpus is iterated in full and in order, so a validation score is
+      not itself a function of the mixing draw.
+
+      :returns: The loader.
+      :rtype: DataLoader
+
+
+
+   .. py:method:: test_dataloader() -> torch.utils.data.DataLoader
+
+      Test loader.
+
+      :returns: The loader.
+      :rtype: DataLoader
+
+
+

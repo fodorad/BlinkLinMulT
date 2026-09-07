@@ -1,0 +1,342 @@
+blinklinmult.pipeline
+=====================
+
+.. py:module:: blinklinmult.pipeline
+
+.. autoapi-nested-parse::
+
+   Blink detection on a video, as seven observable stages.
+
+   The corpora hand a model eye crops that were extracted months earlier. A video
+   hands it pixels, and everything between -- finding a face, keeping it the *same*
+   face, reading its pose, locating the eyes, deciding which are even visible -- has
+   to happen first. This module is that path.
+
+   **Staged, not streamed.** Each stage consumes all frames from the previous one
+   before the next begins, because that is how the work actually batches, and each
+   reports its own wall-clock time. A slow run is then immediately attributable
+   rather than a single opaque wait.
+
+   ===  ==========================  =============================================
+    #   stage                       produces
+   ===  ==========================  =============================================
+    1   face detection + tracking   one box per frame, the same person throughout
+    2   head pose                   ``[yaw, pitch, roll]`` degrees per frame
+    3   landmarks + eye boxes       478 points and two eye boxes per frame
+    4   eye selection               per frame: left, right, both or neither
+    5   inference                   per-frame closeness, per eye
+    6   labelling                   open/closed per frame, plus blink events
+    7   visualisation               handled by the caller, from these results
+   ===  ==========================  =============================================
+
+   :func:`run` is a generator yielding a :class:`Stage` as each completes, so a UI
+   can show progress without the pipeline knowing anything about a UI.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.pipeline.logger
+   blinklinmult.pipeline.MAX_SECONDS
+   blinklinmult.pipeline.YAW_LIMIT
+   blinklinmult.pipeline.PROGRESS_EVERY
+   blinklinmult.pipeline.SIDES
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.pipeline.PipelineError
+   blinklinmult.pipeline.NoFaceError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.pipeline.Extraction
+   blinklinmult.pipeline.Stage
+   blinklinmult.pipeline.FrameResult
+   blinklinmult.pipeline.Result
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.pipeline.ground_truth
+   blinklinmult.pipeline.occluded_side
+   blinklinmult.pipeline.run
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: MAX_SECONDS
+   :value: 10.0
+
+
+   Longest video processed, in seconds.
+
+   Seven stages over several models per frame is minutes of CPU for seconds of
+   video. Longer input is truncated with a warning rather than silently accepted
+   and left to time out.
+
+.. py:data:: YAW_LIMIT
+   :value: 45.0
+
+
+   Degrees of yaw past which one eye is treated as occluded.
+
+   **Positive yaw turns the nose toward image-left**, so it occludes the viewer's
+   *right* eye; negative yaw occludes the left. That sign is not arbitrary: exordium
+   draws the yaw axis as ``x = size * sin(-radians(yaw))``, which puts the nose at
+   negative x -- image-left -- for positive yaw. Our side labels are the viewer's,
+   fixed by the same TalkingFace measurement that pins the region mirror in
+   :class:`~blinklinmult.preprocess.extractors.FaceMeshLocator`.
+
+   Getting this backwards suppresses the *visible* eye and keeps the occluded one,
+   which still produces a plausible-looking result. :mod:`tests.test_pipeline`
+   asserts both directions.
+
+.. py:data:: PROGRESS_EVERY
+   :value: 50
+
+
+   Frames between progress lines within a stage.
+
+   One line per frame would be noise, and yielding per frame would cost a
+   meaningful share of the runtime it is reporting.
+
+.. py:data:: SIDES
+
+   The two eyes, in the order they are reported.
+
+.. py:class:: Extraction
+
+   How a per-frame eye-state curve becomes blink events.
+
+   ESR gives a continuous closeness signal; blink *presence* is a decision laid
+   on top of it, and this is that decision made explicit. It is separated from
+   the model because the two are independently wrong: a shipped operating point
+   is only fitted for the corpus it was fitted on, and applying it elsewhere is
+   a transfer, not a measurement.
+
+   :param high: A run must peak above this to count as a blink.
+   :type high: float
+   :param low: It extends while above this. ``None`` is a single
+               cut, where the same value has to both reject noise and catch a
+               closure's shallow onset -- two jobs one number does badly.
+   :type low: float | None
+
+
+   .. py:method:: fitted(model_spec: blinklinmult.registry.ModelSpec) -> Extraction
+      :classmethod:
+
+
+      The operating point registered for a model.
+
+      :param model_spec: The model's registry entry.
+      :type model_spec: ModelSpec
+
+      :returns: Its thresholds. For the 1.x models this is 0.5, a
+                neutral sigmoid midpoint rather than a measurement -- that work
+                reported eye state, not events, so no operating point was ever fitted
+                for them. Supply your own rather than inheriting it.
+      :rtype: Extraction
+
+
+
+   .. py:method:: validate() -> None
+
+      Check the thresholds can separate anything.
+
+      :raises PipelineError: If a threshold is outside ``(0, 1)``, or the low cut
+          is not below the high one -- at or above it, hysteresis stops
+          extending runs and silently degrades to a single threshold.
+
+
+
+   .. py:method:: describe() -> str
+
+      One line naming the rule, for the log.
+
+      :returns: Human-readable summary.
+      :rtype: str
+
+
+
+.. py:exception:: PipelineError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when a video cannot be processed at all.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: NoFaceError
+
+   Bases: :py:obj:`PipelineError`
+
+
+   Raised when no frame of the video holds a face.
+
+   Separate from :class:`PipelineError` because it is a property of the *input*,
+   not a fault: the message tells a user what to upload instead, where a decode
+   failure tells them something is broken.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: Stage
+
+   One completed stage, for a progress display.
+
+   :param index: 1-based stage number.
+   :type index: int
+   :param total: How many stages there are.
+   :type total: int
+   :param name: Short human label.
+   :type name: str
+   :param detail: What it found -- counts, not prose.
+   :type detail: str
+   :param seconds: Wall-clock time the stage took.
+   :type seconds: float
+
+
+   .. py:method:: line() -> str
+
+      Render as one log line.
+
+      :returns: ``[n/7] name ... detail   1.2 s``
+      :rtype: str
+
+
+
+.. py:class:: FrameResult
+
+   Everything known about one frame, for the overlay.
+
+   :param index: Frame number in the source video.
+   :type index: int
+   :param face_box: ``(x1, y1, x2, y2)``, or ``None`` when the
+                    tracked subject was not found here.
+   :type face_box: tuple | None
+   :param landmarks: ``(478, 2)`` FaceMesh points.
+   :type landmarks: np.ndarray | None
+   :param pose: ``[yaw, pitch, roll]`` in degrees.
+   :type pose: np.ndarray | None
+   :param eyes: Box per side.
+   :type eyes: dict[str, EyeBox | None]
+   :param used: Whether each side was scored.
+   :type used: dict[str, bool]
+   :param score: Closeness per side; ``None`` where the
+                 eye was not scored, which is **not** the same as zero.
+   :type score: dict[str, float | None]
+
+
+.. py:class:: Result
+
+   The finished analysis of one video.
+
+   :param frames: Per-frame findings, in order.
+   :type frames: list[FrameResult]
+   :param signal: Per-side closeness, ``NaN`` where the
+                  eye was not scored. NaN rather than zero so a gap cannot be mistaken
+                  for a confident "open".
+   :type signal: dict[str, np.ndarray]
+   :param events: Blink intervals per side.
+   :type events: dict[str, list[Interval]]
+   :param fps: Source frame rate.
+   :type fps: float
+   :param model_id: Which model produced this.
+   :type model_id: str
+   :param truncated: Whether the video was cut to :data:`MAX_SECONDS`.
+   :type truncated: bool
+   :param truth: Annotated per-eye state, when the
+                 clip came with a ``.tag``. ``None`` for an uploaded video.
+   :type truth: dict[str, np.ndarray] | None
+   :param extraction: The rule that produced ``events``.
+   :type extraction: Extraction | None
+
+
+.. py:function:: ground_truth(tag_path: str | pathlib.Path, frames: int, offset: int = 0) -> dict[str, numpy.ndarray] | None
+
+   Per-eye annotated eye state, for a corpus clip that ships a ``.tag``.
+
+   Only the ``.tag`` corpora have this; an uploaded video does not. It is drawn
+   on the plot so a prediction can be read against what was annotated rather
+   than judged by eye.
+
+   :param tag_path: The ``.tag`` file beside the video.
+   :type tag_path: str | Path
+   :param frames: How many frames were analysed.
+   :type frames: int
+   :param offset: Index of the first analysed frame in the source video, so
+                  a mid-video segment lines its annotation up correctly.
+   :type offset: int
+
+   :returns: Per-side 0/1 arrays of length ``frames``,
+             or ``None`` when the file is absent or unreadable.
+   :rtype: dict[str, np.ndarray] | None
+
+
+.. py:function:: occluded_side(yaw: float, limit: float = YAW_LIMIT) -> str | None
+
+   Which eye a head turn hides, if any.
+
+   :param yaw: Head yaw in degrees.
+   :type yaw: float
+   :param limit: Magnitude past which one eye counts as occluded.
+   :type limit: float
+
+   :returns: The hidden side, or ``None`` when the head is frontal
+             enough for both.
+   :rtype: str | None
+
+
+.. py:function:: run(video_path: str | pathlib.Path, detector: blinklinmult.detector.BlinkDetector, stats: dict[str, list[float]] | None = None, tag_path: str | pathlib.Path | None = None, extraction: Extraction | None = None, start: float = 0.0, duration: float = MAX_SECONDS) -> collections.abc.Iterator[Stage | Result]
+
+   Analyse a video, yielding each stage as it completes.
+
+   Yields six :class:`Stage` objects and then a final :class:`Result`. The
+   caller decides what to do with the stages -- a UI prints them, a test
+   ignores them.
+
+   :param video_path: The video to analyse.
+   :type video_path: str | Path
+   :param detector: A loaded model.
+   :type detector: BlinkDetector
+   :param stats: Corpus feature statistics, ``{"mean": ..., "std":
+                 ...}``. Required by ``blinklinmult-union``, ignored by the others.
+   :type stats: dict | None
+   :param tag_path: A ``.tag`` annotation to plot alongside
+                    the prediction. Only the corpus clips have one.
+   :type tag_path: str | Path | None
+   :param extraction: How to turn the eye-state curve into
+                      events. Defaults to the model's registered operating point.
+   :type extraction: Extraction | None
+   :param start: Where in the video to begin, in seconds.
+   :type start: float
+   :param duration: How much of it to analyse, in seconds.
+   :type duration: float
+
+   :Yields: *Stage | Result* -- One per completed stage, then the result.
+
+   :raises PipelineError: If the video cannot be read, or the two-stream model was
+       given no feature statistics.
+
+

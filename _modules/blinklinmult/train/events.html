@@ -1,0 +1,1279 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/_modules/blinklinmult/train/events.html">
+        <link rel="prefetch" href="../../../_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>blinklinmult.train.events - BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../eye_state_events.html">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/data/index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/schema/index.html">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/train/index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/metrics/index.html">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for blinklinmult.train.events</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Event-level scoring: recovering blinks from a per-frame signal.</span>
+
+<span class="sd">This is the evaluation protocol the blink literature uses, and following it is</span>
+<span class="sd">what makes numbers here comparable with published ones. The window a model sees</span>
+<span class="sd">is its receptive field and nothing more — no blink is ever assigned to a window.</span>
+<span class="sd">Events are recovered afterwards:</span>
+
+<span class="sd">1. **Sweep** the recording with 50%-overlapping windows, annotation-blind.</span>
+<span class="sd">2. **Average** the per-frame predictions wherever windows overlap.</span>
+<span class="sd">3. **Threshold** the averaged signal and merge consecutive above-threshold</span>
+<span class="sd">   frames into predicted intervals.</span>
+<span class="sd">4. **Match** those intervals against the annotated blinks.</span>
+
+<span class="sd">Steps 3 and 4 are exactly MPEblink's Figure 6 procedure.</span>
+
+<span class="sd">**Four matching criteria, all reported.** Papers differ in which they use, and</span>
+<span class="sd">they are not interchangeable — a detection one frame short of the annotation is</span>
+<span class="sd">a hit under ``any`` and a miss under ``iou75``:</span>
+
+<span class="sd">=========  ==================================================================</span>
+<span class="sd">``any``    ≥1 frame of intersection — Drutarovsky &amp; Fogelton (2015)</span>
+<span class="sd">``iou20``  temporal IoU &gt; 0.2 — Fogelton &amp; Beneš (2016)</span>
+<span class="sd">``iou50``  temporal IoU ≥ 0.50 — MPEblink Blink-AP</span>
+<span class="sd">``iou75``  temporal IoU ≥ 0.75 — MPEblink Blink-AP</span>
+<span class="sd">=========  ==================================================================</span>
+
+<span class="sd">**Matching is one-to-one**, as in MPEblink's Hungarian assignment, and that</span>
+<span class="sd">cuts both ways:</span>
+
+<span class="sd">* Two predicted intervals on the same blink score one true positive and one</span>
+<span class="sd">  *false* positive — otherwise a model that fires twice per blink reports twice</span>
+<span class="sd">  the recall it earned.</span>
+<span class="sd">* One long prediction spanning two annotated blinks scores one true positive and</span>
+<span class="sd">  one *false negative*. Failing to separate a close pair is a real failure —</span>
+<span class="sd">  MPEblink's "consecutive rapid eyeblink" case — and crediting both would hide</span>
+<span class="sd">  it. A model that resolves the pair gets full credit.</span>
+
+<span class="sd">**No single threshold.** The operating point changes every number, so the</span>
+<span class="sd">headline is an FROC curve: recall against false alarms per minute, swept across</span>
+<span class="sd">thresholds. A single-threshold table is still reported for readability, but the</span>
+<span class="sd">curve is what the comparison rests on.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="sd">"""Module-level logger."""</span>
+
+<span class="n">CRITERIA</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"any"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">"iou20"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="s2">"iou50"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="s2">"iou75"</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="sd">"""Matching criteria, as minimum temporal IoU.</span>
+
+<span class="sd">``any`` is the degenerate case: a threshold of ``0.0`` accepts any non-empty</span>
+<span class="sd">intersection, so it needs no separate code path. ``iou20`` is *strictly*</span>
+<span class="sd">greater than 0.2 in the source; the difference from ``&gt;=`` is one frame in</span>
+<span class="sd">edge cases and is documented on :func:`matches`.</span>
+<span class="sd">"""</span>
+
+<span class="n">DEFAULT_THRESHOLDS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">,</span> <span class="mi">99</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="sd">"""Operating points swept for the FROC curve.</span>
+
+<span class="sd">0.01 resolution over ``[0.01, 0.99]``. The original 0.05-step sweep over</span>
+<span class="sd">``[0.05, 0.95]`` was too coarse to distinguish a fitted optimum from a boundary</span>
+<span class="sd">hit: the frame-wise model's operating point landed on 0.05 -- the sweep's floor</span>
+<span class="sd">-- for both RN15 and RN30, which is the signature of a search running out of</span>
+<span class="sd">range rather than finding a minimum. Extending below the old floor makes that</span>
+<span class="sd">distinguishable, and the finer step recovers calibration that 0.05 buckets lost.</span>
+<span class="sd">"""</span>
+
+<span class="n">Interval</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="sd">"""A closed frame interval ``(start, end)``, both inclusive."""</span>
+
+
+<div class="viewcode-block" id="EventError">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.EventError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EventError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a signal and its annotation cannot be scored together."""</span></div>
+
+
+
+<div class="viewcode-block" id="MatchResult">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.MatchResult">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MatchResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Counts from matching predictions to annotations under one criterion.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        true_positives (int): Annotated blinks that were detected.</span>
+<span class="sd">        false_positives (int): Predicted intervals matching no annotation.</span>
+<span class="sd">        false_negatives (int): Annotated blinks that were missed.</span>
+<span class="sd">        matched (dict[int, list[int]]): Annotation index to the prediction</span>
+<span class="sd">            indices that hit it, for inspecting *how* a blink was detected.</span>
+<span class="sd">    """</span>
+
+    <span class="n">true_positives</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">false_positives</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">false_negatives</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">matched</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recall</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Fraction of annotated blinks detected.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: ``TP / (TP + FN)``; ``0.0`` when nothing was annotated.</span>
+<span class="sd">        """</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_positives</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">false_negatives</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_positives</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">precision</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Fraction of predictions that hit an annotation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: ``TP / (TP + FP)``; ``0.0`` when nothing was predicted.</span>
+<span class="sd">        """</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_positives</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">false_positives</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">true_positives</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Harmonic mean of precision and recall.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: ``0.0`` when either is zero.</span>
+<span class="sd">        """</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recall</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">recall</span> <span class="o">/</span> <span class="n">total</span> <span class="k">if</span> <span class="n">total</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+<div class="viewcode-block" id="MatchResult.false_alarms_per_minute">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.MatchResult.false_alarms_per_minute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">false_alarms_per_minute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minutes</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""False positives normalised by recording length.</span>
+
+<span class="sd">        The natural rate on continuous footage: a count alone is not comparable</span>
+<span class="sd">        between a 3-second clip and a 5-minute recording.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            minutes (float): Recording duration.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: ``FP / minutes``; ``0.0`` for a zero-length recording.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">false_positives</span> <span class="o">/</span> <span class="n">minutes</span> <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="average_overlapping">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.average_overlapping">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">average_overlapping</span><span class="p">(</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">frame_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">n_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Collapse overlapping window predictions into one signal per frame.</span>
+
+<span class="sd">    A frame covered by several windows receives the mean of their predictions.</span>
+<span class="sd">    A frame no window covers has no prediction at all and is **masked**, not</span>
+<span class="sd">    zeroed — a zero is a confident "no blink", which is a different claim from</span>
+<span class="sd">    "not evaluated".</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        probabilities (Sequence[float] | np.ndarray): ``(N,)`` per-frame</span>
+<span class="sd">            predictions, flattened across windows and eyes.</span>
+<span class="sd">        frame_ids (Sequence[int] | np.ndarray): ``(N,)`` frame id each</span>
+<span class="sd">            prediction belongs to.</span>
+<span class="sd">        n_frames (int): Length of the recording.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[np.ndarray, np.ndarray]: ``(n_frames,)`` averaged signal and its</span>
+<span class="sd">        ``(n_frames,)`` coverage mask.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        EventError: If the inputs disagree in length, or a frame id is out of</span>
+<span class="sd">            range for the declared recording length.</span>
+<span class="sd">    """</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frame_ids</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EventError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> predictions against </span><span class="si">{</span><span class="n">frames</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> frame ids; they must pair up."</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_frames</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EventError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"n_frames must be &gt;= 1, got </span><span class="si">{</span><span class="n">n_frames</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">frames</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">n_frames</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">EventError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"frame ids span [</span><span class="si">{</span><span class="n">frames</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">frames</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">] but the recording "</span>
+            <span class="sa">f</span><span class="s2">"declares </span><span class="si">{</span><span class="n">n_frames</span><span class="si">}</span><span class="s2"> frames."</span>
+        <span class="p">)</span>
+
+    <span class="n">totals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">totals</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">signal</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">totals</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">counts</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">signal</span><span class="p">,</span> <span class="n">mask</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_runs</span><span class="p">(</span><span class="n">flags</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Inclusive ``(start, end)`` spans of consecutive ``True`` values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        flags (np.ndarray): ``(T,)`` boolean.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[Interval]: One span per run, in order.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">flags</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="c1"># Padding with False on both sides makes the first and last runs fall out</span>
+    <span class="c1"># of the same diff.</span>
+    <span class="n">padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="kc">False</span><span class="p">],</span> <span class="n">flags</span><span class="p">,</span> <span class="p">[</span><span class="kc">False</span><span class="p">]])</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">padded</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">padded</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">edges</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">]</span>
+
+
+<div class="viewcode-block" id="to_intervals">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.to_intervals">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_intervals</span><span class="p">(</span>
+    <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">low_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Merge consecutive above-threshold frames into predicted intervals.</span>
+
+<span class="sd">    An uncovered frame **breaks** a run rather than extending it: with no</span>
+<span class="sd">    prediction there, joining across the gap would assert a continuity the</span>
+<span class="sd">    model never claimed.</span>
+
+<span class="sd">    **Hysteresis.** With ``low_threshold`` set, a run must *peak* above</span>
+<span class="sd">    ``threshold`` to count as an event but extends while it stays above</span>
+<span class="sd">    ``low_threshold``. A single cut is the crudest possible extractor and is</span>
+<span class="sd">    what makes the operating point brittle -- it has to be low enough to catch</span>
+<span class="sd">    the shallow start of a closure and high enough not to fire on noise, and no</span>
+<span class="sd">    single value does both. Two thresholds separate those jobs: the high one</span>
+<span class="sd">    decides *whether* this is a blink, the low one decides *where* it begins and</span>
+<span class="sd">    ends.</span>
+
+<span class="sd">    This matters for the physical shape of a blink. The eye-state signal ramps</span>
+<span class="sd">    down through closing, plateaus while closed, and ramps back up through</span>
+<span class="sd">    opening; the ramps cross the low threshold well before the high one, so</span>
+<span class="sd">    hysteresis recovers the true onset and offset rather than clipping to the</span>
+<span class="sd">    part of the closure that happened to be deepest. It also makes an</span>
+<span class="sd">    *incomplete* blink -- one that crosses low but never high -- explicitly</span>
+<span class="sd">    detectable rather than silently truncated.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signal (np.ndarray): ``(T,)`` averaged per-frame predictions.</span>
+<span class="sd">        mask (np.ndarray): ``(T,)`` coverage mask.</span>
+<span class="sd">        threshold (float): Frames strictly above this are "blinking". With</span>
+<span class="sd">            hysteresis this is the *high* threshold, which a run must reach.</span>
+<span class="sd">        low_threshold (float | None): Extend a run while it stays strictly above</span>
+<span class="sd">            this. ``None`` -- the default -- keeps the single-threshold</span>
+<span class="sd">            behaviour exactly, so every existing caller is unchanged. Values at</span>
+<span class="sd">            or above ``threshold`` are treated as ``None``, since they could</span>
+<span class="sd">            only shrink a run rather than extend it.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[Interval]: Inclusive ``(start, end)`` frame intervals, in order.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        EventError: If the signal and mask disagree in length.</span>
+<span class="sd">    """</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">covered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">covered</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EventError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"signal is </span><span class="si">{</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> long against a </span><span class="si">{</span><span class="n">covered</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> mask."</span><span class="p">)</span>
+
+    <span class="n">above</span> <span class="o">=</span> <span class="n">covered</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">low_threshold</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">low_threshold</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_runs</span><span class="p">(</span><span class="n">above</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">above</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="c1"># Every span the signal holds above the low threshold, then only those that</span>
+    <span class="c1"># reach the high one. Keeping the *extended* span is the point: it is the</span>
+    <span class="c1"># full closure, where `above` alone is just its deepest part.</span>
+    <span class="n">extended</span> <span class="o">=</span> <span class="n">covered</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">low_threshold</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">span</span> <span class="k">for</span> <span class="n">span</span> <span class="ow">in</span> <span class="n">_runs</span><span class="p">(</span><span class="n">extended</span><span class="p">)</span> <span class="k">if</span> <span class="n">above</span><span class="p">[</span><span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()]</span></div>
+
+
+
+<div class="viewcode-block" id="temporal_iou">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.temporal_iou">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">temporal_iou</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Intersection over union of two inclusive frame intervals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a (Interval): First interval.</span>
+<span class="sd">        b (Interval): Second.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: ``|a ∩ b| / |a ∪ b|`` in frames; ``0.0`` when disjoint.</span>
+<span class="sd">    """</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">intersection</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">intersection</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="n">union</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">intersection</span>
+    <span class="k">return</span> <span class="n">intersection</span> <span class="o">/</span> <span class="n">union</span></div>
+
+
+
+<span class="n">BLINK_AP_TIOU</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="sd">"""The ten tIoU thresholds MPEblink's Blink-AP averages over.</span>
+
+<span class="sd">``np.linspace(0.5, 0.95, 10)`` verbatim from the authors' ``action_ap``, so</span>
+<span class="sd">``[0]`` is Blink-AP@0.5, ``[5]`` is @0.75 and the mean is the headline</span>
+<span class="sd">@0.5:0.95. Reproducing the grid exactly is what makes the numbers comparable.</span>
+<span class="sd">"""</span>
+
+
+<div class="viewcode-block" id="segment_iou">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.segment_iou">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">segment_iou</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Temporal IoU of one interval against many, in the authors' convention.</span>
+
+<span class="sd">    **Endpoints are exclusive here**, unlike :func:`temporal_iou`: the authors</span>
+<span class="sd">    compute ``t_end - t_start`` with no ``+1``, so a blink annotated</span>
+<span class="sd">    ``[10, 14]`` has length 4 rather than 5. Keeping their convention matters --</span>
+<span class="sd">    on a five-frame blink the two differ by 20%, which is enough to move a</span>
+<span class="sd">    detection across a tIoU threshold and change the reported AP.</span>
+
+<span class="sd">    Both arguments must already be **half-open**; use :func:`to_exclusive` to</span>
+<span class="sd">    convert this project's inclusive intervals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        target (tuple[float, float]): The predicted interval, half-open.</span>
+<span class="sd">        candidates (np.ndarray): ``(N, 2)`` annotated intervals, half-open.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: ``(N,)`` temporal IoU against each candidate.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">candidates</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">candidates</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">candidates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">intersection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">union</span> <span class="o">=</span> <span class="p">(</span><span class="n">candidates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">candidates</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">intersection</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">union</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">intersection</span> <span class="o">/</span> <span class="n">union</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="interpolated_average_precision">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.interpolated_average_precision">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpolated_average_precision</span><span class="p">(</span><span class="n">precision</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">recall</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Area under the precision-recall curve, VOC-style.</span>
+
+<span class="sd">    Precision is made monotonically decreasing from the right, then the area is</span>
+<span class="sd">    summed over the steps where recall changes. This is the authors'</span>
+<span class="sd">    ``interpolated_prec_rec`` verbatim.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        precision (np.ndarray): ``(N,)`` cumulative precision.</span>
+<span class="sd">        recall (np.ndarray): ``(N,)`` cumulative recall.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The average precision.</span>
+<span class="sd">    """</span>
+    <span class="n">padded_precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">precision</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]])</span>
+    <span class="n">padded_recall</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">recall</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]])</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">padded_precision</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">padded_precision</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">padded_precision</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">padded_precision</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">changes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">padded_recall</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">padded_recall</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">padded_recall</span><span class="p">[</span><span class="n">changes</span><span class="p">]</span> <span class="o">-</span> <span class="n">padded_recall</span><span class="p">[</span><span class="n">changes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">padded_precision</span><span class="p">[</span><span class="n">changes</span><span class="p">])</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="to_exclusive">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.to_exclusive">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_exclusive</span><span class="p">(</span><span class="n">interval</span><span class="p">:</span> <span class="n">Interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Convert an inclusive frame interval to the authors' half-open one.</span>
+
+<span class="sd">    Everything else here treats ``(start, end)`` as **inclusive** of both</span>
+<span class="sd">    endpoints, because that is what the corpora annotate: a blink over frames</span>
+<span class="sd">    10 to 14 covers five frames. The authors' ``segment_iou`` measures</span>
+<span class="sd">    ``end - start`` with no ``+1``, so the same pair means a length of four.</span>
+
+<span class="sd">    Without this conversion a **single-frame prediction has length zero**, its</span>
+<span class="sd">    IoU against itself is ``0/0 = 0``, and a perfect detection scores as a</span>
+<span class="sd">    miss -- measured on the real corpus, that alone cost 2.4 points of AP.</span>
+<span class="sd">    The annotation never triggers it (its shortest blink spans two frames, and</span>
+<span class="sd">    none is degenerate across 4 809 events), but a thresholded signal readily</span>
+<span class="sd">    produces one-frame intervals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        interval (Interval): Inclusive ``(start, end)``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[float, float]: Half-open ``(start, end + 1)``, so an inclusive</span>
+<span class="sd">        span of ``n`` frames has exclusive length ``n``.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">interval</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="blink_ap">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.blink_ap">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">blink_ap</span><span class="p">(</span>
+    <span class="n">annotated</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]],</span>
+    <span class="n">predicted</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+    <span class="n">tiou_thresholds</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""MPEblink's Blink-AP: average precision over a sweep of tIoU thresholds.</span>
+
+<span class="sd">    A faithful reimplementation of the authors' ``compute_average_precision_detection``,</span>
+<span class="sd">    so a number produced here can be placed beside their published 8.58</span>
+<span class="sd">    (@0.5:0.95) and 25.13 (@0.5).</span>
+
+<span class="sd">    The algorithm, and why each step matters:</span>
+
+<span class="sd">    1. **Rank every prediction across the whole corpus by score**, not per</span>
+<span class="sd">       recording. AP integrates one global precision-recall curve, so a</span>
+<span class="sd">       confident detection in one clip outranks a doubtful one in another.</span>
+<span class="sd">    2. For each prediction, compute tIoU against the annotations **of its own</span>
+<span class="sd">       instance**, and try them from highest overlap down.</span>
+<span class="sd">    3. At each tIoU threshold independently: the first annotation clearing the</span>
+<span class="sd">       threshold *and not already claimed* makes this a true positive and locks</span>
+<span class="sd">       it. One already claimed is skipped in favour of the next. A prediction</span>
+<span class="sd">       that clears the threshold against nothing unclaimed is a false positive.</span>
+<span class="sd">    4. Integrate precision against recall with</span>
+<span class="sd">       :func:`interpolated_average_precision`, once per threshold.</span>
+
+<span class="sd">    Because matching is one-to-one *per threshold*, a model firing twice on one</span>
+<span class="sd">    blink earns one true positive and one false positive -- the same discipline</span>
+<span class="sd">    :func:`match` applies at a single operating point.</span>
+
+<span class="sd">    **This is oracle-instance Blink-AP.** The authors score only the instances</span>
+<span class="sd">    their detector already matched; here the instances come from the annotation,</span>
+<span class="sd">    so instance detection is free and the result is an upper bound on their</span>
+<span class="sd">    joint figure. It must be reported as such -- see</span>
+<span class="sd">    :mod:`blinklinmult.preprocess.mpeblink`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        annotated (dict): Instance id to its annotated blink intervals.</span>
+<span class="sd">        predicted (dict): Instance id to ``(start, end, score)`` predictions.</span>
+<span class="sd">            Ids absent from ``annotated`` contribute only false positives.</span>
+<span class="sd">        tiou_thresholds (np.ndarray | None): The sweep; defaults to</span>
+<span class="sd">            :data:`BLINK_AP_TIOU`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: ``(len(tiou_thresholds),)`` average precision per threshold.</span>
+<span class="sd">        All zeros when nothing is annotated or nothing is predicted.</span>
+<span class="sd">    """</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">BLINK_AP_TIOU</span> <span class="k">if</span> <span class="n">tiou_thresholds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tiou_thresholds</span><span class="p">)</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">positives</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span> <span class="k">for</span> <span class="n">events</span> <span class="ow">in</span> <span class="n">annotated</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="n">flat</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">instance</span><span class="p">,</span> <span class="n">events</span> <span class="ow">in</span> <span class="n">predicted</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">events</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">positives</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">flat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">scores</span>
+
+    <span class="c1"># One global ranking: AP integrates a single corpus-wide curve.</span>
+    <span class="c1">#</span>
+    <span class="c1"># `argsort()[::-1]`, exactly as the authors write it. This is deliberately</span>
+    <span class="c1"># numpy's own call rather than an equivalent Python sort: the default kind</span>
+    <span class="c1"># is quicksort, which is **unstable**, so the order of equally-scored</span>
+    <span class="c1"># predictions depends on numpy's partitioning and no sorted-key expression</span>
+    <span class="c1"># reproduces it. Ties are common -- scores quantise -- and reordering two</span>
+    <span class="c1"># tied predictions can move a false positive across a true one. Emulating</span>
+    <span class="c1"># the sort instead of calling it left ~3% of random corpora disagreeing by</span>
+    <span class="c1"># up to 3.3e-2 AP.</span>
+    <span class="n">ranking</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">flat</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">flat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ranking</span><span class="p">]</span>
+
+    <span class="c1"># One flat ground-truth table with global row numbers, and a lock indexed by</span>
+    <span class="c1"># those. The authors build exactly this (a DataFrame grouped by video-id,</span>
+    <span class="c1"># whose `index` column survives the grouping) and it is not equivalent to a</span>
+    <span class="c1"># per-instance lock: the row number is what `lock_gt` is keyed on.</span>
+    <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">instance</span><span class="p">,</span> <span class="n">events</span> <span class="ow">in</span> <span class="n">annotated</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="n">positions</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_exclusive</span><span class="p">(</span><span class="n">event</span><span class="p">))</span>
+
+    <span class="n">truth</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">instance</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">positions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">claimed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)),</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">true_positive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">flat</span><span class="p">)))</span>
+    <span class="n">false_positive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">flat</span><span class="p">)))</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">_score</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flat</span><span class="p">):</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">truth</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">candidates</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">candidates</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># A prediction on an instance with no annotated blink is a false</span>
+            <span class="c1"># alarm at every threshold.</span>
+            <span class="n">false_positive</span><span class="p">[:,</span> <span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+
+        <span class="n">overlaps</span> <span class="o">=</span> <span class="n">segment_iou</span><span class="p">(</span><span class="n">to_exclusive</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)),</span> <span class="n">candidates</span><span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">overlaps</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">global_rows</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">instance</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">level</span><span class="p">,</span> <span class="n">threshold</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">thresholds</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">overlaps</span><span class="p">[</span><span class="n">candidate</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+                    <span class="n">false_positive</span><span class="p">[</span><span class="n">level</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">claimed</span><span class="p">[</span><span class="n">level</span><span class="p">,</span> <span class="n">global_rows</span><span class="p">[</span><span class="n">candidate</span><span class="p">]]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">true_positive</span><span class="p">[</span><span class="n">level</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">claimed</span><span class="p">[</span><span class="n">level</span><span class="p">,</span> <span class="n">global_rows</span><span class="p">[</span><span class="n">candidate</span><span class="p">]]</span> <span class="o">=</span> <span class="n">index</span>
+                <span class="k">break</span>
+            <span class="c1"># Cleared the threshold, but every match was already taken.</span>
+            <span class="k">if</span> <span class="n">false_positive</span><span class="p">[</span><span class="n">level</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">true_positive</span><span class="p">[</span><span class="n">level</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">false_positive</span><span class="p">[</span><span class="n">level</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">true_positive</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">alarms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">false_positive</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">hits</span> <span class="o">/</span> <span class="n">positives</span>
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">hits</span> <span class="o">+</span> <span class="n">alarms</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span> <span class="o">/</span> <span class="p">(</span><span class="n">hits</span> <span class="o">+</span> <span class="n">alarms</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)):</span>
+        <span class="n">scores</span><span class="p">[</span><span class="n">level</span><span class="p">]</span> <span class="o">=</span> <span class="n">interpolated_average_precision</span><span class="p">(</span><span class="n">precision</span><span class="p">[</span><span class="n">level</span><span class="p">],</span> <span class="n">recall</span><span class="p">[</span><span class="n">level</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">scores</span></div>
+
+
+
+<div class="viewcode-block" id="blink_ap_summary">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.blink_ap_summary">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">blink_ap_summary</span><span class="p">(</span><span class="n">scores</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Name the Blink-AP figures the authors report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scores (np.ndarray): The output of :func:`blink_ap`, length 10.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, float]: ``blink_ap`` (the @0.5:0.95 mean, their headline),</span>
+<span class="sd">        plus ``blink_ap50``, ``blink_ap75`` and ``blink_ap95``.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"blink_ap"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="s2">"blink_ap50"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s2">"blink_ap75"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>
+        <span class="s2">"blink_ap95"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="matches">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.matches">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">matches</span><span class="p">(</span><span class="n">predicted</span><span class="p">:</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">annotated</span><span class="p">:</span> <span class="n">Interval</span><span class="p">,</span> <span class="n">criterion</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether one prediction counts as detecting one annotated blink.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        predicted (Interval): Predicted interval.</span>
+<span class="sd">        annotated (Interval): Annotated blink.</span>
+<span class="sd">        criterion (str): A key of :data:`CRITERIA`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: Whether the pair matches.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        EventError: If the criterion is unknown.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">criterion</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">CRITERIA</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">EventError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown criterion </span><span class="si">{</span><span class="n">criterion</span><span class="si">!r}</span><span class="s2">; expected </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">CRITERIA</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+
+    <span class="n">overlap</span> <span class="o">=</span> <span class="n">temporal_iou</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">annotated</span><span class="p">)</span>
+    <span class="n">minimum</span> <span class="o">=</span> <span class="n">CRITERIA</span><span class="p">[</span><span class="n">criterion</span><span class="p">]</span>
+    <span class="c1"># `any` accepts any intersection at all; the IoU criteria are thresholds</span>
+    <span class="c1"># the overlap must exceed, following the sources they come from.</span>
+    <span class="k">return</span> <span class="n">overlap</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">minimum</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="n">overlap</span> <span class="o">&gt;</span> <span class="n">minimum</span></div>
+
+
+
+<div class="viewcode-block" id="match">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.match">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span>
+    <span class="n">predicted</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">],</span>
+    <span class="n">annotated</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">],</span>
+    <span class="n">criterion</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatchResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Count hits, misses, and false alarms under one criterion.</span>
+
+<span class="sd">    An annotated blink is detected when *any* prediction matches it, and counts</span>
+<span class="sd">    once however many do. Every prediction matching no annotation is a false</span>
+<span class="sd">    alarm — including the surplus ones when several land on the same blink,</span>
+<span class="sd">    which is what stops a jittery model from inflating its recall.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        predicted (list[Interval]): Predicted intervals.</span>
+<span class="sd">        annotated (list[Interval]): Annotated blinks.</span>
+<span class="sd">        criterion (str): A key of :data:`CRITERIA`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        MatchResult: The counts, with the annotation-to-prediction map.</span>
+<span class="sd">    """</span>
+    <span class="n">hit_by</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># At most one prediction is credited per annotation. A second prediction on</span>
+    <span class="c1"># the same blink is a *false alarm*, not a second hit: otherwise a model</span>
+    <span class="c1"># that fires twice per blink scores double the recall it earned. Predictions</span>
+    <span class="c1"># are taken in order, so the earliest wins and the result is deterministic.</span>
+    <span class="n">credited</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">annotation_index</span><span class="p">,</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">annotated</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">prediction_index</span><span class="p">,</span> <span class="n">prediction</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">predicted</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">prediction_index</span> <span class="ow">in</span> <span class="n">credited</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">matches</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">annotation</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
+                <span class="n">hit_by</span><span class="p">[</span><span class="n">annotation_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">prediction_index</span><span class="p">]</span>
+                <span class="n">credited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prediction_index</span><span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="n">true_positives</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hit_by</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MatchResult</span><span class="p">(</span>
+        <span class="n">true_positives</span><span class="o">=</span><span class="n">true_positives</span><span class="p">,</span>
+        <span class="n">false_positives</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">credited</span><span class="p">),</span>
+        <span class="n">false_negatives</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">annotated</span><span class="p">)</span> <span class="o">-</span> <span class="n">true_positives</span><span class="p">,</span>
+        <span class="n">matched</span><span class="o">=</span><span class="n">hit_by</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="froc">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.froc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">froc</span><span class="p">(</span>
+    <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">annotated</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">],</span>
+    <span class="n">minutes</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
+    <span class="n">thresholds</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">low_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Sweep the threshold, tracing recall against false alarms per minute.</span>
+
+<span class="sd">    The headline result. A single operating point is a choice that changes</span>
+<span class="sd">    every number reported at it; the curve makes the trade-off visible instead</span>
+<span class="sd">    of burying it in a constant.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signal (np.ndarray): ``(T,)`` averaged per-frame predictions.</span>
+<span class="sd">        mask (np.ndarray): ``(T,)`` coverage mask.</span>
+<span class="sd">        annotated (list[Interval]): Annotated blinks.</span>
+<span class="sd">        minutes (float): Recording duration, for the false-alarm rate.</span>
+<span class="sd">        criterion (str): A key of :data:`CRITERIA`.</span>
+<span class="sd">        thresholds (np.ndarray | None): Operating points; defaults to</span>
+<span class="sd">            :data:`DEFAULT_THRESHOLDS`.</span>
+<span class="sd">        low_ratio (float | None): Hysteresis, as a fraction of the swept</span>
+<span class="sd">            threshold. Expressed as a ratio rather than an absolute value so the</span>
+<span class="sd">            pair stays ordered across the whole sweep -- a constant low</span>
+<span class="sd">            threshold would exceed the high one at the bottom of the sweep and</span>
+<span class="sd">            silently disable hysteresis. ``None`` keeps the single cut.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, np.ndarray]: ``thresholds``, ``recall``, ``precision``,</span>
+<span class="sd">        ``f1``, ``false_alarms_per_minute``, and the ``tp``/``fp``/``fn``</span>
+<span class="sd">        counts they were derived from, aligned by index.</span>
+
+<span class="sd">        The counts are returned because **curves from several recordings pool by</span>
+<span class="sd">        summing counts at each threshold, never by averaging rates** — a</span>
+<span class="sd">        thirty-second clip must not weigh the same as a five-minute recording.</span>
+<span class="sd">        Without them a corpus curve could only be assembled the wrong way.</span>
+<span class="sd">    """</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">DEFAULT_THRESHOLDS</span> <span class="k">if</span> <span class="n">thresholds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">recall</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">rate</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="n">hits</span><span class="p">,</span> <span class="n">alarms</span><span class="p">,</span> <span class="n">misses</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">threshold</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+        <span class="c1"># The low threshold tracks the high one as a fixed ratio, so the pair</span>
+        <span class="c1"># stays ordered across the whole sweep. A constant low threshold would</span>
+        <span class="c1"># invert at the bottom of the sweep and silently disable hysteresis.</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">point</span> <span class="o">*</span> <span class="n">low_ratio</span> <span class="k">if</span> <span class="n">low_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">match</span><span class="p">(</span><span class="n">to_intervals</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">low</span><span class="p">),</span> <span class="n">annotated</span><span class="p">,</span> <span class="n">criterion</span><span class="p">)</span>
+        <span class="n">recall</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">recall</span><span class="p">)</span>
+        <span class="n">precision</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">precision</span><span class="p">)</span>
+        <span class="n">f1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">f1</span><span class="p">)</span>
+        <span class="n">rate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">false_alarms_per_minute</span><span class="p">(</span><span class="n">minutes</span><span class="p">))</span>
+        <span class="n">hits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">true_positives</span><span class="p">))</span>
+        <span class="n">alarms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">false_positives</span><span class="p">))</span>
+        <span class="n">misses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">false_negatives</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"thresholds"</span><span class="p">:</span> <span class="n">points</span><span class="p">,</span>
+        <span class="s2">"recall"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">recall</span><span class="p">),</span>
+        <span class="s2">"precision"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">precision</span><span class="p">),</span>
+        <span class="s2">"f1"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">f1</span><span class="p">),</span>
+        <span class="s2">"false_alarms_per_minute"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rate</span><span class="p">),</span>
+        <span class="s2">"tp"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hits</span><span class="p">),</span>
+        <span class="s2">"fp"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">alarms</span><span class="p">),</span>
+        <span class="s2">"fn"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">misses</span><span class="p">),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="pool_curves">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.pool_curves">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pool_curves</span><span class="p">(</span><span class="n">curves</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span> <span class="n">minutes</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Combine per-recording FROC curves into one corpus curve.</span>
+
+<span class="sd">    **Counts are summed at each threshold and the rates re-derived**, which is</span>
+<span class="sd">    the same rule :meth:`~blinklinmult.train.callbacks.EventReport._aggregate`</span>
+<span class="sd">    applies to the single operating point. Averaging the per-recording rates</span>
+<span class="sd">    instead would give a thirty-second clip the same weight as a five-minute</span>
+<span class="sd">    recording, and a corpus is not a mean of its recordings.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        curves (Sequence[dict[str, np.ndarray]]): One :func:`froc` result per</span>
+<span class="sd">            recording, all swept over the same thresholds.</span>
+<span class="sd">        minutes (float): Total duration across the recordings, for the</span>
+<span class="sd">            false-alarm rate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, np.ndarray]: A curve in the same shape :func:`froc` returns.</span>
+<span class="sd">        Empty when no curves are given.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        EventError: If the curves were swept over different thresholds, which</span>
+<span class="sd">            would make summing them index-by-index meaningless.</span>
+<span class="sd">    """</span>
+    <span class="n">usable</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">curves</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"thresholds"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"thresholds"</span><span class="p">])]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">usable</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">usable</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"thresholds"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">curve</span> <span class="ow">in</span> <span class="n">usable</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">curve</span><span class="p">[</span><span class="s2">"thresholds"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">points</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">EventError</span><span class="p">(</span>
+                <span class="s2">"cannot pool FROC curves swept over different thresholds; "</span>
+                <span class="s2">"every recording must use the same operating points."</span>
+            <span class="p">)</span>
+
+    <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"tp"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">usable</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">alarms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"fp"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">usable</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">misses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">"fn"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">usable</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">divide</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">):</span>
+        <span class="n">recall</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">hits</span> <span class="o">+</span> <span class="n">misses</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span> <span class="o">/</span> <span class="p">(</span><span class="n">hits</span> <span class="o">+</span> <span class="n">misses</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">hits</span> <span class="o">+</span> <span class="n">alarms</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">hits</span> <span class="o">/</span> <span class="p">(</span><span class="n">hits</span> <span class="o">+</span> <span class="n">alarms</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">precision</span> <span class="o">*</span> <span class="n">recall</span> <span class="o">/</span> <span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">rate</span> <span class="o">=</span> <span class="n">alarms</span> <span class="o">/</span> <span class="n">minutes</span> <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">alarms</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"thresholds"</span><span class="p">:</span> <span class="n">points</span><span class="p">,</span>
+        <span class="s2">"recall"</span><span class="p">:</span> <span class="n">recall</span><span class="p">,</span>
+        <span class="s2">"precision"</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span>
+        <span class="s2">"f1"</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+        <span class="s2">"false_alarms_per_minute"</span><span class="p">:</span> <span class="n">rate</span><span class="p">,</span>
+        <span class="s2">"tp"</span><span class="p">:</span> <span class="n">hits</span><span class="p">,</span>
+        <span class="s2">"fp"</span><span class="p">:</span> <span class="n">alarms</span><span class="p">,</span>
+        <span class="s2">"fn"</span><span class="p">:</span> <span class="n">misses</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="average_precision">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.average_precision">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">average_precision</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Area under the precision-recall curve of a threshold sweep.</span>
+
+<span class="sd">    The curve is anchored at ``recall = 0`` before integrating. Without that</span>
+<span class="sd">    anchor a *perfect* detector scores zero: it holds recall at 1.0 across every</span>
+<span class="sd">    threshold, the recall axis has no extent, and the trapezoid collapses —</span>
+<span class="sd">    the best possible result reported as the worst. Anchoring is what the</span>
+<span class="sd">    standard definition does, and it makes the integral the fraction of the</span>
+<span class="sd">    recall range achieved at a given precision.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        curve (dict[str, np.ndarray]): Output of :func:`froc`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Average precision over the swept operating points.</span>
+<span class="sd">    """</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">curve</span><span class="p">[</span><span class="s2">"recall"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">curve</span><span class="p">[</span><span class="s2">"precision"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">recall</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">recall</span><span class="p">)</span>
+    <span class="n">recall</span><span class="p">,</span> <span class="n">precision</span> <span class="o">=</span> <span class="n">recall</span><span class="p">[</span><span class="n">order</span><span class="p">],</span> <span class="n">precision</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+    <span class="c1"># Anchor at recall 0 with the precision of the strictest operating point.</span>
+    <span class="k">if</span> <span class="n">recall</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">recall</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">recall</span><span class="p">])</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">precision</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">precision</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">recall</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">recall</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">precision</span><span class="p">,</span> <span class="n">recall</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="event_metrics">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.event_metrics">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">event_metrics</span><span class="p">(</span>
+    <span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">annotated</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">],</span>
+    <span class="n">minutes</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">thresholds</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">curves</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">low_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">low_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Every event-level metric, under every criterion.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        signal (np.ndarray): ``(T,)`` averaged per-frame predictions.</span>
+<span class="sd">        mask (np.ndarray): ``(T,)`` coverage mask.</span>
+<span class="sd">        annotated (list[Interval]): Annotated blinks.</span>
+<span class="sd">        minutes (float): Recording duration.</span>
+<span class="sd">        threshold (float): Operating point for the single-threshold counts.</span>
+<span class="sd">        thresholds (np.ndarray | None): Sweep for the curves.</span>
+<span class="sd">        curves (dict[str, dict[str, np.ndarray]] | None): Filled in with the</span>
+<span class="sd">            FROC curve per criterion when given. The curve is what</span>
+<span class="sd">            ``average_precision`` and ``best_f1`` are derived from, and callers</span>
+<span class="sd">            that pool several recordings need the points themselves — returning</span>
+<span class="sd">            only the two scalars discards the headline result.</span>
+<span class="sd">        low_threshold (float | None): Absolute hysteresis threshold for the</span>
+<span class="sd">            single-point counts. See :func:`to_intervals`.</span>
+<span class="sd">        low_ratio (float | None): Hysteresis as a fraction of the threshold,</span>
+<span class="sd">            used for the swept curves and as a fallback for the single point</span>
+<span class="sd">            when ``low_threshold`` is not given.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, float]: ``event/&lt;criterion&gt;/&lt;metric&gt;`` for each of</span>
+<span class="sd">        :data:`CRITERIA`, plus descriptive counts that keep a rate readable.</span>
+<span class="sd">    """</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="n">low_threshold</span>
+    <span class="k">if</span> <span class="n">low</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">low_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">low_ratio</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="n">to_intervals</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">low</span><span class="p">)</span>
+
+    <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"event/n_annotated"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">annotated</span><span class="p">)),</span>
+        <span class="s2">"event/n_predicted"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">predicted</span><span class="p">)),</span>
+        <span class="s2">"event/minutes"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">minutes</span><span class="p">),</span>
+        <span class="s2">"event/frames_covered"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())),</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">annotated</span><span class="p">:</span>
+        <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="ow">in</span> <span class="n">annotated</span><span class="p">]</span>
+        <span class="n">metrics</span><span class="p">[</span><span class="s2">"event/mean_blink_frames"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lengths</span><span class="p">))</span>
+        <span class="n">metrics</span><span class="p">[</span><span class="s2">"event/median_blink_frames"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">lengths</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">criterion</span> <span class="ow">in</span> <span class="n">CRITERIA</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">match</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">annotated</span><span class="p">,</span> <span class="n">criterion</span><span class="p">)</span>
+        <span class="n">curve</span> <span class="o">=</span> <span class="n">froc</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">annotated</span><span class="p">,</span> <span class="n">minutes</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">,</span> <span class="n">low_ratio</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">curves</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">curves</span><span class="p">[</span><span class="n">criterion</span><span class="p">]</span> <span class="o">=</span> <span class="n">curve</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"event/</span><span class="si">{</span><span class="n">criterion</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/tp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">true_positives</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/fp"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">false_positives</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/fn"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">false_negatives</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/recall"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">recall</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/precision"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">precision</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/f1"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/fa_per_min"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">false_alarms_per_minute</span><span class="p">(</span><span class="n">minutes</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/average_precision"</span><span class="p">:</span> <span class="n">average_precision</span><span class="p">(</span><span class="n">curve</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/best_f1"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">curve</span><span class="p">[</span><span class="s2">"f1"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="k">if</span> <span class="n">curve</span><span class="p">[</span><span class="s2">"f1"</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">metrics</span></div>
+
+
+
+<div class="viewcode-block" id="annotated_intervals">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/train/events/index.html#blinklinmult.train.events.annotated_intervals">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">annotated_intervals</span><span class="p">(</span><span class="n">blink_ids</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Recover annotated blink intervals from a per-frame id array.</span>
+
+<span class="sd">    Runs of *consecutive* frames sharing an id, so a reused id yields two</span>
+<span class="sd">    events rather than one spanning the gap between them — which is what the</span>
+<span class="sd">    annotation means, and what the corpora's own notes describe when a subject</span>
+<span class="sd">    "blinks twice very fast".</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        blink_ids (np.ndarray): ``(T,)`` per-frame blink id; negative means no</span>
+<span class="sd">            blink.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[Interval]: Inclusive intervals, in frame order.</span>
+<span class="sd">    """</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">blink_ids</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">intervals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">ids</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ids</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">ids</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="n">ids</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="n">current</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">intervals</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">intervals</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

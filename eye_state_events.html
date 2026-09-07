@@ -1,0 +1,756 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Comparing models" href="comparison.html"><link rel="prev" title="The frame-wise backbone" href="frame_wise.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/eye_state_events.html">
+        <link rel="prefetch" href="_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>From eye states to blink events - BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/blinklinmult/index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/data/index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/schema/index.html">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/train/index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/metrics/index.html">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/blob/main/docs/eye_state_events.md?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/edit/main/docs/eye_state_events.md" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="from-eye-states-to-blink-events">
+<h1>From eye states to blink events<a class="headerlink" href="#from-eye-states-to-blink-events" title="Link to this heading">¶</a></h1>
+<p>The pipeline learns <strong>one thing</strong> — a continuous per-frame eye-state signal —
+and derives everything else from it. Events are post-processing, not a second
+model output. This document records what that buys, what it currently costs, and
+what the annotations do and do not allow.</p>
+<section id="the-two-stages">
+<h2>The two stages<a class="headerlink" href="#the-two-stages" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Frame-wise.</strong> A ConvNeXt scores each 64x64 eye crop, producing a value in
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> per frame. Every corpus can supervise this, including the
+still-image ones, because a closed eye is a closed eye with or without a
+temporal axis.</p></li>
+<li><p><strong>Event extraction.</strong> The per-frame signal is reassembled onto each
+recording’s timeline, thresholded into intervals, and matched against the
+annotated blinks under four criteria.</p></li>
+</ol>
+<p>The consequence worth stating plainly: <strong><code class="docutils literal notranslate"><span class="pre">iou50</span></code> and <code class="docutils literal notranslate"><span class="pre">iou75</span></code> measure the
+extractor, not the model.</strong> A perfect closure detector scores 0.033 at <code class="docutils literal notranslate"><span class="pre">iou50</span></code>
+on TalkingFace, because a closure covers only 19-34% of the event it belongs to.
+<code class="docutils literal notranslate"><span class="pre">event/any/f1</span></code> is the headline; the IoU criteria are diagnostics of the
+convention mismatch.</p>
+</section>
+<section id="thresholds-universal-and-tuned">
+<h2>Thresholds: universal and tuned<a class="headerlink" href="#thresholds-universal-and-tuned" title="Link to this heading">¶</a></h2>
+<p>Two numbers are reported for every corpus, because neither alone is honest.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>fitted on</p></th>
+<th class="head"><p>applied to</p></th>
+<th class="head"><p>what it means</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>universal</strong></p></td>
+<td><p>pooled validation of the <em>training</em> corpora</p></td>
+<td><p>every corpus</p></td>
+<td><p>the deployable number; the only one available to a corpus with no validation split</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>tuned</strong></p></td>
+<td><p>that corpus’s own test FROC curve</p></td>
+<td><p>that corpus</p></td>
+<td><p>an oracle upper bound, never a reproducible operating point</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The gap between them is the cost of tuning, made visible. Measured on RN15: the
+universal point of 0.01 scores <code class="docutils literal notranslate"><span class="pre">any/f1</span> <span class="pre">=</span> <span class="pre">0.721</span></code>, while the corpus’s own optimum
+at 0.51 reaches 0.820.</p>
+<p><strong>TalkingFace forces this design.</strong> It ships 0 train and 0 valid windows – one
+~200 second recording of one subject – so it can only ever borrow a threshold.
+Scoring it at a borrowed point while scoring RN15 at a tuned one would put the
+two on different scales.</p>
+<p>The universal point is fitted on RN15 + RN30 only, and the exclusions are
+structural rather than a preference:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>corpus</p></th>
+<th class="head"><p>why it cannot fit the universal threshold</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CEW, MRL-Eye</p></td>
+<td><p>annotate no blinks at all – nothing to fit an <em>event</em> threshold on</p></td>
+</tr>
+<tr class="row-odd"><td><p>TalkingFace</p></td>
+<td><p>ships 0 validation windows</p></td>
+</tr>
+<tr class="row-even"><td><p>HUST-LEBW, MPEblink</p></td>
+<td><p>eval-only; fitting on them would leak evaluation data into the operating point and void the zero-shot claim</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>That leaves RN15 + RN30 as the only qualifying set. Round 2 moves MPEblink into
+training, at which point it joins the pool and its 20 558 validation windows
+dominate the fit.</p>
+<p><strong>Both numbers are always reported; there is no flag.</strong> <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">eval-frame-wise-split</span></code> runs <code class="docutils literal notranslate"><span class="pre">fit-universal-threshold</span></code> first (a prerequisite),
+which writes one operating point to <code class="docutils literal notranslate"><span class="pre">results/frame-wise/universal/</span></code>, and every
+corpus then reads it through <code class="docutils literal notranslate"><span class="pre">--shared-threshold-dir</span></code>. The tuned point is
+computed alongside it from each corpus’s own test FROC curve.</p>
+<p>Without the shared directory each process fits privately, which is what produced
+0.01, 0.06, and two silent 0.50 fallbacks in one split run – four different
+scales in a column labelled “universal”.</p>
+<section id="boundary-hits">
+<h3>Boundary hits<a class="headerlink" href="#boundary-hits" title="Link to this heading">¶</a></h3>
+<p>A fit that lands on the first or last swept value is not an optimum, it is a
+search that ran out of range – or a flat objective buying recall by firing at
+everything. This is logged as a warning, because it was previously silent and
+cost 7-10 points of event F1 on RN15 and RN30 without any indication.</p>
+<p>The sweep is <code class="docutils literal notranslate"><span class="pre">linspace(0.01,</span> <span class="pre">0.99,</span> <span class="pre">99)</span></code>. The original <code class="docutils literal notranslate"><span class="pre">linspace(0.05,</span> <span class="pre">0.95,</span> <span class="pre">19)</span></code>
+was too coarse to tell a fitted optimum from a boundary hit.</p>
+</section>
+</section>
+<section id="hysteresis">
+<h2>Hysteresis<a class="headerlink" href="#hysteresis" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">to_intervals</span></code> accepts an optional <code class="docutils literal notranslate"><span class="pre">low_threshold</span></code>. A run must <strong>peak</strong> above the
+high threshold to count as an event, but <strong>extends</strong> while it stays above the low
+one.</p>
+<p>A single cut has to be low enough to catch the shallow start of a closure and
+high enough not to fire on noise, and no single value does both. Two thresholds
+separate those jobs: the high one decides <em>whether</em> this is a blink, the low one
+decides <em>where</em> it begins and ends. Since the eye-state signal ramps down through
+closing, plateaus while closed, and ramps back up through opening, the ramps
+cross the low threshold well before the high one – so hysteresis recovers the
+true onset and offset rather than clipping to the deepest part of the closure.</p>
+<p>It also makes an <strong>incomplete blink</strong> – one crossing low but never high –
+explicitly detectable rather than silently truncated.</p>
+<p>Off by default (<code class="docutils literal notranslate"><span class="pre">low_threshold=None</span></code> reproduces the single cut exactly).</p>
+</section>
+<section id="signal-regularisers">
+<h2>Signal regularisers<a class="headerlink" href="#signal-regularisers" title="Link to this heading">¶</a></h2>
+<p>Two annotation-free constraints, both weighted <code class="docutils literal notranslate"><span class="pre">0.0</span></code> by default:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">temporal_smoothness</span></code></strong> penalises frame-to-frame chatter. A blink is
+continuous motion, and a jagged signal makes extraction brittle: every
+spurious crossing of the operating point becomes a spurious event boundary.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">duration_prior</span></code></strong> penalises predicted closures far outside ~100-400 ms
+(about 3-12 frames at 30 fps), as a differentiable soft count.</p></li>
+</ul>
+<p>Neither needs a label, so both apply to every corpus – including those
+annotating only blink presence.</p>
+</section>
+<section id="what-the-annotations-allow">
+<h2>What the annotations allow<a class="headerlink" href="#what-the-annotations-allow" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>corpus</p></th>
+<th class="head"><p>eye_state</p></th>
+<th class="head"><p>blink_presence</p></th>
+<th class="head"><p>blink_id</p></th>
+<th class="head"><p>role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CEW</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>frame-wise only</p></td>
+</tr>
+<tr class="row-odd"><td><p>MRL-Eye</p></td>
+<td><p>yes</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>frame-wise only</p></td>
+</tr>
+<tr class="row-even"><td><p>RN15</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>trainable, fits a threshold</p></td>
+</tr>
+<tr class="row-odd"><td><p>RN30</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>trainable, fits a threshold</p></td>
+</tr>
+<tr class="row-even"><td><p>TalkingFace</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>eval-only (0 valid windows)</p></td>
+</tr>
+<tr class="row-odd"><td><p>HUST-LEBW</p></td>
+<td><p><strong>no</strong></p></td>
+<td><p>yes</p></td>
+<td><p>yes</p></td>
+<td><p>eval-only, no eye-state head</p></td>
+</tr>
+<tr class="row-even"><td><p>MPEblink</p></td>
+<td><p><strong>no</strong></p></td>
+<td><p>yes</p></td>
+<td><p>yes*</p></td>
+<td><p>eval-only, no eye-state head</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>* MPEblink carried <code class="docutils literal notranslate"><span class="pre">-1</span></code> everywhere until <code class="docutils literal notranslate"><span class="pre">number_events</span></code> was added. Its
+annotation ships <code class="docutils literal notranslate"><span class="pre">[start,</span> <span class="pre">end,</span> <span class="pre">category]</span></code> intervals, so the events were always
+individuable – they were simply never numbered. See below.</p>
+<p>Routing a corpus wrongly is loud, not silent: HUST-LEBW and MPEblink raise
+<code class="docutils literal notranslate"><span class="pre">BatchError:</span> <span class="pre">Batch</span> <span class="pre">has</span> <span class="pre">no</span> <span class="pre">target</span> <span class="pre">'eye_state'</span></code>, and TalkingFace raises
+<code class="docutils literal notranslate"><span class="pre">DataModuleError:</span> <span class="pre">No</span> <span class="pre">'valid'</span> <span class="pre">split</span> <span class="pre">available</span></code>.</p>
+</section>
+<section id="mpeblink-event-numbering">
+<h2>MPEblink event numbering<a class="headerlink" href="#mpeblink-event-numbering" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">rasterise</span></code> answers “is frame <em>t</em> inside a blink”. <code class="docutils literal notranslate"><span class="pre">number_events</span></code> answers
+“<strong>which</strong> blink”, and <code class="docutils literal notranslate"><span class="pre">blink_ids</span></code> carries that per frame while <code class="docutils literal notranslate"><span class="pre">blink_id</span></code>
+remains one id per window.</p>
+<p>This is what makes the following definable on the corpus that is 80% of the
+test split:</p>
+<ul class="simple">
+<li><p>telling a <strong>double blink</strong> from one long closure,</p></li>
+<li><p>recognising an <strong>incomplete blink</strong> as its own event,</p></li>
+<li><p>supervising an <strong>event count</strong> rather than a frame label.</p></li>
+</ul>
+<p>The per-frame form matters because the window-level scalar cannot distinguish
+one long blink from two adjacent ones inside the same window.</p>
+</section>
+<section id="multi-task-learning-what-is-and-is-not-supportable">
+<h2>Multi-task learning: what is and is not supportable<a class="headerlink" href="#multi-task-learning-what-is-and-is-not-supportable" title="Link to this heading">¶</a></h2>
+<p>Only RN15 + RN30 carry <code class="docutils literal notranslate"><span class="pre">eye_state</span></code>, <code class="docutils literal notranslate"><span class="pre">blink_id</span></code>, and a train split together –
+about <strong>83 distinct blink events</strong>. That is a very thin signal for a dedicated
+event head, and the predictable failure is that the head memorises those two
+corpora’s blink-boundary convention rather than learning event structure, which
+would void the cross-corpus claim.</p>
+<p>The defensible version is <strong>cross-consistency losses on the existing frame-wise
+output</strong> (above): constraints on how the signal behaves over time, supervised
+where the annotation exists but benefiting every corpus.</p>
+<p>A genuine second head becomes reasonable once MPEblink’s events are numbered,
+which turns 83 supervisable events into thousands. That is the point at which
+the multi-task experiment is worth running rather than a memorisation risk.</p>
+</section>
+<section id="open-deriving-the-state-taxonomy">
+<h2>Open: deriving the state taxonomy<a class="headerlink" href="#open-deriving-the-state-taxonomy" title="Link to this heading">¶</a></h2>
+<p>Open / closing / closed / opening is not annotated by any corpus. It is
+derivable as weak supervision – the sign of the smoothed derivative separates
+closing from opening, and the plateau between them is closed – which would give
+incomplete and double blinks as first-class categories and connect to downstream
+states such as drowsiness or sustained attention.</p>
+<p>This needs its own validation strategy, since there is no ground truth to score
+it against. It is deliberately <strong>not</strong> part of the current benchmark.</p>
+</section>
+<section id="should-the-continuous-signal-be-derived-or-learned">
+<h2>Should the continuous signal be derived or learned?<a class="headerlink" href="#should-the-continuous-signal-be-derived-or-learned" title="Link to this heading">¶</a></h2>
+<p><strong>Learned.</strong> Train with sigmoid + BCE on the binary frame label and let the
+continuity emerge; do <strong>not</strong> synthesise a soft target from <code class="docutils literal notranslate"><span class="pre">blink_id</span></code>.</p>
+<p>Deriving a graded target from interval position – a ramp peaking at the
+interval centre, say – would <em>assert</em> a closure shape rather than measure one.
+It is wrong on two counts: real blinks close faster than they open, so the shape
+is not symmetric, and interval boundaries are annotator-defined rather than
+physical.</p>
+<p>The continuity arrives anyway, for a measurable reason. <code class="docutils literal notranslate"><span class="pre">P(closed</span> <span class="pre">|</span> <span class="pre">blink)</span></code> is
+19-34%, so frames inside an annotated event are labelled inconsistently across
+the ramps. A model minimising BCE over those frames converges toward the
+empirical probability that a frame like this one is labelled closed – which is
+a graded closure signal grounded in annotation statistics rather than an assumed
+curve.</p>
+<p><code class="docutils literal notranslate"><span class="pre">blink_id</span></code> earns its place as a <strong>grouping key</strong>, not a target: it says which
+frames belong to one event, which is what lets event counts be supervised, curve
+shapes be measured per event, and double blinks be separated.</p>
+<p>If the event head later wants phase supervision, derive phase from the
+<strong>predicted</strong> signal’s derivative (a measurement), never from interval geometry
+(an assumption).</p>
+</section>
+<section id="phase-and-event-shape">
+<h2>Phase and event shape<a class="headerlink" href="#phase-and-event-shape" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">blinklinmult.train.phases</span></code> reads phase off the signal’s derivative:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>phase</p></th>
+<th class="head"><p>condition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPEN</span></code></p></td>
+<td><p>still, low</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CLOSING</span></code></p></td>
+<td><p>falling</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CLOSED</span></code></p></td>
+<td><p>still, high</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENING</span></code></p></td>
+<td><p>rising</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The value alone is ambiguous – 0.5 is an eye halfway shut <em>or</em> halfway open –
+but the direction is not. This is why per-timestep context matters: a temporal
+model can assign phase to a frame whose value carries none.</p>
+<p><code class="docutils literal notranslate"><span class="pre">describe_event</span></code> measures peak depth, the number of local maxima, and the
+fall/rise asymmetry; <code class="docutils literal notranslate"><span class="pre">classify_event</span></code> names the result <code class="docutils literal notranslate"><span class="pre">complete</span></code>, <code class="docutils literal notranslate"><span class="pre">incomplete</span></code>,
+<code class="docutils literal notranslate"><span class="pre">double</span></code>, <code class="docutils literal notranslate"><span class="pre">long</span></code>, or <code class="docutils literal notranslate"><span class="pre">brief</span></code>.</p>
+<section id="measured-no-threshold-pair-separates-these">
+<h3>Measured: no threshold pair separates these<a class="headerlink" href="#measured-no-threshold-pair-separates-these" title="Link to this heading">¶</a></h3>
+<p>On a synthetic signal containing one complete blink, one incomplete closure
+(peak 0.45), one double blink, and one long closure:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>extractor</p></th>
+<th class="head text-right"><p>events found</p></th>
+<th class="head"><p>classified</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>high 0.50, no hysteresis</p></td>
+<td class="text-right"><p>4</p></td>
+<td><p>complete, complete, complete, double</p></td>
+</tr>
+<tr class="row-odd"><td><p>high 0.50, low 0.20</p></td>
+<td class="text-right"><p>4</p></td>
+<td><p>complete, complete, complete, double</p></td>
+</tr>
+<tr class="row-even"><td><p>high 0.35, low 0.15</p></td>
+<td class="text-right"><p>5</p></td>
+<td><p>complete, <strong>double</strong>, complete, complete, double</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>At 0.50 the incomplete blink is invisible – its peak never reaches the
+threshold. Lowering the threshold to 0.35 finds it, but the <em>complete</em> blink is
+then misread as a double, because plateau noise creates spurious local maxima.</p>
+<p><strong>No threshold pair gets both right.</strong> That is the concrete argument for a
+learned head over the sequence: it reads the whole shape rather than counting
+crossings, so it can separate a shallow closure from a noisy plateau in a way no
+extraction rule expresses.</p>
+<p>Note this is a limitation of the <em>extractor</em>, not of the model – the signal
+contained all four events correctly.</p>
+</section>
+</section>
+<section id="threshold-selection">
+<h2>Threshold selection<a class="headerlink" href="#threshold-selection" title="Link to this heading">¶</a></h2>
+<p>The operating point is chosen from a <strong>smoothed</strong> validation F1 curve rather
+than a raw <code class="docutils literal notranslate"><span class="pre">argmax</span></code>. Validation yields few events after rasterising – a few
+dozen on RN15 – so the raw maximum lands wherever the noise peaks: it selected
+0.01 and 0.06 while the same corpora’s test optima were 0.51 and 0.65, costing
+10 and 20 points of event F1.</p>
+<p>Smoothing prefers a broad maximum to a tall narrow one, which is the point more
+likely to survive the move from validation to test. It cannot manufacture a good
+threshold where the signal has none.</p>
+</section>
+<section id="reproducing-the-analysis">
+<h2>Reproducing the analysis<a class="headerlink" href="#reproducing-the-analysis" title="Link to this heading">¶</a></h2>
+<p>Every finished run writes <code class="docutils literal notranslate"><span class="pre">test_signals.npz</span></code>: the reassembled per-recording
+signal, ground truth, and coverage mask. Extractor comparisons, phase
+derivation, and curve-shape statistics all run from that file in seconds,
+without re-running inference over the split.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="comparison.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Comparing models</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="frame_wise.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">The frame-wise backbone</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">From eye states to blink events</a><ul>
+<li><a class="reference internal" href="#the-two-stages">The two stages</a></li>
+<li><a class="reference internal" href="#thresholds-universal-and-tuned">Thresholds: universal and tuned</a><ul>
+<li><a class="reference internal" href="#boundary-hits">Boundary hits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hysteresis">Hysteresis</a></li>
+<li><a class="reference internal" href="#signal-regularisers">Signal regularisers</a></li>
+<li><a class="reference internal" href="#what-the-annotations-allow">What the annotations allow</a></li>
+<li><a class="reference internal" href="#mpeblink-event-numbering">MPEblink event numbering</a></li>
+<li><a class="reference internal" href="#multi-task-learning-what-is-and-is-not-supportable">Multi-task learning: what is and is not supportable</a></li>
+<li><a class="reference internal" href="#open-deriving-the-state-taxonomy">Open: deriving the state taxonomy</a></li>
+<li><a class="reference internal" href="#should-the-continuous-signal-be-derived-or-learned">Should the continuous signal be derived or learned?</a></li>
+<li><a class="reference internal" href="#phase-and-event-shape">Phase and event shape</a><ul>
+<li><a class="reference internal" href="#measured-no-threshold-pair-separates-these">Measured: no threshold pair separates these</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#threshold-selection">Threshold selection</a></li>
+<li><a class="reference internal" href="#reproducing-the-analysis">Reproducing the analysis</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

@@ -1,0 +1,155 @@
+blinklinmult.fit
+================
+
+.. py:module:: blinklinmult.fit
+
+.. autoapi-nested-parse::
+
+   Fit an operating point for a model that never had one.
+
+   ``BlinkCNN``'s thresholds were fitted on validation during training. The 1.x
+   models were released as weights alone, so :data:`~blinklinmult.registry.MODELS`
+   records the plain 0.5 default for them -- a placeholder, not a measurement.
+
+   That gap makes *event* comparisons between the generations unfair: v2's operating
+   point was tuned and theirs was not. This module closes it. Give it scored
+   recordings with their annotated blinks and it sweeps the same grids the training
+   callback uses, returning the pair that maximises event F1::
+
+       from blinklinmult.fit import fit_operating_point
+
+       point = fit_operating_point(signals, annotations, fps=30.0)
+       detector.spec = point.applied_to(detector.spec)
+
+   **Fit on validation, never on test.** A threshold chosen on the same recordings
+   it is reported on is not a measurement, it is a description of that split -- and
+   it will not survive contact with new data. The function does not enforce this; it
+   cannot see where the signals came from.
+
+   **Hysteresis usually wins, so it is searched by default.** A single cut has to be
+   low enough to catch the shallow start of a closure and high enough to ignore
+   noise, and no one value does both. Two thresholds split those jobs: the high one
+   decides *whether* a run is a blink, the low one decides *where* it starts and
+   ends. On ``BlinkCNN`` this was worth 0.19 to 0.52 event F1.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.fit.logger
+   blinklinmult.fit.DEFAULT_LOW_RATIOS
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.fit.FitError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.fit.OperatingPoint
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.fit.fit_operating_point
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: DEFAULT_LOW_RATIOS
+   :type:  tuple[float | None, ...]
+
+   Low-threshold fractions searched, mirroring the training callback's grid.
+
+   ``None`` comes first so a single threshold wins ties: hysteresis costs a second
+   parameter, and it should have to *earn* its place rather than be adopted on a
+   rounding difference.
+
+.. py:exception:: FitError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when there is not enough data to fit an operating point.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: OperatingPoint
+
+   A fitted decision rule and the score it achieved.
+
+   :param threshold: The high threshold -- whether a run is a blink.
+   :type threshold: float
+   :param low_ratio: Low threshold as a fraction of ``threshold``,
+                     or ``None`` for a single cut.
+   :type low_ratio: float | None
+   :param f1: Event F1 at this point, on the data it was fitted to.
+   :type f1: float
+   :param precision: Event precision there.
+   :type precision: float
+   :param recall: Event recall there.
+   :type recall: float
+
+
+   .. py:property:: low_threshold
+      :type: float | None
+
+
+      The absolute low threshold, or ``None`` for a single cut.
+
+
+   .. py:method:: applied_to(model_spec: blinklinmult.registry.ModelSpec) -> blinklinmult.registry.ModelSpec
+
+      Copy a spec with this operating point substituted in.
+
+      :param model_spec: The spec to update.
+      :type model_spec: ModelSpec
+
+      :returns: A new spec carrying the fitted thresholds.
+      :rtype: ModelSpec
+
+
+
+.. py:function:: fit_operating_point(signals: list[numpy.ndarray], annotations: list[list[blinklinmult.train.events.Interval]], thresholds: numpy.ndarray | None = None, low_ratios: tuple[float | None, ...] | None = None) -> OperatingPoint
+
+   Search for the threshold pair that maximises event F1.
+
+   :param signals: One per-frame score array per recording, in
+                   ``[0, 1]``. Produced by :meth:`~blinklinmult.detector.BlinkDetector.score`.
+   :type signals: list[np.ndarray]
+   :param annotations: The annotated blink intervals for
+                       each, in the same order.
+   :type annotations: list[list[Interval]]
+   :param thresholds: High thresholds to try;
+                      :data:`~blinklinmult.train.events.DEFAULT_THRESHOLDS` by default.
+   :type thresholds: np.ndarray | None
+   :param low_ratios: Low ratios to try;
+                      :data:`DEFAULT_LOW_RATIOS` by default.
+   :type low_ratios: tuple[float | None, ...] | None
+
+   :returns: The best pair found, with its scores.
+   :rtype: OperatingPoint
+
+   :raises FitError: If the inputs disagree in length, are empty, or hold no
+       annotated blink to fit against.
+
+

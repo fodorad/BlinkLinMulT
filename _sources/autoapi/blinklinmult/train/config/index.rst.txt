@@ -1,0 +1,807 @@
+blinklinmult.train.config
+=========================
+
+.. py:module:: blinklinmult.train.config
+
+.. autoapi-nested-parse::
+
+   Typed configuration for the blink training pipeline.
+
+   Configuration is plain YAML parsed into frozen dataclasses, split across three
+   files per run — ``--data``, ``--model``, ``--train``. Two properties motivate
+   that over a framework:
+
+   * The same :class:`~blinklinmult.data.schema.DatasetSpec` objects describe a
+     corpus to the HDF5 builder *and* to the dataloader. A framework deriving its
+     schema from class constructors (Lightning CLI / jsonargparse) could not span
+     both, because the builder is not a Lightning class.
+   * Nothing here changes the working directory or writes hidden output trees, so
+     MLflow artifact paths stay predictable.
+
+   Unknown keys are rejected rather than ignored: a silently-dropped key produces a
+   run whose recorded config does not describe what it did, which is worse than a
+   crash. Retired 1.x model keys are rejected with an explicit rename hint.
+
+   Every knob a run depends on lives in one of these dataclasses, and
+   :meth:`ExperimentConfig.to_flat_dict` flattens the lot into MLflow params.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.config.logger
+   blinklinmult.train.config.TASKS
+   blinklinmult.train.config.TASK_TARGETS
+   blinklinmult.train.config.MODEL_FAMILIES
+   blinklinmult.train.config.BACKBONES
+   blinklinmult.train.config.OPTIMIZERS
+   blinklinmult.train.config.SCHEDULERS
+   blinklinmult.train.config.LOSSES
+   blinklinmult.train.config.PRECISIONS
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.config.ConfigError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.train.config.DataConfig
+   blinklinmult.train.config.OptimConfig
+   blinklinmult.train.config.ModelConfig
+   blinklinmult.train.config.MLflowConfig
+   blinklinmult.train.config.EarlyStoppingConfig
+   blinklinmult.train.config.TrainConfig
+   blinklinmult.train.config.ExperimentConfig
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.config.load_yaml
+   blinklinmult.train.config.apply_override
+   blinklinmult.train.config.parse_override
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: TASKS
+   :type:  frozenset[str]
+
+   The trainable tasks.
+
+   ``blink_presence`` and ``eye_state`` are the paper's two tasks; ``joint`` trains
+   both heads at once over the union of corpora, which is the case OmniLoader's
+   masking exists to support and the main reason for the v2 rewrite.
+
+.. py:data:: TASK_TARGETS
+   :type:  dict[str, tuple[str, ...]]
+
+   Target keys each task supervises.
+
+.. py:data:: MODEL_FAMILIES
+   :type:  frozenset[str]
+
+   Architecture families a model config may select.
+
+   ``linmult`` is the multimodal cross-modal transformer over eye images plus
+   handcrafted features; ``lint`` is the single-stream transformer over eye images
+   alone (the BlinkLinT baseline); ``cnn`` is the per-frame image backbone with no
+   sequence model (the DenseNet121 baseline). All three are in the paper.
+
+.. py:data:: BACKBONES
+   :type:  frozenset[str]
+
+   Image backbones that embed one eye crop.
+
+   ``convnext_femto`` is the default, chosen on measured CEW eye-state accuracy
+   (96.6% over three seeds, against 94.4% for ``densenet121``) at 4.8M parameters
+   and roughly 4x the throughput. ``densenet121`` is kept because it is the
+   published 1.x model and the paper's numbers refer to it;
+   ``densenet121_truncated`` drops its last dense block, which holds 31% of the
+   parameters and runs on a 2x2 map at this crop size.
+
+.. py:data:: OPTIMIZERS
+   :type:  frozenset[str]
+
+   Supported optimizers.
+
+.. py:data:: SCHEDULERS
+   :type:  frozenset[str]
+
+   Supported LR schedulers.
+
+.. py:data:: LOSSES
+   :type:  frozenset[str]
+
+   Supported losses. All operate on masked binary targets.
+
+.. py:data:: PRECISIONS
+   :type:  frozenset[str]
+
+   Lightning precision settings this project supports.
+
+   Validated here so a typo fails at config load with a readable message rather
+   than deep inside the Trainer.
+
+.. py:exception:: ConfigError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when a configuration is invalid or self-contradictory.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: load_yaml(path: str | pathlib.Path) -> dict[str, Any]
+
+   Parse a YAML file into a dict.
+
+   :param path: File to read.
+   :type path: str | Path
+
+   :returns: Parsed mapping.
+   :rtype: dict
+
+   :raises ConfigError: If the file is missing or is not a mapping.
+
+
+.. py:class:: DataConfig
+
+   Dataloader configuration.
+
+   :param eval_datasets: Extra corpora to include in the **test**
+                         split only, on top of ``datasets``. This is the cross-corpus
+                         generalisation protocol: train on what is annotated the way the
+                         model needs, then measure transfer to corpora never trained on.
+                         Empty means the test split matches ``datasets``.
+
+                         A corpus listed here that also appears in ``datasets`` is not
+                         duplicated -- it simply contributes its own test split as usual.
+   :type eval_datasets: list[str]
+   :param datasets: Corpora to include, by name. Each must have a
+                    declaration under ``config/data/<name>.yaml`` and a built HDF5 file.
+   :type datasets: list[str]
+   :param window_seconds: Analysis window applied to every corpus,
+                          which each converts to its own frame count from its rate. ``None``
+                          keeps each corpus's declared window.
+   :type window_seconds: float | None
+   :param time_dim: Shared window length in frames, overriding what
+                    the corpora derive. ``None`` takes the longest any of them needs, so
+                    none is truncated.
+   :type time_dim: int | None
+   :param image_size: Shared eye-crop size. ``None`` requires the
+                      corpora to agree.
+   :type image_size: int | None
+   :param strategy: Mixing strategy across corpora.
+   :type strategy: str
+   :param strategy_kwargs: Strategy-specific arguments. Empty by default
+                           rather than carrying the default strategy's knobs: a config that
+                           changed only ``strategy`` would otherwise pass the previous
+                           strategy's arguments to one that does not accept them.
+   :type strategy_kwargs: dict
+   :param batch_size: Samples per batch.
+   :type batch_size: int
+   :param num_workers: Dataloader worker processes.
+   :type num_workers: int
+   :param pin_memory: Page-lock host batches for faster device copies.
+   :type pin_memory: bool
+   :param persistent_workers: Keep workers (and their HDF5 handles) alive
+                              between epochs.
+   :type persistent_workers: bool
+   :param prefetch_factor: Batches prefetched per worker.
+   :type prefetch_factor: int
+   :param cache_size: Per-worker LRU sample cache; ``0`` disables.
+   :type cache_size: int
+   :param preload: Read whole splits into RAM. Fast for the small corpora,
+                   ruinous for MRL-Eye.
+   :type preload: bool
+   :param seed: Seed for mixing, shuffling, and augmentation.
+   :type seed: int
+   :param stills: Serve single frames instead of windows, for the
+                  frame-wise model. Video corpora are reduced to their individual
+                  annotated frames at load time; the still corpora are already
+                  single-frame and pass through unchanged.
+   :type stills: bool
+   :param still_stride: In still mode, keep every Nth open-eye frame of a
+                        window. Closed-eye frames are always kept.
+   :type still_stride: int
+   :param still_open_to_closed: In still mode, open-eye frames kept per
+                                closed-eye frame in the training split.
+   :type still_open_to_closed: float
+   :param fit_fractions: Per-corpus fraction of the **train and
+                         validation** splits to keep, as ``{corpus: fraction}`` in
+                         ``(0, 1]``. Corpora not named are kept whole.
+
+                         **Test is never touched.** Capping it would score each arm on a
+                         different subset and make the arms incomparable, which is the whole
+                         reason for running them. That is the difference from
+                         ``train.limit_fit_batches``, which caps every corpus at once: this
+                         thins one corpus while the rest stay full, which is what a mix
+                         dominated by a single large corpus needs. MPEblink is 63 758 of the
+                         70 786 training windows here -- 90% -- so subsampling it alone
+                         changes the cost of an epoch by an order of magnitude while leaving
+                         the RN corpora, the headline benchmark, at full size.
+
+                         The subsample is a deterministic stride over the sorted sample ids,
+                         so a run is reproducible and every arm sees the same subset.
+   :type fit_fractions: dict[str, float]
+   :param embedding_cache: Directory of precomputed eye embeddings,
+                           or ``None`` to encode live.
+
+                           A **frozen** encoder computes the identical vector for a given crop
+                           on every epoch, so every epoch after the first recomputes a
+                           constant. Caching turns 360 crops per batch into 8 small matrices:
+                           measured 0.74 s/batch frozen against milliseconds cached, and 3.4 GB
+                           of embeddings replacing 51 GB of crops.
+
+                           **Valid only with a frozen encoder and augmentation off**, and both
+                           are refused rather than warned about. Augmentation perturbs the crop
+                           *before* the encoder, so a cache would freeze one augmented view per
+                           window forever -- keeping the distortion and losing the variety. An
+                           unfrozen encoder changes weights every step, so the cache is stale
+                           after the first one. Either mistake trains on embeddings from a
+                           different model and reports a plausible, wrong number.
+   :type embedding_cache: str | None
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the dataloader configuration.
+
+      :raises ConfigError: If any value is out of range or unrecognised.
+
+
+
+   .. py:method:: from_dict(data: dict[str, Any]) -> DataConfig
+      :classmethod:
+
+
+      Build from a plain dict.
+
+      :param data: Config values.
+      :type data: dict
+
+      :returns: The validated config.
+      :rtype: DataConfig
+
+
+
+   .. py:method:: resolve_specs(config_dir: pathlib.Path) -> list[blinklinmult.data.schema.DatasetSpec]
+
+      Load the declaration of every configured corpus, in config order.
+
+      :param config_dir: Directory of per-dataset YAML declarations.
+      :type config_dir: Path
+
+      :returns: One spec per configured corpus.
+      :rtype: list[DatasetSpec]
+
+      :raises ConfigError: If a declaration is missing or invalid.
+
+
+
+.. py:class:: OptimConfig
+
+   Optimizer and LR-schedule configuration.
+
+   :param name: Optimizer name.
+   :type name: str
+   :param lr: Peak learning rate.
+   :type lr: float
+   :param backbone_lr: Separate learning rate for the image
+                       backbone. A pretrained CNN fine-tunes at a fraction of the rate the
+                       randomly-initialised transformer needs; ``None`` uses ``lr`` for
+                       everything.
+   :type backbone_lr: float | None
+   :param weight_decay: L2 / decoupled weight decay.
+   :type weight_decay: float
+   :param momentum: SGD momentum; ignored by the Adam family.
+   :type momentum: float
+   :param scheduler: Schedule name, or ``"none"``.
+   :type scheduler: str
+   :param warmup_ratio: Fraction of training spent warming up.
+   :type warmup_ratio: float
+   :param scheduler_patience: Epochs without improvement before
+                              ``plateau`` cuts the learning rate. ``None`` uses a tenth of
+                              ``max_epochs``, which scales with the run but is usually too patient:
+                              at 28 minutes an epoch, waiting five epochs to react costs over two
+                              hours. Ignored by the other schedulers.
+   :type scheduler_patience: int | None
+   :param scheduler_factor: Multiplier applied to the learning rate when
+                            ``plateau`` fires. Ignored by the other schedulers.
+   :type scheduler_factor: float
+   :param gradient_clip_val: Gradient-norm clip; ``0`` disables.
+   :type gradient_clip_val: float
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the optimizer configuration.
+
+      :raises ConfigError: If any value is out of range or unrecognised.
+
+
+
+   .. py:method:: from_dict(data: dict[str, Any]) -> OptimConfig
+      :classmethod:
+
+
+      Build from a plain dict.
+
+      :param data: Config values.
+      :type data: dict
+
+      :returns: The validated config.
+      :rtype: OptimConfig
+
+
+
+.. py:class:: ModelConfig
+
+   Architecture configuration.
+
+   Field names track **linmult 2.x** exactly. The 1.x names the published code
+   used (``input_modality_channels``, ``projected_modality_dim``,
+   ``number_of_layers``, ``add_projection_fusion``, ``aggregation``) no longer
+   exist upstream and are rejected with a rename hint rather than silently
+   ignored.
+
+   ``input_feature_dim`` is absent by design: it is derived from the backbone's
+   embedding width and the dataset's feature width, so the model cannot
+   disagree with its data.
+
+   :param name: Model name, recorded in the run.
+   :type name: str
+   :param family: ``linmult``, ``lint``, or ``cnn``.
+   :type family: str
+   :param backbone: Image backbone embedding one eye crop.
+   :type backbone: str
+   :param backbone_pretrained: Start the backbone from ImageNet weights.
+   :type backbone_pretrained: bool
+   :param backbone_freeze: Freeze the backbone's parameters.
+   :type backbone_freeze: bool
+   :param backbone_wide_stem: Drop one stride-2 reduction so a 64px eye
+                              crop keeps a ``4x4`` feature map rather than collapsing to ``2x2``.
+                              Free for the backbones in
+                              :data:`~blinklinmult.train.model.BACKBONE_STEM_IS_FREE`, which
+                              reduce through a parameter-free max-pool; for the others it
+                              re-strides a convolution and perturbs the pretrained kernels.
+   :type backbone_wide_stem: bool
+   :param backbone_output_dim: Width the backbone's embedding is projected
+                               to before the sequence model. The raw backbone embedding is 960-d
+                               per eye for MobileNetV4, 1024-d for DenseNet121; projecting first
+                               keeps the transformer's input width independent of which backbone
+                               is chosen.
+   :type backbone_output_dim: int
+   :param encoder_weights: Path to a frame-wise ``.ckpt`` whose eye
+                           encoder initialises this model's. The encoder — backbone and
+                           projection — is the only component BlinkCNN and the sequence models
+                           share, so it is the only part that transfers; the transformer starts
+                           fresh either way. It is a *starting point*, not frozen:
+                           ``optimizer.backbone_lr`` fine-tunes it from there.
+
+                           A path rather than a baked-in default so that retraining the
+                           frame-wise model and pointing at the new checkpoint is a one-line
+                           config edit. ``None`` starts the encoder from ImageNet weights.
+   :type encoder_weights: str | None
+   :param encoder_freeze: Hold the eye encoder fixed -- no gradient, and
+                          eval mode so its BatchNorm statistics stop moving too. Turns
+                          ``encoder_weights`` from a starting point into a fixed feature
+                          extractor, which is what separates the ``frozen`` arm from the
+                          ``fine-tuned`` one in the video benchmark.
+
+                          Worth measuring rather than assuming: the video corpora are small
+                          next to the 4.8M backbone parameters they would be fine-tuning, so
+                          freezing may well win. Meaningless without ``encoder_weights`` --
+                          freezing an ImageNet encoder that never saw an eye is not an arm
+                          anyone wants -- and rejected in that combination.
+   :type encoder_freeze: bool
+   :param event_head: Stack a blink-interval head on the ESR signal
+                      -- ``dense``, ``attention``, or ``None`` to keep one shared head.
+
+                      With one head both annotations train the same parameters, and a
+                      blink interval covers 3-4x more frames than actual closure, so a
+                      corpus annotating only intervals drags the closure prediction wider.
+                      Measured on the video benchmark, where 72% of batches supervised
+                      events alone: RN30's ESR F1 fell to 0.4107 against the frame-wise
+                      model's 0.6614.
+
+                      Stacking keeps the event prediction a *function of* the closure
+                      signal, so the two cannot contradict each other -- the reason a
+                      single head was chosen originally -- while giving each its own
+                      parameters. ``None`` reproduces the previous behaviour exactly.
+   :type event_head: str | None
+   :param event_head_hidden_dim: Width inside the event head.
+   :type event_head_hidden_dim: int
+   :param event_head_detach: Cut the gradient from the event loss to the
+                             ESR head. ``True`` is the point of the split; ``False`` is worth
+                             measuring, since a little event gradient may sharpen blink
+                             boundaries that RN15 under-specifies at 15 fps.
+   :type event_head_detach: bool
+   :param d_model: Transformer internal width.
+   :type d_model: int
+   :param num_heads: Attention heads.
+   :type num_heads: int
+   :param cmt_num_layers: Cross-modal (LinMulT) / encoder (LinT) depth.
+   :type cmt_num_layers: int
+   :param branch_sat_num_layers: Per-branch self-attention depth; LinMulT
+                                 only.
+   :type branch_sat_num_layers: int
+   :param attention_type: ``linear`` (LinMulT) or ``softmax`` (MulT); this
+                          is the only architectural difference between the two baselines.
+                          ``flash``, ``performer``, and ``bigbird`` are also accepted.
+   :type attention_type: str
+   :param flash_query_key_dim: Flash-attention query/key width.
+   :type flash_query_key_dim: int | None
+   :param performer_num_random_features: Performer feature count.
+   :type performer_num_random_features: int | None
+   :param bigbird_block_size: BigBird block size.
+   :type bigbird_block_size: int
+   :param bigbird_num_global_tokens: BigBird global-token count.
+   :type bigbird_num_global_tokens: int
+   :param bigbird_num_random_tokens: BigBird random-token count.
+   :type bigbird_num_random_tokens: int
+   :param dropout_input: Dropout before projection.
+   :type dropout_input: float
+   :param dropout_output: Dropout after fusion.
+   :type dropout_output: float
+   :param dropout_pe: Dropout after positional encoding.
+   :type dropout_pe: float
+   :param dropout_ffn: Dropout inside FFN blocks.
+   :type dropout_ffn: float
+   :param dropout_attention: Attention-weight dropout.
+   :type dropout_attention: float
+   :param add_module_tcn: Per-modality TCN after projection.
+   :type add_module_tcn: bool
+   :param tcn_num_layers: TCN depth, when enabled.
+   :type tcn_num_layers: int
+   :param tcn_kernel_size: TCN kernel size.
+   :type tcn_kernel_size: int
+   :param tcn_dropout: TCN dropout.
+   :type tcn_dropout: float
+   :param add_module_ffn_fusion: FFN + residual after fusion.
+   :type add_module_ffn_fusion: bool
+   :param head_dropout: Dropout inside each head.
+   :type head_dropout: float
+   :param head_hidden_dim: Head hidden width.
+   :type head_hidden_dim: int
+   :param head_norm: Head normalisation (``bn`` or ``ln``).
+   :type head_norm: str
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the architecture configuration.
+
+      :raises ConfigError: If a value is out of range or a name is unknown.
+
+
+
+   .. py:method:: from_dict(data: dict[str, Any]) -> ModelConfig
+      :classmethod:
+
+
+      Build from a plain dict.
+
+      :param data: Config values.
+      :type data: dict
+
+      :returns: The validated config.
+      :rtype: ModelConfig
+
+      :raises ConfigError: If a retired linmult 1.x key is present.
+
+
+
+.. py:class:: MLflowConfig
+
+   MLflow tracking configuration.
+
+   :param tracking_uri: Backend store. A **SQLite database, not a
+                        directory**: MLflow 3.x puts the filesystem store in maintenance
+                        mode and raises rather than using it. Relative by default so no
+                        absolute local path leaks into a committed config.
+   :type tracking_uri: str
+   :param experiment_name: MLflow experiment to log under.
+   :type experiment_name: str
+   :param run_name: Run name; MLflow generates one when ``None``.
+   :type run_name: str | None
+   :param log_model: Log the best checkpoint as an MLflow artifact.
+   :type log_model: bool
+
+
+   .. py:method:: __post_init__() -> None
+
+      Reject the retired filesystem store.
+
+      :raises ConfigError: If the tracking URI is a bare directory path.
+
+
+
+   .. py:method:: from_dict(data: dict[str, Any]) -> MLflowConfig
+      :classmethod:
+
+
+      Build from a plain dict.
+
+      :param data: Config values.
+      :type data: dict
+
+      :returns: The validated config.
+      :rtype: MLflowConfig
+
+
+
+.. py:class:: EarlyStoppingConfig
+
+   Early-stopping configuration.
+
+   :param enabled: Whether to stop early at all.
+   :type enabled: bool
+   :param monitor: Metric to watch.
+   :type monitor: str
+   :param mode: ``"max"`` or ``"min"``.
+   :type mode: str
+   :param patience: Epochs without improvement before stopping.
+   :type patience: int
+   :param min_delta: Smallest change counted as an improvement.
+   :type min_delta: float
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the early-stopping configuration.
+
+      :raises ConfigError: If ``mode`` is not ``"min"`` or ``"max"``.
+
+
+
+   .. py:method:: from_dict(data: dict[str, Any]) -> EarlyStoppingConfig
+      :classmethod:
+
+
+      Build from a plain dict.
+
+      :param data: Config values.
+      :type data: dict
+
+      :returns: The validated config.
+      :rtype: EarlyStoppingConfig
+
+
+
+.. py:class:: TrainConfig
+
+   Training-loop configuration.
+
+   :param task: ``blink_presence``, ``eye_state``, or ``joint``.
+   :type task: str
+   :param targets: Target keys to supervise. Defaults to the task's.
+   :type targets: list[str]
+   :param eval_targets: Targets **scored but never trained**. The
+                        model grows no head for these and they reach no loss; the existing
+                        prediction is measured against a second annotation. This is how a
+                        frame-wise closure model is benchmarked on blink events, which is
+                        what the video corpora annotate.
+   :type eval_targets: list[str]
+   :param loss: Loss name.
+   :type loss: str
+   :param loss_kwargs: Loss-specific arguments (e.g. focal ``gamma``).
+   :type loss_kwargs: dict
+   :param event_carrier_only: In the event report, keep only the largest
+                              corpus and drop the rest as carriers. Correct when a single corpus
+                              is being scored through a carrier that supplies the head; **wrong
+                              on a joint split**, where it would discard real corpora because one
+                              happens to be larger. Off by default; the per-corpus eval scripts
+                              set it.
+   :type event_carrier_only: bool
+   :param occlusion_yaw: Absolute head yaw, in degrees, beyond
+                         which the far eye is treated as self-occluded and masked out of both
+                         loss and metrics. ``None`` disables the rule.
+
+                         Applied in the dataloader rather than baked in at build time, so the
+                         threshold stays sweepable without re-preprocessing. Only MPEblink is
+                         materially affected -- 35.7% of its frames sit beyond 45 degrees --
+                         while RN15, RN30 and TalkingFace are near-frontal and lose almost
+                         nothing. The right value is a question for inspection, 30 and 45
+                         both being defensible, which is why there is no default.
+   :type occlusion_yaw: float | None
+   :param smoothness_weight: Weight on
+                             :func:`~blinklinmult.train.losses.temporal_smoothness`, which
+                             penalises frame-to-frame chatter in the predicted signal. A blink is
+                             continuous motion, and a jagged signal is what makes interval
+                             extraction brittle -- every spurious crossing of the operating point
+                             becomes a spurious event boundary. Needs no annotation, so it
+                             applies to every corpus. ``0.0`` disables it, which is the default:
+                             it changes what the model optimises and so must be opted into.
+   :type smoothness_weight: float
+   :param smoothness_margin: Frame-to-frame jumps at or below this are
+                             free, so a genuinely fast closure is not penalised.
+   :type smoothness_margin: float
+   :param duration_weight: Weight on
+                           :func:`~blinklinmult.train.losses.duration_prior`, which penalises
+                           predicted closures far outside a plausible blink duration
+                           (~100-400 ms, about 3-12 frames at 30 fps). Also annotation-free.
+                           ``0.0`` disables it.
+   :type duration_weight: float
+   :param task_weights: Per-target loss weight for a joint run.
+                        Absent targets default to ``1.0``.
+   :type task_weights: dict[str, float]
+   :param max_epochs: Training epochs.
+   :type max_epochs: int
+   :param accelerator: Lightning accelerator.
+   :type accelerator: str
+   :param devices: Lightning devices spec.
+   :type devices: list[int] | int | str
+   :param precision: Lightning precision.
+   :type precision: str
+   :param seed: Global seed.
+   :type seed: int
+   :param deterministic: Request deterministic kernels.
+   :type deterministic: bool
+   :param output_dir: Root for run outputs.
+   :type output_dir: str
+   :param limit_batches: Cap the batches per epoch in every
+                         stage, for a fast but *complete* run. An integer is a batch count,
+                         a float in ``(0, 1]`` a fraction, ``None`` the whole split.
+   :type limit_batches: int | float | None
+   :param limit_test_batches: Cap the **test** split only,
+                              leaving train and validation whole. The inverse of
+                              ``limit_fit_batches``, and what a threshold-fitting pass needs: it
+                              wants the full validation split to fit on and no test pass at all.
+                              Same units as ``limit_batches``.
+   :type limit_test_batches: int | float | None
+   :param limit_fit_batches: Cap train and validation only,
+                             leaving **test at full size**. This is the knob for cheap
+                             diagnostic sweeps: capping test as well would score each arm on a
+                             different subset and make the arms incomparable, which defeats the
+                             purpose of running them. Same units as ``limit_batches``.
+
+                             Unlike ``--fast-dev-run``, this keeps the logger, the callbacks and
+                             the checkpointing, so every metric a full run produces is written
+                             and reaches MLflow — ``fast_dev_run`` replaces the logger with
+                             Lightning's ``DummyLogger`` and nothing is recorded at all. Use this
+                             when the point is to *inspect the metrics* quickly rather than to
+                             prove the code path runs.
+   :type limit_fit_batches: int | float | None
+   :param optimizer: Optimizer settings.
+   :type optimizer: OptimConfig
+   :param early_stopping: Early-stopping settings.
+   :type early_stopping: EarlyStoppingConfig
+   :param mlflow: Tracking settings.
+   :type mlflow: MLflowConfig
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the training configuration.
+
+      :raises ConfigError: If the task, targets, loss, or weights are invalid.
+
+
+
+   .. py:method:: weight_for(target: str) -> float
+
+      Loss weight of one target.
+
+      :param target: Target key.
+      :type target: str
+
+      :returns: The configured weight, or ``1.0``.
+      :rtype: float
+
+
+
+   .. py:method:: from_dict(data: dict[str, Any]) -> TrainConfig
+      :classmethod:
+
+
+      Build from a plain dict, including nested sections.
+
+      :param data: Config values.
+      :type data: dict
+
+      :returns: The validated config.
+      :rtype: TrainConfig
+
+
+
+.. py:class:: ExperimentConfig
+
+   One run: its data, its model, and its training procedure.
+
+   :param data: Dataloader settings.
+   :type data: DataConfig
+   :param model: Architecture settings.
+   :type model: ModelConfig
+   :param train: Training settings.
+   :type train: TrainConfig
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate consistency across the three sections.
+
+      Also derives the one data setting that depends on the model: whether the
+      handcrafted descriptors are consumed, which decides if geometric
+      augmentation is safe. Derived here rather than configured, so the two
+      cannot drift apart.
+
+      :raises ConfigError: If the model family and the task disagree.
+
+
+
+   .. py:method:: from_files(data_path: str | pathlib.Path, model_path: str | pathlib.Path, train_path: str | pathlib.Path, overrides: dict[str, Any] | None = None) -> ExperimentConfig
+      :classmethod:
+
+
+      Load a run's three config files, applying dotted overrides.
+
+      :param data_path: Data config.
+      :type data_path: str | Path
+      :param model_path: Model config.
+      :type model_path: str | Path
+      :param train_path: Train config.
+      :type train_path: str | Path
+      :param overrides: Dotted ``section.key`` overrides, e.g.
+                        ``{"data.batch_size": 8}``.
+      :type overrides: dict | None
+
+      :returns: The assembled configuration.
+      :rtype: ExperimentConfig
+
+
+
+   .. py:method:: to_flat_dict() -> dict[str, Any]
+
+      Flatten every field to dotted keys, for ``mlflow.log_params``.
+
+      :returns: e.g. ``{"data.batch_size": 32, "train.optimizer.lr": 0.001}``.
+      :rtype: dict
+
+
+
+.. py:function:: apply_override(raw: dict[str, Any], dotted: str, value: Any) -> None
+
+   Set a nested config value addressed by a dotted key.
+
+   :param raw: Nested config mapping, modified in place.
+   :type raw: dict
+   :param dotted: Key path, e.g. ``"train.optimizer.lr"``.
+   :type dotted: str
+   :param value: Value to set.
+   :type value: Any
+
+
+.. py:function:: parse_override(text: str) -> tuple[str, Any]
+
+   Parse a ``key=value`` CLI override, typing the value via YAML.
+
+   :param text: e.g. ``"data.batch_size=8"``.
+   :type text: str
+
+   :returns: The dotted key and its parsed value.
+   :rtype: tuple[str, Any]
+
+   :raises ConfigError: If the text has no ``=``.
+
+

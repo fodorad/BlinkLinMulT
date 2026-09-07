@@ -1,0 +1,79 @@
+blinklinmult
+============
+
+.. py:module:: blinklinmult
+
+.. autoapi-nested-parse::
+
+   BlinkLinMulT: transformer-based eye blink detection.
+
+   Version 2 is a full rewrite of the published 1.x code. It keeps the two tasks
+   of the paper — **eye state recognition** (is this eye closed?) and **blink
+   presence detection** (does this window contain a blink?) — and replaces
+   everything around them:
+
+   * :mod:`blinklinmult.preprocess` turns each raw corpus into a uniform
+     ``data/processed/<db>`` tree, one dataset at a time.
+   * :mod:`blinklinmult.data` collects those trees into per-dataset HDF5 files in
+     the layout `OmniLoader <https://github.com/fodorad/OmniLoader>`_ reads, and
+     declares each dataset's OmniLoader schema.
+   * :mod:`blinklinmult.train` trains the current
+     `LinMulT <https://github.com/fodorad/LinMulT>`_ over those datasets jointly,
+     driven entirely by YAML.
+
+   The 1.x public API (``DenseNet121``, ``BlinkLinT``, ``BlinkLinMulT`` importable
+   from ``blinklinmult.models``, with weights auto-downloaded on construction) is
+   gone; see ``docs/migration.md``.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/blinklinmult/assets/index
+   /autoapi/blinklinmult/bench/index
+   /autoapi/blinklinmult/compare/index
+   /autoapi/blinklinmult/data/index
+   /autoapi/blinklinmult/detector/index
+   /autoapi/blinklinmult/fit/index
+   /autoapi/blinklinmult/live/index
+   /autoapi/blinklinmult/models/index
+   /autoapi/blinklinmult/overlay/index
+   /autoapi/blinklinmult/paper/index
+   /autoapi/blinklinmult/pipeline/index
+   /autoapi/blinklinmult/registry/index
+   /autoapi/blinklinmult/stream/index
+   /autoapi/blinklinmult/train/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.__version__
+   blinklinmult.PROJECT_ROOT
+   blinklinmult.WEIGHTS_DIR
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+
+.. py:data:: PROJECT_ROOT
+
+   Repository root. Every path in a config is resolved relative to this.
+
+.. py:data:: WEIGHTS_DIR
+
+   Where ``from_pretrained`` caches downloaded weights.
+
+   Passed as ``huggingface_hub.hf_hub_download``'s ``cache_dir``, so asking for the
+   same model twice reuses the local copy instead of re-downloading. Under the
+   user's home rather than the repository, so an installed package works the same
+   way as a checkout.
+

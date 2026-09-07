@@ -1,0 +1,185 @@
+blinklinmult.compare.protocol
+=============================
+
+.. py:module:: blinklinmult.compare.protocol
+
+.. autoapi-nested-parse::
+
+   The comparison protocol: three tables, and why it takes three.
+
+   One table cannot compare these four models honestly, because they do not arrive
+   on equal terms.
+
+   **Table A -- threshold-free (average precision).** The primary claim. On RN30's
+   test split only **1.08%** of frames are closed (3542 of 328 819), so accuracy is
+   meaningless -- a model that answers "open" every time scores 98.9% -- and any
+   F1 is a statement about the threshold as much as about the model. AP integrates
+   over every threshold and is the one number no operating-point choice can flatter.
+
+   **Table B -- events at a fitted operating point.** What each model achieves when
+   someone actually tunes it. The threshold is swept on **validation** and applied
+   to test, per model, so every model is judged after the same amount of care.
+
+   **Table C -- events as shipped.** What a user gets from ``pip install`` today.
+
+   Tables B and C exist separately because of a real asymmetry that
+   ``registry.py`` documents plainly: the three 1.x models carry ``threshold=0.5``
+   because "nothing measured it", while ``blinkcnn`` carries a pair swept on
+   validation. Comparing only as-shipped numbers would measure *calibration
+   effort*; comparing only fitted numbers would hide a defect a user really hits.
+   The gap between B and C is the cost of that defect, made visible.
+
+   **Fitting never touches test.** ``fit.py`` says of itself: "the function does
+   not enforce this; it cannot see where the signals came from." A driver can, and
+   :func:`compare_models` refuses when the two paths coincide.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.compare.protocol.Signals
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.compare.protocol.ProtocolError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.compare.protocol.Comparison
+   blinklinmult.compare.protocol.CorpusReport
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.compare.protocol.compare_average_precision
+
+
+Module Contents
+---------------
+
+.. py:data:: Signals
+
+   What :func:`~blinklinmult.train.callbacks.load_signals` returns.
+
+.. py:exception:: ProtocolError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when a comparison is asked for on incomparable inputs.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: Comparison
+
+   One pairwise result.
+
+   :param first: The model on the left of the difference.
+   :type first: str
+   :param second: The model subtracted from it.
+   :type second: str
+   :param interval: The difference, with its confidence interval.
+   :type interval: Interval
+   :param p_raw: Two-sided bootstrap p-value, uncorrected.
+   :type p_raw: float
+   :param p_holm: The same after Holm correction across the family.
+   :type p_holm: float
+
+
+   .. py:property:: conclusive
+      :type: bool
+
+
+      Whether the corrected result separates the two models.
+
+      Both conditions must hold: an interval excluding zero *and* a corrected
+      p below 0.05. They can disagree at the margin, and a claim should rest
+      on the stricter reading.
+
+      :returns: Whether the difference stands after correction.
+      :rtype: bool
+
+
+   .. py:method:: describe() -> str
+
+      One line for a table.
+
+      :returns: The difference, its interval, and the corrected p.
+      :rtype: str
+
+
+
+.. py:class:: CorpusReport
+
+   Every model's score on one corpus, and every pairwise comparison.
+
+   :param corpus: Which corpus.
+   :type corpus: str
+   :param n_clusters: Recordings behind the numbers -- the honest sample
+                      size, which is why it is reported next to them.
+   :type n_clusters: int
+   :param n_frames: Valid frames scored.
+   :type n_frames: int
+   :param positive_rate: Fraction of frames labelled closed. Printed
+                         because at ~1% it is why average precision leads.
+   :type positive_rate: float
+   :param scores: Per-model average precision.
+   :type scores: dict[str, Interval]
+   :param comparisons: Every pair, Holm-corrected together.
+   :type comparisons: list[Comparison]
+
+
+   .. py:property:: resolvable
+      :type: bool
+
+
+      Whether this corpus can carry an interval at all.
+
+      :returns: ``False`` for a corpus like TalkingFace, whose single
+                recording supports a point estimate and nothing more.
+      :rtype: bool
+
+
+.. py:function:: compare_average_precision(stores: dict[str, Signals], corpus: str, rounds: int = DEFAULT_ROUNDS, seed: int = DEFAULT_SEED) -> CorpusReport
+
+   Table A: threshold-free comparison of every model on one corpus.
+
+   Each model is scored on the observed recordings and on every bootstrap
+   resample of them. **The same draw is used for every model**, so a resample
+   heavy on hard recordings moves all of them together and the difference stays
+   stable where the absolutes do not.
+
+   :param stores: Per-model signals, from
+                  :func:`~blinklinmult.train.callbacks.load_signals`. Loading through
+                  that function rather than :func:`numpy.load` is what stops a
+                  ``blink_presence`` archive being scored as ``eye_state``.
+   :type stores: dict[str, Signals]
+   :param corpus: Name, for the report.
+   :type corpus: str
+   :param rounds: Bootstrap replicates.
+   :type rounds: int
+   :param seed: Seed, recorded in the result.
+   :type seed: int
+
+   :returns: Per-model intervals and every pairwise comparison.
+   :rtype: CorpusReport
+
+   :raises ProtocolError: If fewer than two models are given or they disagree on
+       which recordings they cover.
+
+

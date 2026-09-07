@@ -1,0 +1,206 @@
+blinklinmult.data.writer
+========================
+
+.. py:module:: blinklinmult.data.writer
+
+.. autoapi-nested-parse::
+
+   Write samples straight into a corpus's HDF5 file, as they are produced.
+
+   The 1.x pipeline staged every sample as a ``.npy`` file plus a manifest, then a
+   second pass read them back and assembled the HDF5. Measured on MRL-Eye, the
+   staging cost **884 MB against an 11 MB h5** — 80x the artifact, for a copy that
+   existed only to be read once and deleted.
+
+   This writer removes that layer. A preprocessing run opens one file, appends
+   each sample as it is cut, and closes it: one command, one artifact, and no
+   intermediate that can drift out of step with either end.
+
+   **The file is complete or it is absent.** Samples go to ``<name>.h5.tmp``,
+   renamed only on a clean close. An interrupted run leaves nothing behind rather
+   than a partial file that a later run would mistake for a finished one.
+
+   The layout, dtypes, compression, and root attributes are exactly those
+   :mod:`blinklinmult.data.builder` writes — that contract is what OmniLoader
+   reads, and it does not change.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.writer.logger
+   blinklinmult.data.writer.COMPRESSION
+   blinklinmult.data.writer.COMPRESSION_LEVEL
+   blinklinmult.data.writer.IMAGE_DTYPE
+   blinklinmult.data.writer.LABEL_DTYPE
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.writer.WriterError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.data.writer.H5Writer
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: COMPRESSION
+   :value: 'gzip'
+
+
+   Compression filter, paired with the shuffle filter for float data.
+
+.. py:data:: COMPRESSION_LEVEL
+   :value: 4
+
+
+   a middle ground between file size and read CPU.
+
+   :type: Compression level
+
+.. py:data:: IMAGE_DTYPE
+
+   On-disk dtype for eye crops and descriptors.
+
+   The crops dominate the file — a 15x3x64x64 window is 184k values against 15
+   labels — and fp16 halves both the file and the read bandwidth at a precision
+   finer than 8-bit pixel data carries in the first place.
+
+.. py:data:: LABEL_DTYPE
+
+   On-disk dtype for targets. Labels are tiny; precision costs nothing.
+
+.. py:exception:: WriterError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when a corpus cannot be written as configured.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: H5Writer(spec: blinklinmult.data.schema.DatasetSpec, h5_path: pathlib.Path, config_yaml: str = '', git_sha: str = 'unknown', extra_attrs: dict[str, Any] | None = None)
+
+   Streams one corpus's samples into its HDF5 file.
+
+   Use as a context manager: the file is renamed into place on a clean exit
+   and discarded on an exception.
+
+   :param spec: The corpus declaration, which fixes the shapes and
+                which targets are written.
+   :type spec: DatasetSpec
+   :param h5_path: Destination file.
+   :type h5_path: Path
+   :param config_yaml: The corpus config, embedded for traceability.
+   :type config_yaml: str
+   :param git_sha: Commit the build was made from.
+   :type git_sha: str
+   :param extra_attrs: Further root attributes describing how this
+                       corpus was sampled — the evaluation protocol and its stride, say.
+                       A file read out of context should still be able to say what it is.
+   :type extra_attrs: dict | None
+
+   :raises WriterError: If a sample disagrees with the declaration.
+
+
+   .. py:method:: __enter__() -> H5Writer
+
+      Open the temporary file and write the root attributes.
+
+      :returns: This writer.
+      :rtype: H5Writer
+
+
+
+   .. py:method:: __exit__(exc_type, exc_value, traceback) -> None
+
+      Close the file, renaming it into place only on success.
+
+      :param exc_type: Exception type, if one is propagating.
+      :param exc_value: The exception.
+      :param traceback: Its traceback.
+
+
+
+   .. py:method:: add(subset: str, video_id: str, frame_group: str, eye_side: str, eye_images: numpy.ndarray, eye_image_mask: numpy.ndarray | None = None, blink_presence: numpy.ndarray | None = None, blink_presence_mask: numpy.ndarray | None = None, eye_state: numpy.ndarray | None = None, eye_state_mask: numpy.ndarray | None = None, eye_features: numpy.ndarray | None = None, eye_feature_mask: numpy.ndarray | None = None, blink_id: int = NO_BLINK, head_pose: numpy.ndarray | None = None, quality_signals: dict[str, numpy.ndarray] | None = None, blink_ids: numpy.ndarray | None = None, quality: dict[str, numpy.ndarray | float | str] | None = None) -> str
+
+      Write one eye-wise sample.
+
+      :param subset: Split this sample belongs to.
+      :type subset: str
+      :param video_id: Source recording or subject.
+      :type video_id: str
+      :param frame_group: Identifier shared by both eyes of one window,
+                          which is what lets frame-level scoring recombine them.
+      :type frame_group: str
+      :param eye_side: Which eye.
+      :type eye_side: str
+      :param eye_images: ``(T, C, H, W)`` normalised crops.
+      :type eye_images: np.ndarray
+      :param eye_image_mask: ``(T,)`` validity; ``None``
+                             means every frame is real.
+      :type eye_image_mask: np.ndarray | None
+      :param blink_presence: ``(T,)`` target.
+      :type blink_presence: np.ndarray | None
+      :param blink_presence_mask: ``(T,)`` validity.
+      :type blink_presence_mask: np.ndarray | None
+      :param eye_state: ``(T,)`` target.
+      :type eye_state: np.ndarray | None
+      :param eye_state_mask: ``(T,)`` validity.
+      :type eye_state_mask: np.ndarray | None
+      :param eye_features: ``(T, F)`` descriptors.
+      :type eye_features: np.ndarray | None
+      :param eye_feature_mask: ``(T,)`` validity.
+      :type eye_feature_mask: np.ndarray | None
+      :param blink_id: The blink this window contains, or
+                       :data:`~blinklinmult.data.schema.NO_BLINK`.
+      :type blink_id: int
+      :param head_pose: ``(T, 3)`` ``[yaw, pitch, roll]`` in
+                        degrees. Required when the corpus declares
+                        :attr:`~blinklinmult.data.schema.DatasetSpec.has_head_pose`.
+      :type head_pose: np.ndarray | None
+      :param quality_signals: Each of
+                              :data:`~blinklinmult.data.schema.QUALITY_SIGNALS` as a ``(T,)``
+                              array in ``[0, 1]``. Stored separately rather than combined, so
+                              the weighting stays a dataloader decision.
+      :type quality_signals: dict[str, np.ndarray] | None
+      :param blink_ids: ``(T,)`` which annotated blink each
+                        frame belongs to, :data:`~blinklinmult.data.schema.NO_BLINK`
+                        outside every event.
+      :type blink_ids: np.ndarray | None
+      :param quality: Optional diagnostics stored verbatim
+                      alongside the sample -- per-frame ``(T,)`` arrays such as
+                      :data:`~blinklinmult.data.schema.EYE_ON_SCREEN`, the
+                      :data:`~blinklinmult.data.schema.FACE_BOX`, or scalars like
+                      :data:`~blinklinmult.data.schema.CONFIDENCE`. Nothing here is
+                      read during training; it exists so bad data can be found and
+                      looked at. Per-frame arrays are fitted to the window length
+                      exactly as the images are.
+      :type quality: dict | None
+
+      :returns: The sample key.
+      :rtype: str
+
+      :raises WriterError: If the writer is closed, the subset is unknown, the
+          key collides, or an array disagrees with the declaration.
+
+
+

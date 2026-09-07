@@ -1,0 +1,765 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="The frame-wise backbone" href="frame_wise.html"><link rel="prev" title="Data" href="data.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/training.html">
+        <link rel="prefetch" href="_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Training - BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eye_state_events.html">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/blinklinmult/index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/data/index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/schema/index.html">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/data/writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/blinklinmult/stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/blinklinmult/train/index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/metrics/index.html">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/blinklinmult/train/phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/blob/main/docs/training.md?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/edit/main/docs/training.md" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="training">
+<h1>Training<a class="headerlink" href="#training" title="Link to this heading">¶</a></h1>
+<p>Every run is three YAML files — data, model, train — and nothing else. Unknown
+keys are rejected rather than ignored, so a config always describes what the run
+actually did.</p>
+<section id="running">
+<h2>Running<a class="headerlink" href="#running" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>train-joint<span class="w">            </span><span class="c1"># both heads, every corpus (the union experiment)</span>
+make<span class="w"> </span>train-blink-presence<span class="w">   </span><span class="c1"># blink presence, video corpora only</span>
+make<span class="w"> </span>train-eye-state<span class="w">        </span><span class="c1"># eye state, still-image corpora</span>
+
+make<span class="w"> </span>train-cnn<span class="w">              </span><span class="c1"># BlinkCNN</span>
+make<span class="w"> </span>train-lint<span class="w">             </span><span class="c1"># BlinkLinT</span>
+make<span class="w"> </span>train-linmult<span class="w">          </span><span class="c1"># BlinkLinMulT</span>
+
+make<span class="w"> </span>train-single<span class="w"> </span><span class="nv">DB</span><span class="o">=</span>rn30<span class="w">   </span><span class="c1"># one corpus, trained and evaluated alone</span>
+make<span class="w"> </span>per-dataset<span class="w">            </span><span class="c1"># every per-corpus arm</span>
+make<span class="w"> </span>ablation<span class="w">               </span><span class="c1"># the four architectures on identical data</span>
+make<span class="w"> </span>mlflow-ui<span class="w">              </span><span class="c1"># inspect the runs</span>
+</pre></div>
+</div>
+<p>Any config value can be overridden without editing a file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>train-joint<span class="w"> </span><span class="nv">ARGS</span><span class="o">=</span><span class="s2">"--set data.strategy_kwargs.temperature=3.0"</span>
+make<span class="w"> </span>train-joint<span class="w"> </span><span class="nv">ARGS</span><span class="o">=</span><span class="s2">"--set train.optimizer.lr=1e-4 --set data.batch_size=16"</span>
+</pre></div>
+</div>
+<p>Or call the CLI directly for full control:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>blinklinmult.train.cli<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span>config/data/all.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model<span class="w"> </span>config/model/blinklinmult.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--train<span class="w"> </span>config/train/joint.yaml
+</pre></div>
+</div>
+</section>
+<section id="configurations">
+<h2>Configurations<a class="headerlink" href="#configurations" title="Link to this heading">¶</a></h2>
+<p><strong><code class="docutils literal notranslate"><span class="pre">config/data/</span></code></strong> — which corpora, and how they are mixed.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Config</p></th>
+<th class="head"><p>Corpora</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">all.yaml</span></code></p></td>
+<td><p>TalkingFace, RN15, RN30, HUST-LEBW, MPEblink</p></td>
+<td><p>the union experiment; the sequence models</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">stills.yaml</span></code></p></td>
+<td><p>CEW, MRL-Eye + video corpora as frames</p></td>
+<td><p>eye state; the frame-wise model</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rn.yaml</span></code></p></td>
+<td><p>RN15 + RN30</p></td>
+<td><p>the aggregate RN arm</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">single_&lt;db&gt;.yaml</span></code></p></td>
+<td><p>one corpus</p></td>
+<td><p>the per-dataset arms</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">smoke.yaml</span></code></p></td>
+<td><p>RN30, CEW</p></td>
+<td><p>CI and smoke runs</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong><code class="docutils literal notranslate"><span class="pre">config/model/</span></code></strong> — the three shipped models plus one baseline:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Config</p></th>
+<th class="head"><p>Model</p></th>
+<th class="head"><p>Inputs</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinkcnn</span></code></p></td>
+<td><p>BlinkCNN</p></td>
+<td><p>one eye crop <code class="docutils literal notranslate"><span class="pre">(C,</span> <span class="pre">H,</span> <span class="pre">W)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blinklint</span></code></p></td>
+<td><p>BlinkLinT</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">C,</span> <span class="pre">H,</span> <span class="pre">W)</span></code> + <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> mask</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blinklinmult</span></code></p></td>
+<td><p>BlinkLinMulT</p></td>
+<td><p>the above <strong>and</strong> <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">160)</span></code> + its own <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> mask</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The two masks of BlinkLinMulT are independent by design: a usable eye crop can
+still defeat the iris landmarker, so a frame can be valid for the image branch
+and invalid for the feature branch.</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">config/train/</span></code></strong> — <code class="docutils literal notranslate"><span class="pre">joint</span></code>, <code class="docutils literal notranslate"><span class="pre">blink_presence</span></code>, <code class="docutils literal notranslate"><span class="pre">eye_state</span></code>, <code class="docutils literal notranslate"><span class="pre">smoke</span></code>.</p>
+<p>Not every combination is valid, and the invalid ones fail at config load rather
+than after an hour of training. <code class="docutils literal notranslate"><span class="pre">family:</span> <span class="pre">cnn</span></code> with the blink-presence task is
+rejected: a per-frame CNN has no sequence model and cannot express the task.</p>
+</section>
+<section id="the-analysis-window">
+<h2>The analysis window<a class="headerlink" href="#the-analysis-window" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">window_seconds:</span> <span class="pre">1.5</span></code> is one knob for the whole run; each corpus derives its own
+frame count from its rate (30 fps → 45 frames, 15 fps → 22). It matches
+MPEblink’s 36-frame test clip, so the numbers are readable beside theirs. Every corpus then
+spans the same real duration, OmniLoader pads the shorter ones and masks the
+padding, and nothing is resampled.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>train-joint<span class="w"> </span><span class="nv">ARGS</span><span class="o">=</span><span class="s2">"--set data.window_seconds=1.0"</span><span class="w">   </span><span class="c1"># every corpus re-derives</span>
+</pre></div>
+</div>
+<p>A joint run mixing RN15 and RN30 resolves to the longer frame count, so RN15
+samples arrive roughly half padding. That is intended — the frames genuinely are
+not there.</p>
+</section>
+<section id="mixing-the-corpora">
+<h2>Mixing the corpora<a class="headerlink" href="#mixing-the-corpora" title="Link to this heading">¶</a></h2>
+<p>The corpora differ in size by three orders of magnitude — MRL-Eye has ~85 000
+stills, TalkingFace is one recording. Proportional mixing would make a batch
+almost entirely MRL, so the default is <code class="docutils literal notranslate"><span class="pre">temperature:</span> <span class="pre">2.0</span></code>, which samples by
+<code class="docutils literal notranslate"><span class="pre">sqrt(size)</span></code>: the large corpora stay dominant without erasing the small ones.
+Raise the temperature towards uniform, lower it towards proportional.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">temperature</span><span class="w">      </span><span class="c1"># proportional | temperature | annealed_temperature</span>
+<span class="nt">strategy_kwargs</span><span class="p">:</span><span class="w">           </span><span class="c1"># | fixed | round_robin</span>
+<span class="w">  </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
+</pre></div>
+</div>
+<p>Each strategy accepts only its own arguments; passing another’s fails at setup
+with a message naming the offending key.</p>
+</section>
+<section id="losses-and-metrics">
+<h2>Losses and metrics<a class="headerlink" href="#losses-and-metrics" title="Link to this heading">¶</a></h2>
+<p><strong>Losses are masked.</strong> Every loss reduces over validly-supervised positions
+only. That is not an optimisation — it is what makes joint training correct. The
+mean is taken over valid positions, so a batch’s loss does not depend on how
+many of its samples came from a corpus that annotates the target, and a batch
+with no valid position for a head contributes exactly zero to it <em>with the
+gradient path preserved</em>, so DDP does not deadlock waiting for a rank that
+skipped a parameter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">focal</span></code> is the default for blink presence: sampled continuously, the
+overwhelming majority of frames are easy negatives whose aggregate gradient
+drowns out the few frames where the eye is actually closing. <code class="docutils literal notranslate"><span class="pre">bce</span></code> is the
+default for eye state, which is roughly balanced in CEW and MRL.</p>
+<p><strong>Training and evaluation are windowed identically</strong> — a 50%-overlapping sweep
+of every split, described in <a class="reference internal" href="data.html"><span class="std std-doc">Data</span></a>. That is what makes <code class="docutils literal notranslate"><span class="pre">focal</span></code> the
+right default rather than a precaution: roughly 10% of training windows contain
+a blink, the same proportion the test split holds, so a threshold calibrated on
+validation transfers to test. 1.x balanced the training split to 50% positive,
+which made the loss easier to optimise and the operating point meaningless.</p>
+<p><strong>F1 is the primary metric, not accuracy.</strong> A model predicting “no blink”
+everywhere scores above 95% accuracy on a continuously-sampled recording, which
+says nothing about whether it detects blinks. Precision and recall are reported
+alongside because the two failure modes have different costs, and average
+precision because it is threshold-free.</p>
+<p><strong>Training is eye-wise; reporting is frame-wise.</strong> Two families of scores are
+logged:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{split}/{target}/f1                per eye — what the loss sees
+{split}/{target}/frame_max/f1      per frame — THE reported number
+{split}/{target}/frame_mean/f1     the alternative rule, for comparison
+{split}/mean_f1                    mean frame-level F1; drives selection
+{split}/mean_eye_f1                mean per-eye F1, as a diagnostic
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">max</span></code> is the primary rule: a blink is a frame-level event that <em>occurred</em>, so if
+one eye is occluded while the other is plainly closing, <code class="docutils literal notranslate"><span class="pre">max</span></code> recovers it where
+<code class="docutils literal notranslate"><span class="pre">mean</span></code> halves the score. The aggregation runs on <strong>validation as well as test</strong>,
+so <code class="docutils literal notranslate"><span class="pre">valid/mean_f1</span></code> and <code class="docutils literal notranslate"><span class="pre">test/mean_f1</span></code> are directly comparable and model
+selection optimises the number the benchmark reports.</p>
+<p>Each run also writes <code class="docutils literal notranslate"><span class="pre">test_per_dataset.json</span></code>: the test split scored separately
+per contributing corpus. One aggregate F1 can hide a model that has learned
+MRL-Eye’s stills and fails on RN30’s video entirely.</p>
+</section>
+<section id="optimization">
+<h2>Optimization<a class="headerlink" href="#optimization" title="Link to this heading">¶</a></h2>
+<p>An ImageNet-pretrained backbone and a randomly-initialised transformer do not
+want the same step size — fine-tuning the backbone at the transformer’s rate
+destroys the pretrained features within a few hundred steps. <code class="docutils literal notranslate"><span class="pre">backbone_lr</span></code>
+therefore splits the parameters into two groups, and the one-cycle schedule
+keeps each group’s own peak rather than flattening them to a single <code class="docutils literal notranslate"><span class="pre">max_lr</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">optimizer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span><span class="w">           </span><span class="c1"># transformer and heads</span>
+<span class="w">  </span><span class="nt">backbone_lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0001</span><span class="w"> </span><span class="c1"># the pretrained CNN</span>
+<span class="w">  </span><span class="nt">scheduler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">onecycle</span>
+</pre></div>
+</div>
+<p>Set <code class="docutils literal notranslate"><span class="pre">backbone_lr:</span> <span class="pre">null</span></code> to use one rate for everything.</p>
+</section>
+<section id="choosing-the-backbone">
+<h2>Choosing the backbone<a class="headerlink" href="#choosing-the-backbone" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">convnext_femto</span></code> is the default. It was chosen by measurement, not by reputation,
+and the numbers below are the justification.</p>
+<p><strong>The constraint is the crop size.</strong> Eye patches are 64x64, and every
+ImageNet backbone reduces its input by 32, so a 64px crop collapses to a <strong>2x2
+feature map</strong> before pooling — four cells to describe an eye. <code class="docutils literal notranslate"><span class="pre">backbone_wide_stem</span></code>
+(on by default) removes one stride-2 reduction to recover 4x4. It discards no
+pretrained parameter, but the layers downstream then see a feature map at a
+sampling rate they were not trained on, so it expects fine-tuning rather than
+freezing.</p>
+<section id="measured-results">
+<h3>Measured results<a class="headerlink" href="#measured-results" title="Link to this heading">¶</a></h3>
+<p>CEW eye state, three seeds per backbone, <code class="docutils literal notranslate"><span class="pre">config/data/single_cew.yaml</span></code> with
+<code class="docutils literal notranslate"><span class="pre">config/train/eye_state.yaml</span></code> unchanged. GPU time is one 26-crop batch — a
+13-frame window times two eyes — on an otherwise idle Apple MPS device. Measure
+it idle or not at all: the same backbone timed 13 ms free and 23 ms while
+another run held the GPU, which is enough to reorder the column.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>backbone</p></th>
+<th class="head"><p>year</p></th>
+<th class="head"><p>params</p></th>
+<th class="head"><p>GPU</p></th>
+<th class="head"><p>accuracy</p></th>
+<th class="head"><p>F1</p></th>
+<th class="head"><p>precision</p></th>
+<th class="head"><p>recall</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">efficientnet_b0</span></code></p></td>
+<td><p>2019</p></td>
+<td><p>4.0M</p></td>
+<td><p>35 ms</p></td>
+<td><p><strong>96.72 ±1.09</strong></p></td>
+<td><p><strong>96.64 ±1.13</strong></p></td>
+<td><p>96.67 ±1.63</p></td>
+<td><p><strong>96.65 ±2.16</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">convnext_femto</span></code></strong></p></td>
+<td><p>2022</p></td>
+<td><p>4.8M</p></td>
+<td><p><strong>14 ms</strong></p></td>
+<td><p>96.63 ±0.97</p></td>
+<td><p>96.49 ±1.06</p></td>
+<td><p><strong>98.12 ±0.15</strong></p></td>
+<td><p>94.92 ±2.08</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">densenet121_truncated</span></code></p></td>
+<td><p>2016</p></td>
+<td><p>4.8M</p></td>
+<td><p>42 ms</p></td>
+<td><p>95.27 ±0.08</p></td>
+<td><p>95.11 ±0.07</p></td>
+<td><p>96.19 ±0.72</p></td>
+<td><p>94.06 ±0.66</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">densenet121</span></code> (the 1.x model)</p></td>
+<td><p>2016</p></td>
+<td><p>7.0M</p></td>
+<td><p>45 ms</p></td>
+<td><p>94.38 ±0.00</p></td>
+<td><p>94.21 ±0.05</p></td>
+<td><p>94.95 ±0.76</p></td>
+<td><p>93.49 ±0.83</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mobileone_s1</span></code></p></td>
+<td><p>2023</p></td>
+<td><p>3.5M</p></td>
+<td><p>32 ms</p></td>
+<td><p>92.23 ±1.23</p></td>
+<td><p>92.34 ±1.13</p></td>
+<td><p>89.22 ±1.94</p></td>
+<td><p>95.69 ±0.29</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shufflenet_v2</span></code></p></td>
+<td><p>2018</p></td>
+<td><p>1.3M</p></td>
+<td><p>7 ms</p></td>
+<td><p>88.81 ±0.49</p></td>
+<td><p>88.89 ±0.51</p></td>
+<td><p>86.36 ±0.35</p></td>
+<td><p>91.57 ±0.72</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mobilenetv4_conv_small</span></code></p></td>
+<td><p>2024</p></td>
+<td><p>2.5M</p></td>
+<td><p><strong>6 ms</strong></p></td>
+<td><p>87.83 ±0.58</p></td>
+<td><p>88.27 ±0.60</p></td>
+<td><p>83.45 ±0.34</p></td>
+<td><p>93.68 ±1.00</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Read the precision column, not the accuracy column.</strong> The fast mobile
+backbones match DenseNet’s <em>recall</em> — <code class="docutils literal notranslate"><span class="pre">mobilenetv4_conv_small</span></code> even beats it,
+93.68 against 93.49 — and lose entirely on <em>precision</em>, 83.45 against 94.95.
+They over-predict “closed”. For blink detection that is the expensive
+direction, because a false closure becomes a phantom blink. Selecting a backbone
+on inference cost alone picks exactly the wrong one.</p>
+<p><code class="docutils literal notranslate"><span class="pre">efficientnet_b0</span></code> and <code class="docutils literal notranslate"><span class="pre">convnext_femto</span></code> are <strong>tied on accuracy</strong>: 0.09pp apart
+against ±1 seed spreads. Cost is what separates them, and ConvNeXt is 2.5x
+faster with the tightest precision in the table. They differ in character, so
+the choice is reversible on purpose — ConvNeXt leans precise (98.1 / 94.9),
+EfficientNet balanced (96.7 / 96.7). Prefer EfficientNet if missing a blink ever
+costs more than inventing one.</p>
+<p><code class="docutils literal notranslate"><span class="pre">densenet121_truncated</span></code> drops DenseNet’s last dense block, which holds 31% of
+its parameters and runs on a 2x2 map at this crop size. <strong>It beats the full
+network it was cut from</strong> — 95.27 against 94.38, on 4.79M parameters instead of
+6.95M — so that block is not merely idle here, it is harmful: 2.16M parameters
+fine-tuned on 3.5k images cost more in overfitting than they return. The cut is
+free in the sense that matters, since every remaining tensor is bit-identical to
+the pretrained checkpoint. It is still not competitive with either leader, and
+is kept as evidence rather than as a recommendation.</p>
+<p>Note also that 121 is the <strong>smallest pretrained DenseNet in existence</strong> —
+torchvision and timm ship 121/161/169/201 and the rest are larger — which is why
+a smaller one had to be cut rather than downloaded.</p>
+</section>
+<section id="caveats">
+<h3>Caveats<a class="headerlink" href="#caveats" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Still images only.</strong> CEW is single frames, so this ranking measures
+appearance and nothing temporal. The backbone feeds LinT and LinMulT in the
+models that matter, and a backbone that wins on stills need not win as a
+sequence encoder.</p></li>
+<li><p><strong>The validation split is 626 crops</strong>, and it drives both early stopping and
+checkpoint selection. That is the likeliest source of every ±1 spread here.</p></li>
+<li><p>Weight tags are pinned in <code class="docutils literal notranslate"><span class="pre">TIMM_WEIGHTS</span></code>
+(<code class="docutils literal notranslate"><span class="pre">blinklinmult/train/model.py</span></code>) rather than left to timm’s defaults, which
+move between releases.</p></li>
+</ul>
+<p>Any backbone in <code class="docutils literal notranslate"><span class="pre">BACKBONES</span></code> can be selected without editing a file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>train-eye-state<span class="w"> </span><span class="nv">ARGS</span><span class="o">=</span><span class="s2">"--set model.backbone=efficientnet_b0"</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="what-a-run-produces">
+<h2>What a run produces<a class="headerlink" href="#what-a-run-produces" title="Link to this heading">¶</a></h2>
+<p>Under <code class="docutils literal notranslate"><span class="pre">results/&lt;task&gt;/</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">checkpoints/</span></code> — best by F1, best by loss, and last. Full state, so a run
+resumes with <code class="docutils literal notranslate"><span class="pre">--resume</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metrics_test.json</span></code> — the headline test metrics.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_predictions_&lt;target&gt;.csv</span></code> — per-position probability, target, and
+validity, so threshold tuning and significance testing never need the model
+re-run.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_per_dataset.json</span></code> — per-corpus breakdown.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_precision_recall.png</span></code>, <code class="docutils literal notranslate"><span class="pre">time.json</span></code>.</p></li>
+</ul>
+<p>Everything except the checkpoints is logged to MLflow as artifacts, alongside
+the flattened config, the library versions, the commit, and <strong>each dataset
+file’s hash and embedded builder SHA</strong> — two runs over “the same six corpora”
+are not comparable if one of them was rebuilt, and nothing else would reveal
+that.</p>
+</section>
+<section id="smoke-testing">
+<h2>Smoke testing<a class="headerlink" href="#smoke-testing" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>train-smoke<span class="w">   </span><span class="c1"># one batch through every stage, then exit</span>
+</pre></div>
+</div>
+<p>This is what to run after changing anything in the data or model layer; it
+exercises the whole chain in seconds.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="frame_wise.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">The frame-wise backbone</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="data.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Data</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Training</a><ul>
+<li><a class="reference internal" href="#running">Running</a></li>
+<li><a class="reference internal" href="#configurations">Configurations</a></li>
+<li><a class="reference internal" href="#the-analysis-window">The analysis window</a></li>
+<li><a class="reference internal" href="#mixing-the-corpora">Mixing the corpora</a></li>
+<li><a class="reference internal" href="#losses-and-metrics">Losses and metrics</a></li>
+<li><a class="reference internal" href="#optimization">Optimization</a></li>
+<li><a class="reference internal" href="#choosing-the-backbone">Choosing the backbone</a><ul>
+<li><a class="reference internal" href="#measured-results">Measured results</a></li>
+<li><a class="reference internal" href="#caveats">Caveats</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-a-run-produces">What a run produces</a></li>
+<li><a class="reference internal" href="#smoke-testing">Smoke testing</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

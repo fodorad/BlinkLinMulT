@@ -1,0 +1,235 @@
+blinklinmult.stream
+===================
+
+.. py:module:: blinklinmult.stream
+
+.. autoapi-nested-parse::
+
+   Running a sequence model on a live stream without stalling it.
+
+   The 1.x sequence models predict frame-wise but consume a **15-frame window**, and
+   one call over both eyes costs **77.1 ms** measured on CPU -- against a 33.3 ms
+   budget at 30 fps. Scoring every frame is not expensive, it is arithmetically
+   impossible: the call alone is 2.3x the whole budget before a face has been
+   detected. Thread tuning does not rescue it either (74.4 ms at four intra-op
+   threads against 76.9 on auto), because the model is compute-bound.
+
+   **So the two loops are decoupled rather than budgeted.** Capture, detect and
+   display run at full speed on the calling thread; a single background worker
+   scores the most recent window whenever it is free. That works because
+   onnxruntime releases the GIL during ``run()`` -- measured, a busy main loop kept
+   **102%** of its idle iteration count with a worker running flat out, and face
+   detection went from 10.3 to 10.6 ms/frame. The worker is genuinely concurrent,
+   not time-slicing.
+
+   **The stride is adaptive, not configured.** The worker finishes a window, takes
+   the newest frames, and starts again. A fast machine gets denser coverage and a
+   slow one degrades gracefully, where a fixed stride has to be re-tuned per
+   machine and is wrong in both directions everywhere else. Measured against
+   scoring every frame on a real recording, correlation is 0.999 at stride 2 and
+   0.996 at stride 3, and the **peak score on annotated closed frames never drops**
+   at any stride -- blinks are still caught, it is the shape of the signal between
+   them that thins out.
+
+   **The readout therefore trails the video**, by roughly the window fill plus one
+   inference -- about 250 ms in practice. :class:`StreamScore` carries its own age
+   so a caller can display that honestly rather than pretend the number is current.
+   Frames newer than the last completed window keep the previous value; they are
+   never interpolated, because that would invent scores the model did not produce.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.stream.logger
+   blinklinmult.stream.JOIN_TIMEOUT_SECONDS
+   blinklinmult.stream.IDLE_SLEEP_SECONDS
+   blinklinmult.stream.EMPTY_SCORE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.stream.StreamScore
+   blinklinmult.stream.StreamingScorer
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: JOIN_TIMEOUT_SECONDS
+   :value: 5.0
+
+
+   How long :meth:`StreamingScorer.stop` waits for the worker to finish.
+
+   Generous next to one inference (~77 ms), so a clean shutdown is the normal case
+   and the timeout only fires if the scoring function itself has hung.
+
+.. py:data:: IDLE_SLEEP_SECONDS
+   :value: 0.002
+
+
+   Pause when the buffer is not yet full.
+
+   Short enough to be invisible against a 33 ms frame interval, long enough that a
+   warming-up scorer does not spin a core.
+
+.. py:class:: StreamScore
+
+   One completed window's scores, and how stale they are.
+
+   :param scores: ``(n_eyes,)`` per-eye score for the window's last
+                  frame -- what a live readout displays.
+   :type scores: np.ndarray
+   :param frame_index: Index of the newest frame the window covered.
+   :type frame_index: int
+   :param age_frames: Frames pushed since that window closed. **The lag,
+                      reported rather than hidden**: a sequence model that keeps up
+                      visually while showing half-second-old state is a different product
+                      from one that does not.
+   :type age_frames: int
+   :param windows_completed: Windows scored since the scorer started.
+   :type windows_completed: int
+   :param failures: Windows the scoring function raised on.
+   :type failures: int
+
+
+   .. py:property:: warming_up
+      :type: bool
+
+
+      Whether no window has completed yet.
+
+      :returns: ``True`` before the first score exists, so a caller shows
+                "waiting" rather than a fabricated zero.
+      :rtype: bool
+
+
+   .. py:method:: age_ms(fps: float) -> float
+
+      The lag in milliseconds.
+
+      :param fps: Source frame rate.
+      :type fps: float
+
+      :returns: Milliseconds between the displayed score and the newest
+                frame.
+      :rtype: float
+
+
+
+.. py:data:: EMPTY_SCORE
+
+   What :meth:`StreamingScorer.latest` returns before the first window closes.
+
+.. py:class:: StreamingScorer(score: collections.abc.Callable[[numpy.ndarray], numpy.ndarray], window: int | None)
+
+   Scores a live stream with a model that needs a window of frames.
+
+   Push one frame at a time from the capture loop; read the most recent
+   completed score whenever the display needs it. Neither call waits for
+   inference.
+
+   For a **frame-wise** model there is nothing to decouple -- pass
+   ``window=None`` and every push is scored inline, which is both simpler and
+   lower latency than handing a 15 ms call to a thread.
+
+   :param score: Takes
+                 ``(n_eyes, window, 3, H, W)`` (or ``(n_eyes, 3, H, W)`` when
+                 ``window`` is ``None``) and returns per-frame scores. Normally
+                 :meth:`~blinklinmult.detector.BlinkDetector.score`.
+   :type score: Callable[[np.ndarray], np.ndarray]
+   :param window: Frames the model consumes, from
+                  :attr:`~blinklinmult.registry.ModelSpec.window`. ``None`` scores
+                  inline.
+   :type window: int | None
+
+   .. rubric:: Example
+
+   >>> scorer = StreamingScorer(detector.score, window=15)
+   >>> scorer.start()
+   >>> scorer.push(crops)
+   >>> scorer.latest().warming_up
+   True
+
+   Set up the buffer and the worker's state.
+
+
+   .. py:property:: threaded
+      :type: bool
+
+
+      Whether scoring happens on a background worker.
+
+      :returns: ``False`` for frame-wise models, which score inline.
+      :rtype: bool
+
+
+   .. py:method:: start() -> None
+
+      Start the worker, if this model needs one.
+
+      Idempotent: starting an already-running scorer does nothing.
+
+
+
+   .. py:method:: stop() -> None
+
+      Ask the worker to finish and wait for it.
+
+      Safe to call twice, and safe to call on a scorer that never started.
+
+
+
+   .. py:method:: push(crops: numpy.ndarray) -> None
+
+      Hand one frame's eye crops to the scorer.
+
+      Returns immediately in the threaded case -- the frame is buffered and
+      the worker picks it up when free. **This is the property the whole
+      design rests on**: the capture loop must never wait for a 77 ms
+      inference.
+
+      :param crops: ``(n_eyes, 3, H, W)`` for one frame.
+      :type crops: np.ndarray
+
+
+
+   .. py:method:: latest() -> StreamScore
+
+      The most recent completed score.
+
+      :param None:
+
+      :returns: The last window's result with its current age, or
+                :data:`EMPTY_SCORE` while warming up. Frames newer than that window
+                carry this same value rather than an interpolated one.
+      :rtype: StreamScore
+
+
+
+   .. py:method:: __enter__() -> StreamingScorer
+
+      Start the worker on entry.
+
+      :returns: This scorer.
+      :rtype: StreamingScorer
+
+
+
+   .. py:method:: __exit__(*_exc_info: object) -> None
+
+      Stop the worker on exit, however the block ended.
+
+
+

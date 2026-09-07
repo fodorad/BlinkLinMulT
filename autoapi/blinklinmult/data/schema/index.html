@@ -1,0 +1,1556 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html"><link rel="next" title="blinklinmult.data.shards" href="../shards/index.html"><link rel="prev" title="blinklinmult.data.omni" href="../omni/index.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/data/schema/index.html">
+        <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>blinklinmult.data.schema - BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../eye_state_events.html">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../train/index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../train/calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/metrics/index.html">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../train/phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/blob/main/docs/autoapi/blinklinmult/data/schema/index.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/fodorad/BlinkLinMulT/edit/main/docs/autoapi/blinklinmult/data/schema/index.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-blinklinmult.data.schema">
+<span id="blinklinmult-data-schema"></span><h1>blinklinmult.data.schema<a class="headerlink" href="#module-blinklinmult.data.schema" title="Link to this heading">¶</a></h1>
+<p>The common format every blink corpus is brought into.</p>
+<p>Seven corpora annotate eye blinks in incompatible ways: EyeBlink8, TalkingFace,
+and the two RN rates ship frame-level <code class="docutils literal notranslate"><span class="pre">.tag</span></code> files over continuous video; CEW
+and MRL-Eye are collections of single still images with one label each;
+HUST-LEBW is a set of short pre-cut clips. This module declares the one
+representation all of them are mapped onto, and from which the per-dataset HDF5
+files are written.</p>
+<p><strong>One sample is one eye.</strong> A sample carries a window of <code class="docutils literal notranslate"><span class="pre">T</span></code> frames of <em>a
+single</em> eye — its crops, its optional handcrafted descriptors, and its labels —
+with an <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> field saying which. That follows the annotation: the
+<code class="docutils literal notranslate"><span class="pre">.tag</span></code> format marks closure per eye (<code class="docutils literal notranslate"><span class="pre">LE_FC</span></code>, <code class="docutils literal notranslate"><span class="pre">RE_FC</span></code>), so an eye-wise
+sample trains on the actual ground truth rather than on a label manufactured by
+collapsing two. It also makes the awkward corpora honest — MRL-Eye supplies one
+eye and does not say which, and CEW labels the <em>face</em> — instead of duplicating a
+crop into a second slot that does not exist.</p>
+<p>Frame-level evaluation is recovered by aggregating the two eyes’ predictions per
+<code class="docutils literal notranslate"><span class="pre">(video_id,</span> <span class="pre">frame_id)</span></code>; see <a class="reference internal" href="../../train/metrics/index.html#module-blinklinmult.train.metrics" title="blinklinmult.train.metrics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">blinklinmult.train.metrics</span></code></a>. Training is
+eye-wise, reporting is frame-wise, and the same aggregation is applied to
+validation so model selection optimises the number that gets reported.</p>
+<p><strong>A still-image corpus is the ``T = 1`` case</strong>, which is what lets one schema —
+and therefore one joint dataloader — span video and image datasets.</p>
+<p><strong>Windows are declared in seconds, not frames.</strong> The corpora run at 15 and 30
+fps, and in-the-wild video is worse. A fixed frame count would make a 15 fps
+window span twice the wall-clock time of a 30 fps one, so the model would have
+to learn two different notions of how fast a blink is. Each corpus therefore
+derives its own <code class="docutils literal notranslate"><span class="pre">time_dim</span></code> from <code class="xref py py-attr docutils literal notranslate"><span class="pre">DatasetSpec.fps</span></code>, every corpus spans the
+same real duration, and OmniLoader pads the shorter ones with an all-<code class="docutils literal notranslate"><span class="pre">False</span></code>
+mask. Nothing is resampled: interpolating a 15 fps clip up to 30 fps would
+fabricate frames that were never captured, and a blink is only a handful of
+frames long.</p>
+<p><strong>Targets and their masks.</strong> The two tasks do not both have supervision in every
+corpus: HUST-LEBW annotates blink events per clip with no per-frame closure
+marking, so it has no eye state to teach. Rather than train the wrong head on a
+guessed label, each target carries a validity mask and a corpus declares only
+what it actually annotates. OmniLoader fills the rest with a placeholder and an
+all-<code class="docutils literal notranslate"><span class="pre">False</span></code> mask, and the loss skips those positions — see
+<a class="reference internal" href="../../train/losses/index.html#module-blinklinmult.train.losses" title="blinklinmult.train.losses"><code class="xref py py-mod docutils literal notranslate"><span class="pre">blinklinmult.train.losses</span></code></a>.</p>
+<p>CEW and MRL-Eye declare eye state alone, but for a different reason: on a still
+image a blink is not a motion event, it is a closed eye, so the two tasks
+coincide and one label answers both. Those corpora train the frame-wise model,
+whose single classifier reads that label directly.</p>
+<p><strong>Features carry their own masks, independently.</strong> A frame whose eye crop is
+perfectly usable may still yield no reliable handcrafted descriptors — the iris
+landmarker can miss, or return low-confidence points on a blurred or
+half-occluded eye. <a class="reference internal" href="#blinklinmult.data.schema.EYE_IMAGE" title="blinklinmult.data.schema.EYE_IMAGE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_IMAGE</span></code></a> and <a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE" title="blinklinmult.data.schema.EYE_FEATURE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_FEATURE</span></code></a> therefore have
+separate validity masks and the code never assumes they agree.</p>
+<p><strong>Images travel as images.</strong> <code class="docutils literal notranslate"><span class="pre">eye_image</span></code> is declared to OmniLoader with a
+structured trailing <code class="docutils literal notranslate"><span class="pre">shape=(C,</span> <span class="pre">H,</span> <span class="pre">W)</span></code> rather than a flattened <code class="docutils literal notranslate"><span class="pre">feature_dim</span></code>,
+which needs <strong>omniloader &gt;= 1.1</strong>. Before that the crops had to be stored as a
+wide feature axis and reshaped at the model boundary; the schema then described a
+12288-wide feature instead of an image, and nothing checked that the width
+factorised correctly.</p>
+<p><strong>Why this is not the PersonalityLinMulT layout.</strong> That project stores one
+columnar <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">T,</span> <span class="pre">D)</span></code> array per feature and slices row <code class="docutils literal notranslate"><span class="pre">i</span></code> out of it. Here the
+HDF5 is read by <code class="xref py py-class docutils literal notranslate"><span class="pre">omniloader.HDF5Dataset</span></code>, whose contract is one <em>group per
+sample</em> under a split group — <code class="docutils literal notranslate"><span class="pre">/{subset}/{sample_id}/{key}</span></code>. The builder in
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">blinklinmult.data.builder</span></code> writes that layout.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.SCHEMA_VERSION" title="blinklinmult.data.schema.SCHEMA_VERSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SCHEMA_VERSION</span></code></a></p></td>
+<td><p>Bumped whenever the on-disk HDF5 layout changes incompatibly.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.SUBSETS" title="blinklinmult.data.schema.SUBSETS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SUBSETS</span></code></a></p></td>
+<td><p>Dataset splits, in canonical order. These are the HDF5 top-level groups.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.DATASETS" title="blinklinmult.data.schema.DATASETS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATASETS</span></code></a></p></td>
+<td><p>Corpora this project supports.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.VIDEO_DATASETS" title="blinklinmult.data.schema.VIDEO_DATASETS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VIDEO_DATASETS</span></code></a></p></td>
+<td><p>Corpora with a temporal axis, over which a blink is a multi-frame event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.IMAGE_DATASETS" title="blinklinmult.data.schema.IMAGE_DATASETS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IMAGE_DATASETS</span></code></a></p></td>
+<td><p>the <code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">1</span></code> case, where a closed eye is the label.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.LEFT" title="blinklinmult.data.schema.LEFT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LEFT</span></code></a></p></td>
+<td><p>Value of <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> for a left eye.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.RIGHT" title="blinklinmult.data.schema.RIGHT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RIGHT</span></code></a></p></td>
+<td><p>Value of <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> for a right eye.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.UNKNOWN_EYE" title="blinklinmult.data.schema.UNKNOWN_EYE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNKNOWN_EYE</span></code></a></p></td>
+<td><p>Value of <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> when the corpus does not say which eye it supplied.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDES" title="blinklinmult.data.schema.EYE_SIDES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_SIDES</span></code></a></p></td>
+<td><p>Recognised values of the <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> metadata field.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_EMBEDDING" title="blinklinmult.data.schema.EYE_EMBEDDING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_EMBEDDING</span></code></a></p></td>
+<td><p>Precomputed eye embedding, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">D)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_IMAGE" title="blinklinmult.data.schema.EYE_IMAGE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_IMAGE</span></code></a></p></td>
+<td><p>one eye's cropped images, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">C,</span> <span class="pre">H,</span> <span class="pre">W)</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE" title="blinklinmult.data.schema.EYE_FEATURE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_FEATURE</span></code></a></p></td>
+<td><p>one eye's per-frame handcrafted descriptors, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">F)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.BLINK_PRESENCE" title="blinklinmult.data.schema.BLINK_PRESENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BLINK_PRESENCE</span></code></a></p></td>
+<td><p>per-frame blink label, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_STATE" title="blinklinmult.data.schema.EYE_STATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_STATE</span></code></a></p></td>
+<td><p>per-frame closed label for this sample's eye, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.INVALID_BLINK" title="blinklinmult.data.schema.INVALID_BLINK"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INVALID_BLINK</span></code></a></p></td>
+<td><p>this frame was never readable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.NO_BLINK" title="blinklinmult.data.schema.NO_BLINK"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NO_BLINK</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">blink_id</span></code> value meaning &quot;this frame is not part of a blink&quot;.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.BLINK_ID" title="blinklinmult.data.schema.BLINK_ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BLINK_ID</span></code></a></p></td>
+<td><p>which annotated blink a positive window was cut around.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.BLINK_IDS" title="blinklinmult.data.schema.BLINK_IDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BLINK_IDS</span></code></a></p></td>
+<td><p>which annotated blink each frame belongs to.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.NO_CATEGORY" title="blinklinmult.data.schema.NO_CATEGORY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NO_CATEGORY</span></code></a></p></td>
+<td><p>this frame has no category.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.BLINK_CATEGORY" title="blinklinmult.data.schema.BLINK_CATEGORY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BLINK_CATEGORY</span></code></a></p></td>
+<td><p>MPEblink's undocumented third annotation field, per frame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.HEAD_POSE" title="blinklinmult.data.schema.HEAD_POSE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEAD_POSE</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">3)</span></code> head rotation in <strong>degrees</strong>, <code class="docutils literal notranslate"><span class="pre">[yaw,</span> <span class="pre">pitch,</span> <span class="pre">roll]</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.HEAD_POSE_DIM" title="blinklinmult.data.schema.HEAD_POSE_DIM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEAD_POSE_DIM</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[yaw,</span> <span class="pre">pitch,</span> <span class="pre">roll]</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.QUALITY_SIGNALS" title="blinklinmult.data.schema.QUALITY_SIGNALS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QUALITY_SIGNALS</span></code></a></p></td>
+<td><p>Per-frame quality signals, each <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, stored <strong>separately</strong>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.TASK_ESR" title="blinklinmult.data.schema.TASK_ESR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TASK_ESR</span></code></a></p></td>
+<td><p>is this eye closed in this frame?</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.TASK_BPD" title="blinklinmult.data.schema.TASK_BPD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TASK_BPD</span></code></a></p></td>
+<td><p>does this window contain a blink?</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.TASKS" title="blinklinmult.data.schema.TASKS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TASKS</span></code></a></p></td>
+<td><p>The two evaluation protocols, which are distinct tasks over the same window.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.FEATURE_KEYS" title="blinklinmult.data.schema.FEATURE_KEYS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FEATURE_KEYS</span></code></a></p></td>
+<td><p>Every feature key, in model input order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.TARGET_KEYS" title="blinklinmult.data.schema.TARGET_KEYS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TARGET_KEYS</span></code></a></p></td>
+<td><p>Every target key, in head order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.SAMPLE_KEY" title="blinklinmult.data.schema.SAMPLE_KEY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SAMPLE_KEY</span></code></a></p></td>
+<td><p>Metadata key holding a sample's unique identifier.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.SOURCE_KEY" title="blinklinmult.data.schema.SOURCE_KEY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SOURCE_KEY</span></code></a></p></td>
+<td><p>Metadata key holding the corpus a sample came from.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a></p></td>
+<td><p>Per-sample field naming which eye this sample carries.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.FRAME_GROUP" title="blinklinmult.data.schema.FRAME_GROUP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FRAME_GROUP</span></code></a></p></td>
+<td><p>Per-sample field identifying the frames a window covers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.FACE_BOX" title="blinklinmult.data.schema.FACE_BOX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FACE_BOX</span></code></a></p></td>
+<td><p>Per-frame face box, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">4)</span></code> int32 as <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">w,</span> <span class="pre">h)</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_ON_SCREEN" title="blinklinmult.data.schema.EYE_ON_SCREEN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_ON_SCREEN</span></code></a></p></td>
+<td><p>Per-frame fraction of an eye's landmarks inside the frame, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> float16.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_SPAN" title="blinklinmult.data.schema.EYE_SPAN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_SPAN</span></code></a></p></td>
+<td><p>Per-frame eye width in pixels, corner to corner, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> float16.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_ASPECT" title="blinklinmult.data.schema.EYE_ASPECT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_ASPECT</span></code></a></p></td>
+<td><p>Per-frame eye height/width ratio, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> float16.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.BOX_SHIFTED" title="blinklinmult.data.schema.BOX_SHIFTED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BOX_SHIFTED</span></code></a></p></td>
+<td><p>the crop was slid to fit inside the frame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.LANDMARK_SOURCE" title="blinklinmult.data.schema.LANDMARK_SOURCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LANDMARK_SOURCE</span></code></a></p></td>
+<td><p>Per-sample string naming which landmark scheme located the eye.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.CONFIDENCE" title="blinklinmult.data.schema.CONFIDENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONFIDENCE</span></code></a></p></td>
+<td><p>how trustworthy this window looks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.METADATA_KEYS" title="blinklinmult.data.schema.METADATA_KEYS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">METADATA_KEYS</span></code></a></p></td>
+<td><p>Per-sample metadata that survives OmniLoader's unifier into the batch.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.TARGET_PLACEHOLDER" title="blinklinmult.data.schema.TARGET_PLACEHOLDER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TARGET_PLACEHOLDER</span></code></a></p></td>
+<td><p>Value filled in where a corpus does not supply a target.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.IMAGE_CHANNELS" title="blinklinmult.data.schema.IMAGE_CHANNELS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IMAGE_CHANNELS</span></code></a></p></td>
+<td><p>Channel count of an eye crop. RGB, matching the ImageNet-pretrained backbones.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.DEFAULT_WINDOW_SECONDS" title="blinklinmult.data.schema.DEFAULT_WINDOW_SECONDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_WINDOW_SECONDS</span></code></a></p></td>
+<td><p>Default analysis window, in seconds.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE_DIM" title="blinklinmult.data.schema.EYE_FEATURE_DIM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EYE_FEATURE_DIM</span></code></a></p></td>
+<td><p>Width of the handcrafted descriptor vector for one eye.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.SchemaError" title="blinklinmult.data.schema.SchemaError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SchemaError</span></code></a></p></td>
+<td><p>Raised when a dataset declaration is invalid or self-inconsistent.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec" title="blinklinmult.data.schema.DatasetSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DatasetSpec</span></code></a></p></td>
+<td><p>What one corpus provides, and in what shape.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.BuildStats" title="blinklinmult.data.schema.BuildStats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BuildStats</span></code></a></p></td>
+<td><p>Counters describing one builder run, for logging and tests.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.frames_for" title="blinklinmult.data.schema.frames_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frames_for</span></code></a>(→ int)</p></td>
+<td><p>Frames spanning a duration at a given rate.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.schema.build_sample_id" title="blinklinmult.data.schema.build_sample_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_sample_id</span></code></a>(→ str)</p></td>
+<td><p>Compose the identifier that carries a sample's provenance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.schema.parse_sample_id" title="blinklinmult.data.schema.parse_sample_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_sample_id</span></code></a>(→ tuple[str, str, str])</p></td>
+<td><p>Recover a sample's provenance from its identifier.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.SCHEMA_VERSION">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">SCHEMA_VERSION</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#blinklinmult.data.schema.SCHEMA_VERSION" title="Link to this definition">¶</a></dt>
+<dd><p>Bumped whenever the on-disk HDF5 layout changes incompatibly.</p>
+<p>Version 3 unifies the annotation vocabulary. Every corpus now supplies the same
+per-frame <strong>eye-state score</strong> (<a class="reference internal" href="#blinklinmult.data.schema.EYE_STATE" title="blinklinmult.data.schema.EYE_STATE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_STATE</span></code></a>), from which blink events are
+derived; head pose becomes a named field rather than three anonymous dimensions
+buried in <a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE" title="blinklinmult.data.schema.EYE_FEATURE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_FEATURE</span></code></a>; and every frame carries a per-eye confidence and
+the id of the blink it belongs to.</p>
+<p>Version 2 was the eye-wise layout: one sample per eye, with the eye axis removed
+from every tensor and replaced by the <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> metadata field.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.SUBSETS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">SUBSETS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('train',</span> <span class="pre">'valid',</span> <span class="pre">'test')</span></span><a class="headerlink" href="#blinklinmult.data.schema.SUBSETS" title="Link to this definition">¶</a></dt>
+<dd><p>Dataset splits, in canonical order. These are the HDF5 top-level groups.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DATASETS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">DATASETS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('talkingface',</span> <span class="pre">'rn15',</span> <span class="pre">'rn30',</span> <span class="pre">'cew',</span> <span class="pre">'mrl',</span> <span class="pre">'hust_lebw',</span> <span class="pre">'mpeblink')</span></span><a class="headerlink" href="#blinklinmult.data.schema.DATASETS" title="Link to this definition">¶</a></dt>
+<dd><p>Corpora this project supports.</p>
+<p>RN is split by recording rate rather than kept as one corpus: the two rates are
+reported separately in the benchmark, and a shared declaration could not carry
+two different <code class="docutils literal notranslate"><span class="pre">fps</span></code> values. <code class="docutils literal notranslate"><span class="pre">config/data/rn.yaml</span></code> lists both for the
+aggregate run.</p>
+<p>RT-BENE / RT-GENE and ZJU are deliberately absent: they were used in the 1.x
+paper but are not part of the v2 benchmark.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.VIDEO_DATASETS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">VIDEO_DATASETS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('talkingface',</span> <span class="pre">'rn15',</span> <span class="pre">'rn30',</span> <span class="pre">'hust_lebw',</span> <span class="pre">'mpeblink')</span></span><a class="headerlink" href="#blinklinmult.data.schema.VIDEO_DATASETS" title="Link to this definition">¶</a></dt>
+<dd><p>Corpora with a temporal axis, over which a blink is a multi-frame event.</p>
+<p>These train the sequence models; see <code class="docutils literal notranslate"><span class="pre">config/data/all.yaml</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.IMAGE_DATASETS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">IMAGE_DATASETS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('cew',</span> <span class="pre">'mrl')</span></span><a class="headerlink" href="#blinklinmult.data.schema.IMAGE_DATASETS" title="Link to this definition">¶</a></dt>
+<dd><p>the <code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">1</span></code> case, where a closed eye is the label.</p>
+<p>These train the frame-wise model, whose single classifier reads eye state
+directly. A sequence model given one of them would be modelling a degenerate
+one-frame window, which <code class="docutils literal notranslate"><span class="pre">ExperimentConfig</span></code> rejects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Still-image corpora</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.LEFT">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">LEFT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'left'</span></span><a class="headerlink" href="#blinklinmult.data.schema.LEFT" title="Link to this definition">¶</a></dt>
+<dd><p>Value of <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> for a left eye.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.RIGHT">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">RIGHT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'right'</span></span><a class="headerlink" href="#blinklinmult.data.schema.RIGHT" title="Link to this definition">¶</a></dt>
+<dd><p>Value of <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> for a right eye.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.UNKNOWN_EYE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">UNKNOWN_EYE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unknown'</span></span><a class="headerlink" href="#blinklinmult.data.schema.UNKNOWN_EYE" title="Link to this definition">¶</a></dt>
+<dd><p>Value of <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> when the corpus does not say which eye it supplied.</p>
+<p>MRL-Eye is the case: it ships one eye per image without labelling the side.
+Recorded honestly rather than guessed, so a per-side analysis can exclude it.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_SIDES">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_SIDES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_SIDES" title="Link to this definition">¶</a></dt>
+<dd><p>Recognised values of the <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE" title="blinklinmult.data.schema.EYE_SIDE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a> metadata field.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_EMBEDDING">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_EMBEDDING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_embedding'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_EMBEDDING" title="Link to this definition">¶</a></dt>
+<dd><p>Precomputed eye embedding, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">D)</span></code>.</p>
+<p>Not a stored corpus field: attached to a batch by the datamodule when a frozen
+encoder makes the embedding constant across epochs, so the model can skip its
+encoder pass. See <a class="reference internal" href="../embeddings/index.html#module-blinklinmult.data.embeddings" title="blinklinmult.data.embeddings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">blinklinmult.data.embeddings</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_IMAGE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_IMAGE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_image'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_IMAGE" title="Link to this definition">¶</a></dt>
+<dd><p>one eye’s cropped images, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">C,</span> <span class="pre">H,</span> <span class="pre">W)</span></code>.</p>
+<p>Stored and loaded in native image form. OmniLoader &gt;= 1.1 lets a spec declare a
+structured trailing <code class="docutils literal notranslate"><span class="pre">shape</span></code>, so the array that is written is the array the
+model receives — no flatten on the way in, no reshape on the way out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Feature key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_FEATURE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_FEATURE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_feature'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_FEATURE" title="Link to this definition">¶</a></dt>
+<dd><p>one eye’s per-frame handcrafted descriptors, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">F)</span></code>.</p>
+<p>The second modality of the published BlinkLinMulT: iris landmarks, iris
+diameters, eyelid-pupil distances and eye-aspect-ratio from exordium, plus head
+pose. A corpus without them declares the key absent rather than zero-filling,
+and OmniLoader masks it out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Feature key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.BLINK_PRESENCE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">BLINK_PRESENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blink_presence'</span></span><a class="headerlink" href="#blinklinmult.data.schema.BLINK_PRESENCE" title="Link to this definition">¶</a></dt>
+<dd><p>per-frame blink label, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code>.</p>
+<p>Stored per frame even though <strong>blink presence detection is scored per window</strong>,
+because the model has one sequence head and the clip decision is a <code class="docutils literal notranslate"><span class="pre">max</span></code> over
+its output. Keeping a single head is what makes the two tasks structurally
+consistent: a window cannot come out “no eye ever closed” <em>and</em> “a blink
+occurred”, which two independent heads would permit.</p>
+<p>A frame is a blink frame when its <code class="docutils literal notranslate"><span class="pre">blink_id</span></code> is not
+<code class="xref py py-data docutils literal notranslate"><span class="pre">NO_BLINK</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Target key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_STATE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_STATE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_state'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_STATE" title="Link to this definition">¶</a></dt>
+<dd><p>per-frame closed label for this sample’s eye, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code>.</p>
+<p>The eye-state recognition target, scored <strong>per frame</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Target key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.INVALID_BLINK">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">INVALID_BLINK</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2</span></span><a class="headerlink" href="#blinklinmult.data.schema.INVALID_BLINK" title="Link to this definition">¶</a></dt>
+<dd><p>this frame was never readable.</p>
+<p>Distinct from <a class="reference internal" href="#blinklinmult.data.schema.NO_BLINK" title="blinklinmult.data.schema.NO_BLINK"><code class="xref py py-data docutils literal notranslate"><span class="pre">NO_BLINK</span></code></a>, which asserts the eye was <strong>open</strong>. Without the
+distinction an unseen frame and a confirmed open eye are the same value, and a
+reader who forgets to cross-check <code class="docutils literal notranslate"><span class="pre">eye_image_mask</span></code> silently treats one as the
+other. Making the field self-describing costs one integer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sentinel in <a class="reference internal" href="#blinklinmult.data.schema.BLINK_IDS" title="blinklinmult.data.schema.BLINK_IDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">BLINK_IDS</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.NO_BLINK">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">NO_BLINK</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></span><a class="headerlink" href="#blinklinmult.data.schema.NO_BLINK" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">blink_id</span></code> value meaning “this frame is not part of a blink”.</p>
+<p>Lives here rather than in <code class="xref py py-mod docutils literal notranslate"><span class="pre">blinklinmult.preprocess.annotation</span></code> because the
+builder and the HDF5 layout use it, and the data layer must not depend on the
+preprocess package — which needs the heavyweight extraction stack and does not
+ship in the wheel.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.BLINK_ID">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">BLINK_ID</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blink_id'</span></span><a class="headerlink" href="#blinklinmult.data.schema.BLINK_ID" title="Link to this definition">¶</a></dt>
+<dd><p>which annotated blink a positive window was cut around.</p>
+<p>Stored so a prediction can be traced to the event it was meant to detect, and so
+the test protocol can assert that every annotated blink appears in exactly one
+window. <code class="docutils literal notranslate"><span class="pre">-1</span></code> for a blink-free window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Per-sample field</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.BLINK_IDS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">BLINK_IDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blink_ids'</span></span><a class="headerlink" href="#blinklinmult.data.schema.BLINK_IDS" title="Link to this definition">¶</a></dt>
+<dd><p>which annotated blink each frame belongs to.</p>
+<p>The per-frame refinement of <a class="reference internal" href="#blinklinmult.data.schema.BLINK_ID" title="blinklinmult.data.schema.BLINK_ID"><code class="xref py py-data docutils literal notranslate"><span class="pre">BLINK_ID</span></code></a>, which is one integer per window
+and so cannot tell one long blink from two adjacent ones inside the same window.
+That distinction is what event-level work needs: separating a double blink from
+a single long closure, recognising an incomplete blink as its own event, and
+supervising an event count rather than a frame label.</p>
+<p><a class="reference internal" href="#blinklinmult.data.schema.NO_BLINK" title="blinklinmult.data.schema.NO_BLINK"><code class="xref py py-data docutils literal notranslate"><span class="pre">NO_BLINK</span></code></a> outside every event.</p>
+<p>A <strong>first-class per-frame field</strong>, not a quality extra: quality fields are
+written but never declared in the OmniLoader schema, so they never reach
+training. It supervises nothing on its own – it individuates the annotation
+<a class="reference internal" href="#blinklinmult.data.schema.BLINK_PRESENCE" title="blinklinmult.data.schema.BLINK_PRESENCE"><code class="xref py py-data docutils literal notranslate"><span class="pre">BLINK_PRESENCE</span></code></a> already carries – but event-level work cannot run
+without it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Per-frame field</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.NO_CATEGORY">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">NO_CATEGORY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></span><a class="headerlink" href="#blinklinmult.data.schema.NO_CATEGORY" title="Link to this definition">¶</a></dt>
+<dd><p>this frame has no category.</p>
+<p>Either the frame is outside every blink, or the annotation gave no value – 11
+events across the corpus have <code class="docutils literal notranslate"><span class="pre">None</span></code> in the slot. The categories themselves
+are non-negative, so the sentinel cannot collide with one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sentinel in <a class="reference internal" href="#blinklinmult.data.schema.BLINK_CATEGORY" title="blinklinmult.data.schema.BLINK_CATEGORY"><code class="xref py py-data docutils literal notranslate"><span class="pre">BLINK_CATEGORY</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.BLINK_CATEGORY">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">BLINK_CATEGORY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blink_category'</span></span><a class="headerlink" href="#blinklinmult.data.schema.BLINK_CATEGORY" title="Link to this definition">¶</a></dt>
+<dd><p>MPEblink’s undocumented third annotation field, per frame.</p>
+<p>The corpus writes <code class="docutils literal notranslate"><span class="pre">[start,</span> <span class="pre">end,</span> <span class="pre">category]</span></code> and the category takes three
+values, but the CVPR paper documents only the start and end frames, and the
+authors’ own converter reads elements <code class="docutils literal notranslate"><span class="pre">[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">[1]</span></code> only. Measured over
+8 072 segments the split is 83.8% / 6.5% / 9.8%, and it is <strong>not</strong> a duration
+distinction: median lengths are 6, 7 and 7 frames.</p>
+<p>Values across the whole corpus: <strong>0</strong> (15 083), <strong>1</strong> (1 210), <strong>2</strong> (1 406),
+plus two anomalies written through as-is rather than corrected – a single
+<strong>10</strong> (<code class="docutils literal notranslate"><span class="pre">train/184</span></code> person1, frames 284-292, almost certainly a typo) and 11
+events with no value, which become <a class="reference internal" href="#blinklinmult.data.schema.NO_CATEGORY" title="blinklinmult.data.schema.NO_CATEGORY"><code class="xref py py-data docutils literal notranslate"><span class="pre">NO_CATEGORY</span></code></a>.</p>
+<p>Stored as a diagnostic rather than a target, because nothing is known about what
+it supervises. Preserving it keeps the question answerable from the built corpus
+– 522 category-1 and 787 category-2 events can be inspected directly – instead
+of requiring the raw tree and a re-run.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.HEAD_POSE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">HEAD_POSE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'head_pose'</span></span><a class="headerlink" href="#blinklinmult.data.schema.HEAD_POSE" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">3)</span></code> head rotation in <strong>degrees</strong>, <code class="docutils literal notranslate"><span class="pre">[yaw,</span> <span class="pre">pitch,</span> <span class="pre">roll]</span></code>.</p>
+<p>Estimated once per face by 6DRepNet and shared by both eyes of a frame. Stored
+as a named field in degrees rather than only as the trailing three dimensions of
+<a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE" title="blinklinmult.data.schema.EYE_FEATURE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_FEATURE</span></code></a> divided by 90, which nothing decoded and no analysis could
+read.</p>
+<p>Yaw is what makes an eye <strong>self-occluded</strong>: past roughly 30-45 degrees the far
+eye is behind the nose, and the crop shows something that is not an eye. That
+rule is applied in the dataloader rather than baked in here, so the threshold
+stays a hyperparameter – see
+<code class="xref py py-data docutils literal notranslate"><span class="pre">OCCLUSION_YAW</span></code>.</p>
+<p>Absent on the still corpora, which have no face box to estimate pose from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Per-frame field</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.HEAD_POSE_DIM">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">HEAD_POSE_DIM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#blinklinmult.data.schema.HEAD_POSE_DIM" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">[yaw,</span> <span class="pre">pitch,</span> <span class="pre">roll]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Width of <a class="reference internal" href="#blinklinmult.data.schema.HEAD_POSE" title="blinklinmult.data.schema.HEAD_POSE"><code class="xref py py-data docutils literal notranslate"><span class="pre">HEAD_POSE</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.QUALITY_SIGNALS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">QUALITY_SIGNALS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('eye_blur',</span> <span class="pre">'eye_exposure',</span> <span class="pre">'eye_contour_fit',</span> <span class="pre">'eye_jitter')</span></span><a class="headerlink" href="#blinklinmult.data.schema.QUALITY_SIGNALS" title="Link to this definition">¶</a></dt>
+<dd><p>Per-frame quality signals, each <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, stored <strong>separately</strong>.</p>
+<p>Deliberately not combined into one confidence score at build time. How to weigh
+motion blur against foreshortening against a bad contour fit is an empirical
+question, and the answer is only visible once the corpora are built and the
+distributions can be inspected. A single number baked in here would freeze that
+choice into tens of gigabytes; storing the components lets the dataloader decide
+and lets the decision change without re-preprocessing.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">eye_blur</span></code></dt><dd><p>Sharpness, as Laplacian variance over intensity variance. Motion blur
+destroys the eyelid edge – the one thing blink detection reads – while
+every geometric check still passes.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">eye_exposure</span></code></dt><dd><p>Dynamic range. Catches near-black and blown-out patches.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">eye_contour_fit</span></code></dt><dd><p>Whether the fitted eyelid contour sits on real image structure or on flat
+skin. <strong>The signal that catches the profile failure</strong> where landmarks track
+an edge-on, invisible eye and every other check passes.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">eye_jitter</span></code></dt><dd><p>Box movement between frames in eye-widths. A detector losing lock produces
+misaligned crops that each look fine alone.</p>
+</dd>
+</dl>
+<p><strong>Every signal describes one eye alone</strong>, never a comparison against its
+partner: a sample is one eye, so a signal read from the other would leak across
+samples and would be undefined exactly when one eye is occluded.</p>
+<p>All are computed at build time because they need the full-resolution crop and
+the frame-level boxes, neither of which survives into the dataloader. Together
+they enable curriculum learning: train on clean frames first, then admit the
+rest. See <code class="xref py py-mod docutils literal notranslate"><span class="pre">blinklinmult.preprocess.quality</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.TASK_ESR">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">TASK_ESR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_state'</span></span><a class="headerlink" href="#blinklinmult.data.schema.TASK_ESR" title="Link to this definition">¶</a></dt>
+<dd><p>is this eye closed in this frame?</p>
+<p>Scored <strong>frame-wise</strong>, over every corpus. On the still-image corpora it is the
+whole task: with no temporal axis, a closed eye is all a blink can mean, so this
+protocol and blink presence detection ask the same question.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Eye state recognition</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.TASK_BPD">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">TASK_BPD</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blink_presence'</span></span><a class="headerlink" href="#blinklinmult.data.schema.TASK_BPD" title="Link to this definition">¶</a></dt>
+<dd><p>does this window contain a blink?</p>
+<p>Scored <strong>window-wise</strong>, over the video corpora, where a blink is a multi-frame
+event: the corpora make it recoverable because every frame of one blink shares a
+<code class="docutils literal notranslate"><span class="pre">blink_id</span></code>. On a still image the question degenerates to <a class="reference internal" href="#blinklinmult.data.schema.TASK_ESR" title="blinklinmult.data.schema.TASK_ESR"><code class="xref py py-data docutils literal notranslate"><span class="pre">TASK_ESR</span></code></a> —
+the window is one frame and a closed eye is the positive — so the still corpora
+train the frame-wise model rather than being scored under this protocol.</p>
+<p>More error-tolerant than frame-wise scoring, which is why it is the headline
+protocol: the corpora do not annotate blink boundaries precisely, since a
+closure begins before and ends after the frames marked as blinking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Blink presence detection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.TASKS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">TASKS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#blinklinmult.data.schema.TASKS" title="Link to this definition">¶</a></dt>
+<dd><p>The two evaluation protocols, which are distinct tasks over the same window.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.FEATURE_KEYS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">FEATURE_KEYS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#blinklinmult.data.schema.FEATURE_KEYS" title="Link to this definition">¶</a></dt>
+<dd><p>Every feature key, in model input order.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.TARGET_KEYS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">TARGET_KEYS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#blinklinmult.data.schema.TARGET_KEYS" title="Link to this definition">¶</a></dt>
+<dd><p>Every target key, in head order.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.SAMPLE_KEY">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">SAMPLE_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'key'</span></span><a class="headerlink" href="#blinklinmult.data.schema.SAMPLE_KEY" title="Link to this definition">¶</a></dt>
+<dd><p>Metadata key holding a sample’s unique identifier.</p>
+<p>Named <code class="docutils literal notranslate"><span class="pre">key</span></code> rather than <code class="docutils literal notranslate"><span class="pre">sample_id</span></code> because that is what OmniLoader’s
+<code class="xref py py-data docutils literal notranslate"><span class="pre">omniloader.schema.unify.METADATA_KEYS</span></code> copies verbatim through the
+unifier; a differently-named field would be dropped before it reached the batch,
+and every prediction would lose its provenance.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.SOURCE_KEY">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">SOURCE_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dataset'</span></span><a class="headerlink" href="#blinklinmult.data.schema.SOURCE_KEY" title="Link to this definition">¶</a></dt>
+<dd><p>Metadata key holding the corpus a sample came from.</p>
+<p>Also passed through by OmniLoader, and what
+<a class="reference internal" href="../../train/callbacks/index.html#blinklinmult.train.callbacks.PerDatasetReport" title="blinklinmult.train.callbacks.PerDatasetReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">PerDatasetReport</span></code></a> groups the test scores
+by.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_SIDE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_SIDE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_side'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_SIDE" title="Link to this definition">¶</a></dt>
+<dd><p>Per-sample field naming which eye this sample carries.</p>
+<p>Stored in the HDF5 for offline inspection and written into the sample id, since
+OmniLoader only forwards <a class="reference internal" href="#blinklinmult.data.schema.SAMPLE_KEY" title="blinklinmult.data.schema.SAMPLE_KEY"><code class="xref py py-data docutils literal notranslate"><span class="pre">SAMPLE_KEY</span></code></a>, <a class="reference internal" href="#blinklinmult.data.schema.SOURCE_KEY" title="blinklinmult.data.schema.SOURCE_KEY"><code class="xref py py-data docutils literal notranslate"><span class="pre">SOURCE_KEY</span></code></a> and <code class="docutils literal notranslate"><span class="pre">subset</span></code>
+into the batch. <a class="reference internal" href="#blinklinmult.data.schema.parse_sample_id" title="blinklinmult.data.schema.parse_sample_id"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_sample_id()</span></code></a> recovers it at evaluation time.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.FRAME_GROUP">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">FRAME_GROUP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'frame_group'</span></span><a class="headerlink" href="#blinklinmult.data.schema.FRAME_GROUP" title="Link to this definition">¶</a></dt>
+<dd><p>Per-sample field identifying the frames a window covers.</p>
+<p>Two eye-wise samples describe the same frames of the same recording exactly when
+their frame groups match, which is what lets
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FrameAggregator</span></code> recombine them into one
+prediction per frame.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.FACE_BOX">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">FACE_BOX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'face_box'</span></span><a class="headerlink" href="#blinklinmult.data.schema.FACE_BOX" title="Link to this definition">¶</a></dt>
+<dd><p>Per-frame face box, <code class="docutils literal notranslate"><span class="pre">(T,</span> <span class="pre">4)</span></code> int32 as <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">w,</span> <span class="pre">h)</span></code>.</p>
+<p><strong>Stored instead of the face crop itself.</strong> A face stream at 112 px would add
+~47 GB to MPEblink alone – a 4x blowup – and because a sample is one <em>eye</em>,
+the <code class="docutils literal notranslate"><span class="pre">|left</span></code> and <code class="docutils literal notranslate"><span class="pre">|right</span></code> samples of a window would hold byte-identical
+copies of it. The box is four numbers and reconstructs the crop exactly.</p>
+<p>What it buys is reproducibility: the geometry is frozen at build time, so a
+face crop taken later from the raw video is the same crop the builder saw,
+rather than a fresh guess at the same preprocessing. Negative or overhanging
+values are kept verbatim – MPEblink tracks faces past the frame edge, and
+clamping here would destroy that information.</p>
+<p><code class="docutils literal notranslate"><span class="pre">None</span></code> for corpora that annotate no face box (CEW, MRL-Eye).</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_ON_SCREEN">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_ON_SCREEN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_on_screen'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_ON_SCREEN" title="Link to this definition">¶</a></dt>
+<dd><p>Per-frame fraction of an eye’s landmarks inside the frame, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> float16.</p>
+<p><code class="docutils literal notranslate"><span class="pre">1.0</span></code> is fully visible. The builder masks a frame below
+<code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_EYE_ON_SCREEN</span></code>, but the raw value
+is kept so a marginal eye can be found and looked at rather than merely
+trusted.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_SPAN">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_SPAN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_span'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_SPAN" title="Link to this definition">¶</a></dt>
+<dd><p>Per-frame eye width in pixels, corner to corner, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> float16.</p>
+<p>The crop’s scale before resizing, so it says how much real detail a 64 px patch
+holds: a 12 px eye upsampled to 64 is mostly interpolation. Films put faces at
+every scale, so this varies by an order of magnitude within one corpus.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_ASPECT">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_ASPECT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'eye_aspect'</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_ASPECT" title="Link to this definition">¶</a></dt>
+<dd><p>Per-frame eye height/width ratio, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> float16.</p>
+<p><strong>The profile detector.</strong> A face turned edge-on keeps a healthy eye <em>span</em> –
+<code class="docutils literal notranslate"><span class="pre">test/183</span></code> measures a perfectly ordinary 21.5 px median – while the eye
+itself becomes invisible, so span alone cannot find those clips. The landmark
+contour flattens as the face rotates away, which this catches.</p>
+<p>Low values also occur legitimately during a blink, so it is a ranking signal
+for inspection, not a rejection rule.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.BOX_SHIFTED">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">BOX_SHIFTED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'box_shifted'</span></span><a class="headerlink" href="#blinklinmult.data.schema.BOX_SHIFTED" title="Link to this definition">¶</a></dt>
+<dd><p>the crop was slid to fit inside the frame.</p>
+<p>Set by <code class="xref py py-meth docutils literal notranslate"><span class="pre">shifted_into()</span></code>. The eye is
+present and the scale is unchanged, but it sits off centre, so a model that
+learned to expect a centred eye may behave differently here. 0.46% of MPEblink
+crops.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Per-frame flag, <code class="docutils literal notranslate"><span class="pre">(T,)</span></code> bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.LANDMARK_SOURCE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">LANDMARK_SOURCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'landmark_source'</span></span><a class="headerlink" href="#blinklinmult.data.schema.LANDMARK_SOURCE" title="Link to this definition">¶</a></dt>
+<dd><p>Per-sample string naming which landmark scheme located the eye.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;wflw&quot;</span></code> (98-point) or <code class="docutils literal notranslate"><span class="pre">&quot;ibug&quot;</span></code> (68-point). MPEblink ships WFLW for most
+clips but only iBUG for 30 of its test clips, and the two place the eye
+slightly differently – iBUG has no pupil point, so those crops centre on the
+contour mean. Worth being able to score the two groups separately before
+trusting a single test number.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.CONFIDENCE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">CONFIDENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'confidence'</span></span><a class="headerlink" href="#blinklinmult.data.schema.CONFIDENCE" title="Link to this definition">¶</a></dt>
+<dd><p>how trustworthy this window looks.</p>
+<p>A ranking aid for finding bad data, <strong>not</strong> a training weight and not a
+probability. Pooled from the per-frame signals above so a notebook can sort
+tracklets and render the worst; see
+<code class="xref py py-func docutils literal notranslate"><span class="pre">window_confidence()</span></code>.</p>
+<p>It exists because the automated checks are not sufficient on their own: the
+<code class="docutils literal notranslate"><span class="pre">test/183</span></code> profile crops scored <em>higher</em> contrast than good clips and were
+still unusable. Only looking at them revealed it, and this is what makes
+looking cheap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Per-sample scalar in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, float32</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.METADATA_KEYS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">METADATA_KEYS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#blinklinmult.data.schema.METADATA_KEYS" title="Link to this definition">¶</a></dt>
+<dd><p>Per-sample metadata that survives OmniLoader’s unifier into the batch.</p>
+<p>These three are exactly the keys OmniLoader copies verbatim; anything else is
+dropped, which is why the eye side and the frame group are encoded into the
+sample id rather than stored only as separate fields.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.TARGET_PLACEHOLDER">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">TARGET_PLACEHOLDER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1.0</span></span><a class="headerlink" href="#blinklinmult.data.schema.TARGET_PLACEHOLDER" title="Link to this definition">¶</a></dt>
+<dd><p>Value filled in where a corpus does not supply a target.</p>
+<p>Chosen outside <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> so that a placeholder surviving into a metric is
+visibly wrong rather than plausible. The mask is what the loss actually reads;
+this is the second line of defence.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.IMAGE_CHANNELS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">IMAGE_CHANNELS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#blinklinmult.data.schema.IMAGE_CHANNELS" title="Link to this definition">¶</a></dt>
+<dd><p>Channel count of an eye crop. RGB, matching the ImageNet-pretrained backbones.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DEFAULT_WINDOW_SECONDS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_WINDOW_SECONDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.5</span></span><a class="headerlink" href="#blinklinmult.data.schema.DEFAULT_WINDOW_SECONDS" title="Link to this definition">¶</a></dt>
+<dd><p>Default analysis window, in seconds.</p>
+<p>Matched to MPEblink, whose InstBlink++ runs inference on <strong>36-frame clips with
+a stride of 18</strong> — a 50% overlap at ~24-30 fps, so roughly 1.2-1.5 s. Adopting
+the same duration is what lets this project’s numbers be read beside theirs.</p>
+<p><strong>Not chosen to contain the blink.</strong> Measured over MPEblink 2.0’s 17 711
+annotated events, the median blink is 6 frames and the 95th percentile 12, so a
+15-frame window already contains 97.9% of them and 45 frames raises that only to
+99.8%. The window is for <em>context</em>: what separates a blink from a downward
+glance, a squint or motion blur is what the eye was doing before and after the
+closure, not the closure itself.</p>
+<p>1.x used 0.5 s (15 frames at 30 fps). Widening it costs preprocessing time and
+memory in proportion, and no published ablation measures what the extra context
+buys – InstBlink++’s report asserts its clip length without one. Treat this as
+a protocol choice for comparability, not as an established optimum.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.EYE_FEATURE_DIM">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">EYE_FEATURE_DIM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">160</span></span><a class="headerlink" href="#blinklinmult.data.schema.EYE_FEATURE_DIM" title="Link to this definition">¶</a></dt>
+<dd><p>Width of the handcrafted descriptor vector for one eye.</p>
+<p>157 from exordium’s <code class="xref py py-meth docutils literal notranslate"><span class="pre">IrisWrapper.eye_to_feature()</span></code> — 71x2 eye-region
+landmarks, 5x2 iris landmarks, 2 iris diameters, 2 eyelid-pupil distances and 1
+eye-aspect-ratio — plus 3 head-pose angles. See
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">blinklinmult.preprocess.features</span></code>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.SchemaError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">SchemaError</span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#SchemaError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.SchemaError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+<p>Raised when a dataset declaration is invalid or self-inconsistent.</p>
+<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.frames_for">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">frames_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#frames_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.frames_for" title="Link to this definition">¶</a></dt>
+<dd><p>Frames spanning a duration at a given rate.</p>
+<p>Rounds <strong>half up</strong> rather than using <code class="xref py py-func docutils literal notranslate"><span class="pre">round()</span></code>, whose banker’s rounding
+breaks an exact <code class="docutils literal notranslate"><span class="pre">.5</span></code> towards the even integer — so 25 fps over 0.5 s would
+give 12 frames while 30 fps over 0.5 s gives 15, and the shortfall would be
+invisible. Rounding up never gives a window fewer frames than its duration
+implies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fps</strong> (<em>float</em>) – Frame rate of the recording.</p></li>
+<li><p><strong>window_seconds</strong> (<em>float</em>) – Window duration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Frame count, at least 1.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#blinklinmult.data.schema.SchemaError" title="blinklinmult.data.schema.SchemaError"><strong>SchemaError</strong></a> – If either argument is not positive.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.build_sample_id">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">build_sample_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eye_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#build_sample_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.build_sample_id" title="Link to this definition">¶</a></dt>
+<dd><p>Compose the identifier that carries a sample’s provenance.</p>
+<p>OmniLoader forwards only <a class="reference internal" href="#blinklinmult.data.schema.SAMPLE_KEY" title="blinklinmult.data.schema.SAMPLE_KEY"><code class="xref py py-data docutils literal notranslate"><span class="pre">SAMPLE_KEY</span></code></a>, <a class="reference internal" href="#blinklinmult.data.schema.SOURCE_KEY" title="blinklinmult.data.schema.SOURCE_KEY"><code class="xref py py-data docutils literal notranslate"><span class="pre">SOURCE_KEY</span></code></a> and
+<code class="docutils literal notranslate"><span class="pre">subset</span></code> into a batch, so the eye side and the frame group have to travel
+inside the id to survive as far as the metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>video_id</strong> (<em>str</em>) – Source recording.</p></li>
+<li><p><strong>frame_group</strong> (<em>str</em>) – Identifier of the frames the window covers, usually
+the first frame id.</p></li>
+<li><p><strong>eye_side</strong> (<em>str</em>) – One of <a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDES" title="blinklinmult.data.schema.EYE_SIDES"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_SIDES</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>e.g. <code class="docutils literal notranslate"><span class="pre">&quot;rn30_1|000881|left&quot;</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#blinklinmult.data.schema.SchemaError" title="blinklinmult.data.schema.SchemaError"><strong>SchemaError</strong></a> – If the eye side is unrecognised, or a component contains
+the <code class="docutils literal notranslate"><span class="pre">|</span></code> separator.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.parse_sample_id">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">parse_sample_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#parse_sample_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.parse_sample_id" title="Link to this definition">¶</a></dt>
+<dd><p>Recover a sample’s provenance from its identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample_id</strong> (<em>str</em>) – An id built by <a class="reference internal" href="#blinklinmult.data.schema.build_sample_id" title="blinklinmult.data.schema.build_sample_id"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_sample_id()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(video_id,</span> <span class="pre">frame_group,</span> <span class="pre">eye_side)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[str, str, str]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#blinklinmult.data.schema.SchemaError" title="blinklinmult.data.schema.SchemaError"><strong>SchemaError</strong></a> – If the id does not have the three expected components.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">DatasetSpec</span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#DatasetSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec" title="Link to this definition">¶</a></dt>
+<dd><p>What one corpus provides, and in what shape.</p>
+<p>This is the single source of truth for a corpus: the builder writes what it
+declares, the OmniLoader schema is generated from it, and training reads it
+to know which heads that corpus can supervise. A corpus cannot be written
+under one interpretation and read under another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Corpus name; must be one of <a class="reference internal" href="#blinklinmult.data.schema.DATASETS" title="blinklinmult.data.schema.DATASETS"><code class="xref py py-data docutils literal notranslate"><span class="pre">DATASETS</span></code></a>. Becomes the
+<code class="docutils literal notranslate"><span class="pre">data/processed/&lt;name&gt;</span></code> directory and the HDF5 filename.</p></li>
+<li><p><strong>fps</strong> (<em>float</em><em> | </em><em>None</em>) – Native frame rate, or <code class="docutils literal notranslate"><span class="pre">None</span></code> for a still-image
+corpus. Together with the run’s window length in seconds this
+determines <a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.time_dim" title="blinklinmult.data.schema.DatasetSpec.time_dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time_dim</span></code></a>, so that every corpus spans the same
+real duration whatever its rate.</p></li>
+<li><p><strong>window_seconds</strong> (<em>float</em><em> | </em><em>None</em>) – Analysis window for this corpus. <code class="docutils literal notranslate"><span class="pre">None</span></code>
+means the corpus is not windowed (still images).</p></li>
+<li><p><strong>image_size</strong> (<em>int</em>) – Side length of a square eye crop.</p></li>
+<li><p><strong>feature_dim</strong> (<em>int</em><em> | </em><em>None</em>) – Width of <a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE" title="blinklinmult.data.schema.EYE_FEATURE"><code class="xref py py-data docutils literal notranslate"><span class="pre">EYE_FEATURE</span></code></a>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> when
+the corpus supplies no handcrafted descriptors.</p></li>
+<li><p><strong>has_blink_presence</strong> (<em>bool</em>) – Whether the corpus annotates blink presence.</p></li>
+<li><p><strong>has_eye_state</strong> (<em>bool</em>) – Whether the corpus annotates per-eye closure.</p></li>
+<li><p><strong>has_eye_side</strong> (<em>bool</em>) – Whether the corpus says which eye a sample is.
+<code class="docutils literal notranslate"><span class="pre">False</span></code> for MRL-Eye, whose samples are recorded as
+<a class="reference internal" href="#blinklinmult.data.schema.UNKNOWN_EYE" title="blinklinmult.data.schema.UNKNOWN_EYE"><code class="xref py py-data docutils literal notranslate"><span class="pre">UNKNOWN_EYE</span></code></a>.</p></li>
+<li><p><strong>has_head_pose</strong> (<em>bool</em>) – Whether the corpus supplies <a class="reference internal" href="#blinklinmult.data.schema.HEAD_POSE" title="blinklinmult.data.schema.HEAD_POSE"><code class="xref py py-data docutils literal notranslate"><span class="pre">HEAD_POSE</span></code></a>.
+<code class="docutils literal notranslate"><span class="pre">False</span></code> for the still corpora, which have no face box to estimate
+pose from – and so cannot be occlusion-filtered.</p></li>
+<li><p><strong>has_blink_ids</strong> (<em>bool</em>) – Whether the corpus supplies per-frame
+<a class="reference internal" href="#blinklinmult.data.schema.BLINK_IDS" title="blinklinmult.data.schema.BLINK_IDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">BLINK_IDS</span></code></a>, which event-level work needs to tell one long
+blink from two adjacent ones.</p></li>
+<li><p><strong>quality_signals</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>...</em><em>]</em>) – Which of <a class="reference internal" href="#blinklinmult.data.schema.QUALITY_SIGNALS" title="blinklinmult.data.schema.QUALITY_SIGNALS"><code class="xref py py-data docutils literal notranslate"><span class="pre">QUALITY_SIGNALS</span></code></a> this
+corpus supplies. Deliberately per-signal rather than all-or-nothing:
+a still-image corpus has one frame and so no
+<code class="xref py py-data docutils literal notranslate"><span class="pre">box_jitter</span></code>. Empty means the
+corpus supplies none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#blinklinmult.data.schema.SchemaError" title="blinklinmult.data.schema.SchemaError"><strong>SchemaError</strong></a> – If the declaration is invalid.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#DatasetSpec.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.__post_init__" title="Link to this definition">¶</a></dt>
+<dd><p>Validate the declaration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blinklinmult.data.schema.SchemaError" title="blinklinmult.data.schema.SchemaError"><strong>SchemaError</strong></a> – If a field is out of range, the name is unknown, or the
+corpus annotates neither task.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.is_video">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_video</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.is_video" title="Link to this definition">¶</a></dt>
+<dd><p>Whether this corpus has a temporal axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> when the corpus declares a frame rate.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.time_dim">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">time_dim</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.time_dim" title="Link to this definition">¶</a></dt>
+<dd><p>Frames spanned by this corpus’s analysis window.</p>
+<p>Derived from the corpus’s own rate rather than fixed, so a 15 fps and a
+30 fps recording cover the same wall-clock duration. A still-image
+corpus is the degenerate single-frame case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Window length in frames; <code class="docutils literal notranslate"><span class="pre">1</span></code> for a still-image corpus.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.has_quality_signals">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_quality_signals</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.has_quality_signals" title="Link to this definition">¶</a></dt>
+<dd><p>Whether this corpus supplies any per-frame quality signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> when <code class="xref py py-attr docutils literal notranslate"><span class="pre">quality_signals</span></code> is non-empty.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.has_eye_feature">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_eye_feature</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.has_eye_feature" title="Link to this definition">¶</a></dt>
+<dd><p>Whether this corpus supplies handcrafted eye descriptors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> when <code class="xref py py-attr docutils literal notranslate"><span class="pre">feature_dim</span></code> is set.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.feature_keys">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">feature_keys</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.feature_keys" title="Link to this definition">¶</a></dt>
+<dd><p>Feature keys this corpus provides, in model input order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A subset of <a class="reference internal" href="#blinklinmult.data.schema.FEATURE_KEYS" title="blinklinmult.data.schema.FEATURE_KEYS"><code class="xref py py-data docutils literal notranslate"><span class="pre">FEATURE_KEYS</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.target_keys">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">target_keys</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.target_keys" title="Link to this definition">¶</a></dt>
+<dd><p>Target keys this corpus annotates, in head order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A subset of <a class="reference internal" href="#blinklinmult.data.schema.TARGET_KEYS" title="blinklinmult.data.schema.TARGET_KEYS"><code class="xref py py-data docutils literal notranslate"><span class="pre">TARGET_KEYS</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.with_window">
+<span class="sig-name descname"><span class="pre">with_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec" title="blinklinmult.data.schema.DatasetSpec"><span class="pre">DatasetSpec</span></a></span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#DatasetSpec.with_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.with_window" title="Link to this definition">¶</a></dt>
+<dd><p>Return this spec with a different analysis window.</p>
+<p>Used by a run config to apply one window length across every corpus,
+each of which then re-derives its own frame count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>window_seconds</strong> (<em>float</em><em> | </em><em>None</em>) – The new window length.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new spec; this one is unchanged.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec" title="blinklinmult.data.schema.DatasetSpec">DatasetSpec</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.DatasetSpec.from_dict">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec" title="blinklinmult.data.schema.DatasetSpec"><span class="pre">DatasetSpec</span></a></span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#DatasetSpec.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.DatasetSpec.from_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Build a spec from a plain dict, e.g. parsed YAML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – Declaration values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The validated spec.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec" title="blinklinmult.data.schema.DatasetSpec">DatasetSpec</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#blinklinmult.data.schema.SchemaError" title="blinklinmult.data.schema.SchemaError"><strong>SchemaError</strong></a> – If keys are unknown or required ones are missing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.BuildStats">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">blinklinmult.data.schema.</span></span><span class="sig-name descname"><span class="pre">BuildStats</span></span><a class="reference internal" href="../../../../_modules/blinklinmult/data/schema.html#BuildStats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.data.schema.BuildStats" title="Link to this definition">¶</a></dt>
+<dd><p>Counters describing one builder run, for logging and tests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>str</em>) – Corpus that was built.</p></li>
+<li><p><strong>per_subset</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – Samples written per split.</p></li>
+<li><p><strong>bytes_written</strong> (<em>int</em>) – Size of the resulting file.</p></li>
+<li><p><strong>positive_fraction</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – Fraction of blink windows per
+split, which is what reveals a split that accidentally lost its
+positives.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="blinklinmult.data.schema.BuildStats.n_samples">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">n_samples</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#blinklinmult.data.schema.BuildStats.n_samples" title="Link to this definition">¶</a></dt>
+<dd><p>Total samples written across every split.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sample count.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../shards/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">blinklinmult.data.shards</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../omni/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">blinklinmult.data.omni</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">blinklinmult.data.schema</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#blinklinmult.data.schema.SCHEMA_VERSION"><code class="docutils literal notranslate"><span class="pre">SCHEMA_VERSION</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.SUBSETS"><code class="docutils literal notranslate"><span class="pre">SUBSETS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DATASETS"><code class="docutils literal notranslate"><span class="pre">DATASETS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.VIDEO_DATASETS"><code class="docutils literal notranslate"><span class="pre">VIDEO_DATASETS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.IMAGE_DATASETS"><code class="docutils literal notranslate"><span class="pre">IMAGE_DATASETS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.LEFT"><code class="docutils literal notranslate"><span class="pre">LEFT</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.RIGHT"><code class="docutils literal notranslate"><span class="pre">RIGHT</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.UNKNOWN_EYE"><code class="docutils literal notranslate"><span class="pre">UNKNOWN_EYE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDES"><code class="docutils literal notranslate"><span class="pre">EYE_SIDES</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_EMBEDDING"><code class="docutils literal notranslate"><span class="pre">EYE_EMBEDDING</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_IMAGE"><code class="docutils literal notranslate"><span class="pre">EYE_IMAGE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE"><code class="docutils literal notranslate"><span class="pre">EYE_FEATURE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.BLINK_PRESENCE"><code class="docutils literal notranslate"><span class="pre">BLINK_PRESENCE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_STATE"><code class="docutils literal notranslate"><span class="pre">EYE_STATE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.INVALID_BLINK"><code class="docutils literal notranslate"><span class="pre">INVALID_BLINK</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.NO_BLINK"><code class="docutils literal notranslate"><span class="pre">NO_BLINK</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.BLINK_ID"><code class="docutils literal notranslate"><span class="pre">BLINK_ID</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.BLINK_IDS"><code class="docutils literal notranslate"><span class="pre">BLINK_IDS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.NO_CATEGORY"><code class="docutils literal notranslate"><span class="pre">NO_CATEGORY</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.BLINK_CATEGORY"><code class="docutils literal notranslate"><span class="pre">BLINK_CATEGORY</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.HEAD_POSE"><code class="docutils literal notranslate"><span class="pre">HEAD_POSE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.HEAD_POSE_DIM"><code class="docutils literal notranslate"><span class="pre">HEAD_POSE_DIM</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.QUALITY_SIGNALS"><code class="docutils literal notranslate"><span class="pre">QUALITY_SIGNALS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.TASK_ESR"><code class="docutils literal notranslate"><span class="pre">TASK_ESR</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.TASK_BPD"><code class="docutils literal notranslate"><span class="pre">TASK_BPD</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.TASKS"><code class="docutils literal notranslate"><span class="pre">TASKS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.FEATURE_KEYS"><code class="docutils literal notranslate"><span class="pre">FEATURE_KEYS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.TARGET_KEYS"><code class="docutils literal notranslate"><span class="pre">TARGET_KEYS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.SAMPLE_KEY"><code class="docutils literal notranslate"><span class="pre">SAMPLE_KEY</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.SOURCE_KEY"><code class="docutils literal notranslate"><span class="pre">SOURCE_KEY</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_SIDE"><code class="docutils literal notranslate"><span class="pre">EYE_SIDE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.FRAME_GROUP"><code class="docutils literal notranslate"><span class="pre">FRAME_GROUP</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.FACE_BOX"><code class="docutils literal notranslate"><span class="pre">FACE_BOX</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_ON_SCREEN"><code class="docutils literal notranslate"><span class="pre">EYE_ON_SCREEN</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_SPAN"><code class="docutils literal notranslate"><span class="pre">EYE_SPAN</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_ASPECT"><code class="docutils literal notranslate"><span class="pre">EYE_ASPECT</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.BOX_SHIFTED"><code class="docutils literal notranslate"><span class="pre">BOX_SHIFTED</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.LANDMARK_SOURCE"><code class="docutils literal notranslate"><span class="pre">LANDMARK_SOURCE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.CONFIDENCE"><code class="docutils literal notranslate"><span class="pre">CONFIDENCE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.METADATA_KEYS"><code class="docutils literal notranslate"><span class="pre">METADATA_KEYS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.TARGET_PLACEHOLDER"><code class="docutils literal notranslate"><span class="pre">TARGET_PLACEHOLDER</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.IMAGE_CHANNELS"><code class="docutils literal notranslate"><span class="pre">IMAGE_CHANNELS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DEFAULT_WINDOW_SECONDS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_WINDOW_SECONDS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.EYE_FEATURE_DIM"><code class="docutils literal notranslate"><span class="pre">EYE_FEATURE_DIM</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.SchemaError"><code class="docutils literal notranslate"><span class="pre">SchemaError</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.frames_for"><code class="docutils literal notranslate"><span class="pre">frames_for()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.build_sample_id"><code class="docutils literal notranslate"><span class="pre">build_sample_id()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.parse_sample_id"><code class="docutils literal notranslate"><span class="pre">parse_sample_id()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec"><code class="docutils literal notranslate"><span class="pre">DatasetSpec</span></code></a><ul>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.__post_init__"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.__post_init__()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.is_video"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.is_video</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.time_dim"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.time_dim</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.has_quality_signals"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.has_quality_signals</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.has_eye_feature"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.has_eye_feature</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.feature_keys"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.feature_keys</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.target_keys"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.target_keys</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.with_window"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.with_window()</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.DatasetSpec.from_dict"><code class="docutils literal notranslate"><span class="pre">DatasetSpec.from_dict()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#blinklinmult.data.schema.BuildStats"><code class="docutils literal notranslate"><span class="pre">BuildStats</span></code></a><ul>
+<li><a class="reference internal" href="#blinklinmult.data.schema.BuildStats.n_samples"><code class="docutils literal notranslate"><span class="pre">BuildStats.n_samples</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

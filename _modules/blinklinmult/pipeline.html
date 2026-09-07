@@ -1,0 +1,1104 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/_modules/blinklinmult/pipeline.html">
+        <link rel="prefetch" href="../../_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>blinklinmult.pipeline - BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../eye_state_events.html">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/blinklinmult/index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/blinklinmult/bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/blinklinmult/compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/blinklinmult/data/index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/schema/index.html">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/data/writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/blinklinmult/paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/blinklinmult/stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/blinklinmult/train/index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/metrics/index.html">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/blinklinmult/train/phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for blinklinmult.pipeline</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Blink detection on a video, as seven observable stages.</span>
+
+<span class="sd">The corpora hand a model eye crops that were extracted months earlier. A video</span>
+<span class="sd">hands it pixels, and everything between -- finding a face, keeping it the *same*</span>
+<span class="sd">face, reading its pose, locating the eyes, deciding which are even visible -- has</span>
+<span class="sd">to happen first. This module is that path.</span>
+
+<span class="sd">**Staged, not streamed.** Each stage consumes all frames from the previous one</span>
+<span class="sd">before the next begins, because that is how the work actually batches, and each</span>
+<span class="sd">reports its own wall-clock time. A slow run is then immediately attributable</span>
+<span class="sd">rather than a single opaque wait.</span>
+
+<span class="sd">===  ==========================  =============================================</span>
+<span class="sd"> #   stage                       produces</span>
+<span class="sd">===  ==========================  =============================================</span>
+<span class="sd"> 1   face detection + tracking   one box per frame, the same person throughout</span>
+<span class="sd"> 2   head pose                   ``[yaw, pitch, roll]`` degrees per frame</span>
+<span class="sd"> 3   landmarks + eye boxes       478 points and two eye boxes per frame</span>
+<span class="sd"> 4   eye selection               per frame: left, right, both or neither</span>
+<span class="sd"> 5   inference                   per-frame closeness, per eye</span>
+<span class="sd"> 6   labelling                   open/closed per frame, plus blink events</span>
+<span class="sd"> 7   visualisation               handled by the caller, from these results</span>
+<span class="sd">===  ==========================  =============================================</span>
+
+<span class="sd">:func:`run` is a generator yielding a :class:`Stage` as each completes, so a UI</span>
+<span class="sd">can show progress without the pipeline knowing anything about a UI.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.data.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">LEFT</span><span class="p">,</span> <span class="n">RIGHT</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.detector</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlinkDetector</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">EyeBox</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelSpec</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.train.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Interval</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="sd">"""Module-level logger."""</span>
+
+<span class="n">MAX_SECONDS</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="sd">"""Longest video processed, in seconds.</span>
+
+<span class="sd">Seven stages over several models per frame is minutes of CPU for seconds of</span>
+<span class="sd">video. Longer input is truncated with a warning rather than silently accepted</span>
+<span class="sd">and left to time out.</span>
+<span class="sd">"""</span>
+
+<span class="n">YAW_LIMIT</span> <span class="o">=</span> <span class="mf">45.0</span>
+<span class="sd">"""Degrees of yaw past which one eye is treated as occluded.</span>
+
+<span class="sd">**Positive yaw turns the nose toward image-left**, so it occludes the viewer's</span>
+<span class="sd">*right* eye; negative yaw occludes the left. That sign is not arbitrary: exordium</span>
+<span class="sd">draws the yaw axis as ``x = size * sin(-radians(yaw))``, which puts the nose at</span>
+<span class="sd">negative x -- image-left -- for positive yaw. Our side labels are the viewer's,</span>
+<span class="sd">fixed by the same TalkingFace measurement that pins the region mirror in</span>
+<span class="sd">:class:`~blinklinmult.preprocess.extractors.FaceMeshLocator`.</span>
+
+<span class="sd">Getting this backwards suppresses the *visible* eye and keeps the occluded one,</span>
+<span class="sd">which still produces a plausible-looking result. :mod:`tests.test_pipeline`</span>
+<span class="sd">asserts both directions.</span>
+<span class="sd">"""</span>
+
+<span class="n">PROGRESS_EVERY</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="sd">"""Frames between progress lines within a stage.</span>
+
+<span class="sd">One line per frame would be noise, and yielding per frame would cost a</span>
+<span class="sd">meaningful share of the runtime it is reporting.</span>
+<span class="sd">"""</span>
+
+<span class="n">SIDES</span> <span class="o">=</span> <span class="p">(</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">RIGHT</span><span class="p">)</span>
+<span class="sd">"""The two eyes, in the order they are reported."""</span>
+
+
+<div class="viewcode-block" id="Extraction">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.Extraction">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Extraction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""How a per-frame eye-state curve becomes blink events.</span>
+
+<span class="sd">    ESR gives a continuous closeness signal; blink *presence* is a decision laid</span>
+<span class="sd">    on top of it, and this is that decision made explicit. It is separated from</span>
+<span class="sd">    the model because the two are independently wrong: a shipped operating point</span>
+<span class="sd">    is only fitted for the corpus it was fitted on, and applying it elsewhere is</span>
+<span class="sd">    a transfer, not a measurement.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        high (float): A run must peak above this to count as a blink.</span>
+<span class="sd">        low (float | None): It extends while above this. ``None`` is a single</span>
+<span class="sd">            cut, where the same value has to both reject noise and catch a</span>
+<span class="sd">            closure's shallow onset -- two jobs one number does badly.</span>
+<span class="sd">    """</span>
+
+    <span class="n">high</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Extraction.fitted">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.Extraction.fitted">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fitted</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_spec</span><span class="p">:</span> <span class="n">ModelSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Extraction</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The operating point registered for a model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_spec (ModelSpec): The model's registry entry.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Extraction: Its thresholds. For the 1.x models this is 0.5, a</span>
+<span class="sd">            neutral sigmoid midpoint rather than a measurement -- that work</span>
+<span class="sd">            reported eye state, not events, so no operating point was ever fitted</span>
+<span class="sd">            for them. Supply your own rather than inheriting it.</span>
+<span class="sd">        """</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">model_spec</span><span class="o">.</span><span class="n">low_ratio</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">model_spec</span><span class="o">.</span><span class="n">threshold</span> <span class="o">*</span> <span class="n">model_spec</span><span class="o">.</span><span class="n">low_ratio</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">high</span><span class="o">=</span><span class="n">model_spec</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="n">low</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extraction.validate">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.Extraction.validate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Check the thresholds can separate anything.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            PipelineError: If a threshold is outside ``(0, 1)``, or the low cut</span>
+<span class="sd">                is not below the high one -- at or above it, hysteresis stops</span>
+<span class="sd">                extending runs and silently degrades to a single threshold.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"High threshold must be in (0, 1); got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Low threshold must be in (0, 1); got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Low threshold (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="si">}</span><span class="s2">) must be below the high one (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="si">}</span><span class="s2">); "</span>
+                <span class="s2">"at or above it, hysteresis degrades to a single cut."</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extraction.describe">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.Extraction.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""One line naming the rule, for the log.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Human-readable summary.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"single threshold </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"hysteresis </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PipelineError">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.PipelineError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a video cannot be processed at all."""</span></div>
+
+
+
+<div class="viewcode-block" id="NoFaceError">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.NoFaceError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoFaceError</span><span class="p">(</span><span class="n">PipelineError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when no frame of the video holds a face.</span>
+
+<span class="sd">    Separate from :class:`PipelineError` because it is a property of the *input*,</span>
+<span class="sd">    not a fault: the message tells a user what to upload instead, where a decode</span>
+<span class="sd">    failure tells them something is broken.</span>
+<span class="sd">    """</span></div>
+
+
+
+<div class="viewcode-block" id="Stage">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.Stage">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Stage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""One completed stage, for a progress display.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index (int): 1-based stage number.</span>
+<span class="sd">        total (int): How many stages there are.</span>
+<span class="sd">        name (str): Short human label.</span>
+<span class="sd">        detail (str): What it found -- counts, not prose.</span>
+<span class="sd">        seconds (float): Wall-clock time the stage took.</span>
+<span class="sd">    """</span>
+
+    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">total</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">detail</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">seconds</span><span class="p">:</span> <span class="nb">float</span>
+
+<div class="viewcode-block" id="Stage.line">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.Stage.line">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Render as one log line.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: ``[n/7] name ... detail   1.2 s``</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">.&lt;34</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">seconds</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> s"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FrameResult">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.FrameResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FrameResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Everything known about one frame, for the overlay.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index (int): Frame number in the source video.</span>
+<span class="sd">        face_box (tuple | None): ``(x1, y1, x2, y2)``, or ``None`` when the</span>
+<span class="sd">            tracked subject was not found here.</span>
+<span class="sd">        landmarks (np.ndarray | None): ``(478, 2)`` FaceMesh points.</span>
+<span class="sd">        pose (np.ndarray | None): ``[yaw, pitch, roll]`` in degrees.</span>
+<span class="sd">        eyes (dict[str, EyeBox | None]): Box per side.</span>
+<span class="sd">        used (dict[str, bool]): Whether each side was scored.</span>
+<span class="sd">        score (dict[str, float | None]): Closeness per side; ``None`` where the</span>
+<span class="sd">            eye was not scored, which is **not** the same as zero.</span>
+<span class="sd">    """</span>
+
+    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">face_box</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">landmarks</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pose</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">eyes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EyeBox</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">used</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">score</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Result">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.Result">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Result</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The finished analysis of one video.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frames (list[FrameResult]): Per-frame findings, in order.</span>
+<span class="sd">        signal (dict[str, np.ndarray]): Per-side closeness, ``NaN`` where the</span>
+<span class="sd">            eye was not scored. NaN rather than zero so a gap cannot be mistaken</span>
+<span class="sd">            for a confident "open".</span>
+<span class="sd">        events (dict[str, list[Interval]]): Blink intervals per side.</span>
+<span class="sd">        fps (float): Source frame rate.</span>
+<span class="sd">        model_id (str): Which model produced this.</span>
+<span class="sd">        truncated (bool): Whether the video was cut to :data:`MAX_SECONDS`.</span>
+<span class="sd">        truth (dict[str, np.ndarray] | None): Annotated per-eye state, when the</span>
+<span class="sd">            clip came with a ``.tag``. ``None`` for an uploaded video.</span>
+<span class="sd">        extraction (Extraction | None): The rule that produced ``events``.</span>
+<span class="sd">    """</span>
+
+    <span class="n">frames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrameResult</span><span class="p">]</span>
+    <span class="n">signal</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="n">events</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]]</span>
+    <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">truth</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">extraction</span><span class="p">:</span> <span class="n">Extraction</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="ground_truth">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.ground_truth">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ground_truth</span><span class="p">(</span>
+    <span class="n">tag_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Per-eye annotated eye state, for a corpus clip that ships a ``.tag``.</span>
+
+<span class="sd">    Only the ``.tag`` corpora have this; an uploaded video does not. It is drawn</span>
+<span class="sd">    on the plot so a prediction can be read against what was annotated rather</span>
+<span class="sd">    than judged by eye.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tag_path (str | Path): The ``.tag`` file beside the video.</span>
+<span class="sd">        frames (int): How many frames were analysed.</span>
+<span class="sd">        offset (int): Index of the first analysed frame in the source video, so</span>
+<span class="sd">            a mid-video segment lines its annotation up correctly.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, np.ndarray] | None: Per-side 0/1 arrays of length ``frames``,</span>
+<span class="sd">        or ``None`` when the file is absent or unreadable.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.annotation</span><span class="w"> </span><span class="kn">import</span> <span class="n">TagFile</span>
+
+    <span class="n">location</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tag_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">location</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">TagFile</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">video_id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: BLE001 - a malformed tag is not fatal</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not read </span><span class="si">{</span><span class="n">location</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">eye_state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">LEFT</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="n">offset</span> <span class="p">:</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">frames</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="n">RIGHT</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="n">offset</span> <span class="p">:</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">frames</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="occluded_side">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.occluded_side">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">occluded_side</span><span class="p">(</span><span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">YAW_LIMIT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Which eye a head turn hides, if any.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        yaw (float): Head yaw in degrees.</span>
+<span class="sd">        limit (float): Magnitude past which one eye counts as occluded.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str | None: The hidden side, or ``None`` when the head is frontal</span>
+<span class="sd">        enough for both.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">yaw</span> <span class="o">&gt;</span> <span class="n">limit</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RIGHT</span>
+    <span class="k">if</span> <span class="n">yaw</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">limit</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">LEFT</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_video_metadata</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Read a video's frame rate and frame count.</span>
+
+<span class="sd">    Prefers exordium's probe when the extraction stack is installed, and falls</span>
+<span class="sd">    back to OpenCV otherwise. Both report the same values for the formats this</span>
+<span class="sd">    pipeline handles; the fallback exists so decoding a video does not require</span>
+<span class="sd">    the optional preprocess extra, which pulls multi-GB model weights for</span>
+<span class="sd">    capabilities this function never uses.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str | Path): The video to probe.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[float, int]: Frames per second, and the frame count (0 if unknown).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Any probe failure, translated by the caller.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># ty: ignore[unresolved-import]</span>
+            <span class="n">get_video_metadata</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">get_video_metadata</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fps"</span><span class="p">)</span> <span class="ow">or</span> <span class="mf">25.0</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"num_frames"</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>  <span class="c1"># ty: ignore[unresolved-import]</span>
+
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">capture</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+        <span class="n">capture</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot open </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span> <span class="ow">or</span> <span class="mf">25.0</span><span class="p">),</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">capture</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_decode_frames</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">first</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Decode a half-open frame range as RGB.</span>
+
+<span class="sd">    The exordium and OpenCV paths agree on the returned array: ``(T, H, W, 3)``</span>
+<span class="sd">    uint8 in RGB order, with ``stop`` exclusive. OpenCV decodes BGR, so its</span>
+<span class="sd">    frames are reversed on the last axis to match.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str | Path): The video to read.</span>
+<span class="sd">        first (int): First frame index, inclusive.</span>
+<span class="sd">        stop (int): Last frame index, exclusive.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: ``(T, H, W, 3)`` uint8 RGB frames.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Any decode failure, translated by the caller.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_video</span>  <span class="c1"># ty: ignore[unresolved-import]</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">frames</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_video</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">start_frame</span><span class="o">=</span><span class="n">first</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="n">stop</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">frames</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="s2">"cpu"</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>  <span class="c1"># ty: ignore[unresolved-import]</span>
+
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">capture</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+        <span class="n">capture</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot open </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">capture</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_POS_FRAMES</span><span class="p">,</span> <span class="n">first</span><span class="p">)</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">first</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="n">ok</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">decoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">decoded</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">capture</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_video</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">MAX_SECONDS</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Decode a segment of a video.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str | Path): The video file.</span>
+<span class="sd">        start (float): Where the segment begins, in seconds.</span>
+<span class="sd">        duration (float): How long it runs, in seconds. Capped at</span>
+<span class="sd">            :data:`MAX_SECONDS`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[np.ndarray, float, bool, int]: ``(frames (T, H, W, 3) uint8 RGB,</span>
+<span class="sd">        fps, whether the request was cut short, the first frame's index in the</span>
+<span class="sd">        source)``. That last value matters: an overlay labelled ``Frame: 0`` for</span>
+<span class="sd">        a segment starting at 30 s would not line up with the source video.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        PipelineError: If the file cannot be read, the start lies past its end,</span>
+<span class="sd">            or the segment holds no frames.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Validate before importing. The arguments are wrong or right regardless of</span>
+    <span class="c1"># how the file is decoded, so a bad timestamp should be rejected without</span>
+    <span class="c1"># requiring the optional extraction stack to be installed.</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Start timestamp must be at or after 0 s; got </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">duration</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Duration must be positive; got </span><span class="si">{</span><span class="n">duration</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fps</span><span class="p">,</span> <span class="n">available</span> <span class="o">=</span> <span class="n">_video_metadata</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: BLE001 - any probe failure reads alike</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not read </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+
+    <span class="c1"># **Truncate, do not round.** A start timestamp names the frame it falls</span>
+    <span class="c1"># inside, so 9.99 s at 30 fps is frame 299 -- the last one. Rounding sends it</span>
+    <span class="c1"># to 300 and rejects a timestamp that is genuinely within the video.</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fps</span> <span class="o">*</span> <span class="n">start</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">available</span> <span class="ow">and</span> <span class="n">first</span> <span class="o">&gt;=</span> <span class="n">available</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">available</span> <span class="o">/</span> <span class="n">fps</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Start timestamp </span><span class="si">{</span><span class="n">start</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> s is past the end of "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, which is </span><span class="si">{</span><span class="n">length</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> s long."</span>
+        <span class="p">)</span>
+
+    <span class="n">wanted</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">fps</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="n">MAX_SECONDS</span><span class="p">)))</span>
+    <span class="c1"># `end_frame` is **exclusive** -- measured: `end_frame=270` from 150 returns</span>
+    <span class="c1"># exactly 120 frames. It also raises rather than clipping when it points past</span>
+    <span class="c1"># the last frame, so a segment running off the end must ask for no more than</span>
+    <span class="c1"># the video holds.</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="n">first</span> <span class="o">+</span> <span class="n">wanted</span>
+    <span class="k">if</span> <span class="n">available</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">stop</span><span class="p">,</span> <span class="n">available</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">_decode_frames</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: BLE001 - any decode failure reads alike</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not read </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+
+    <span class="n">array</span> <span class="o">=</span> <span class="n">frames</span>
+    <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> holds no frames between </span><span class="si">{</span><span class="n">start</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> s and </span><span class="si">{</span><span class="n">start</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">duration</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2"> s."</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>  <span class="c1"># (T, C, H, W) -&gt; (T, H, W, C)</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span> <span class="n">fps</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">wanted</span><span class="p">,</span> <span class="n">first</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_largest_track</span><span class="p">(</span><span class="n">boxes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Mark the frames belonging to the subject.</span>
+
+<span class="sd">    With no tracker this is a single pass: the subject is simply whichever face</span>
+<span class="sd">    was detected. The guard that matters is against *area* -- selection uses the</span>
+<span class="sd">    **median** box area across a track, not any single frame, so one frame where</span>
+<span class="sd">    a bystander looms closer cannot steal the subject.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        boxes (list): Per-frame face box, or ``None``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[bool]: Whether each frame holds the subject.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="run">
+<a class="viewcode-back" href="../../autoapi/blinklinmult/pipeline/index.html#blinklinmult.pipeline.run">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+    <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">detector</span><span class="p">:</span> <span class="n">BlinkDetector</span><span class="p">,</span>
+    <span class="n">stats</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tag_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">extraction</span><span class="p">:</span> <span class="n">Extraction</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">MAX_SECONDS</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Stage</span> <span class="o">|</span> <span class="n">Result</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Analyse a video, yielding each stage as it completes.</span>
+
+<span class="sd">    Yields six :class:`Stage` objects and then a final :class:`Result`. The</span>
+<span class="sd">    caller decides what to do with the stages -- a UI prints them, a test</span>
+<span class="sd">    ignores them.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        video_path (str | Path): The video to analyse.</span>
+<span class="sd">        detector (BlinkDetector): A loaded model.</span>
+<span class="sd">        stats (dict | None): Corpus feature statistics, ``{"mean": ..., "std":</span>
+<span class="sd">            ...}``. Required by ``blinklinmult-union``, ignored by the others.</span>
+<span class="sd">        tag_path (str | Path | None): A ``.tag`` annotation to plot alongside</span>
+<span class="sd">            the prediction. Only the corpus clips have one.</span>
+<span class="sd">        extraction (Extraction | None): How to turn the eye-state curve into</span>
+<span class="sd">            events. Defaults to the model's registered operating point.</span>
+<span class="sd">        start (float): Where in the video to begin, in seconds.</span>
+<span class="sd">        duration (float): How much of it to analyse, in seconds.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Stage | Result: One per completed stage, then the result.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        PipelineError: If the video cannot be read, or the two-stream model was</span>
+<span class="sd">            given no feature statistics.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalise_image</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExordiumExtractor</span><span class="p">,</span> <span class="n">FaceMeshLocator</span>
+
+    <span class="k">if</span> <span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">needs_features</span> <span class="ow">and</span> <span class="n">stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">model_id</span><span class="si">!r}</span><span class="s2"> needs corpus feature statistics; pass stats=..."</span>
+        <span class="p">)</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>  <span class="c1"># ty: ignore[unresolved-import]</span>
+
+    <span class="n">total_stages</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">image_size</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">image_size</span>
+    <span class="n">frames</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">_read_video</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">locator</span> <span class="o">=</span> <span class="n">FaceMeshLocator</span><span class="p">()</span>
+    <span class="n">extractor</span> <span class="o">=</span> <span class="n">ExordiumExtractor</span><span class="p">()</span>
+    <span class="c1"># Indices are the *source* video's, not the segment's: an overlay reading</span>
+    <span class="c1"># `Frame: 0` for a segment starting at 30 s would not match the footage, and</span>
+    <span class="c1"># the annotation is indexed the same way.</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">FrameResult</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">offset</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span>
+
+    <span class="c1"># -- 1. face detection, landmarks and eye boxes, in one pass per frame ----</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">detections</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="n">locator</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">detections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">found</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">face_box</span> <span class="o">=</span> <span class="n">found</span><span class="o">.</span><span class="n">face_box</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">landmarks</span> <span class="o">=</span> <span class="n">found</span><span class="o">.</span><span class="n">landmarks</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">eyes</span> <span class="o">=</span> <span class="n">found</span><span class="o">.</span><span class="n">eyes</span>
+    <span class="n">kept</span> <span class="o">=</span> <span class="n">_largest_track</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">face_box</span> <span class="k">if</span> <span class="n">d</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">detections</span><span class="p">])</span>
+    <span class="n">found_n</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">kept</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">Stage</span><span class="p">(</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="n">total_stages</span><span class="p">,</span>
+        <span class="s2">"Face detection and tracking"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">found_n</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> frames with a face"</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Nothing downstream means anything without a face, and running six more</span>
+    <span class="c1"># stages over an empty selection would report a confident "no blinks" for a</span>
+    <span class="c1"># video the pipeline never actually looked at.</span>
+    <span class="k">if</span> <span class="n">found_n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">NoFaceError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"No face detected in any of the </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> frames. "</span>
+            <span class="s2">"The pipeline needs a visible face to locate eyes; "</span>
+            <span class="s2">"try a clip where the subject faces the camera."</span>
+        <span class="p">)</span>
+
+    <span class="c1"># -- 2. head pose --------------------------------------------------------</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">pose_failed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">kept</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
+            <span class="k">continue</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">head_pose</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">pose</span> <span class="o">=</span> <span class="n">angles</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
+            <span class="n">pose_failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">yield</span> <span class="n">Stage</span><span class="p">(</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="n">total_stages</span><span class="p">,</span>
+        <span class="s2">"Head pose (6DRepNet)"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">found_n</span><span class="si">}</span><span class="s2"> frames, </span><span class="si">{</span><span class="n">pose_failed</span><span class="si">}</span><span class="s2"> failed"</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># -- 3. eye localisation (already computed in stage 1) -------------------</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">both</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">eyes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LEFT</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">eyes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">RIGHT</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">Stage</span><span class="p">(</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="n">total_stages</span><span class="p">,</span>
+        <span class="s2">"Landmarks and eye localisation"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">both</span><span class="si">}</span><span class="s2"> frames with both eyes"</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># -- 4. which eyes are usable -------------------------------------------</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">tally</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"both"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"left"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"right"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"neither"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="n">occluded_n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">pose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hidden</span> <span class="o">=</span> <span class="n">occluded_side</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pose</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">:</span>
+            <span class="n">usable</span> <span class="o">=</span> <span class="n">kept</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">eyes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">side</span> <span class="o">!=</span> <span class="n">hidden</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">used</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="o">=</span> <span class="n">usable</span>
+        <span class="k">if</span> <span class="n">hidden</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">occluded_n</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">live</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SIDES</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">used</span><span class="p">[</span><span class="n">s</span><span class="p">]]</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s2">"both"</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">live</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="p">(</span><span class="n">live</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">live</span> <span class="k">else</span> <span class="s2">"neither"</span><span class="p">)</span>
+        <span class="n">tally</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">yield</span> <span class="n">Stage</span><span class="p">(</span>
+        <span class="mi">4</span><span class="p">,</span>
+        <span class="n">total_stages</span><span class="p">,</span>
+        <span class="s2">"Eye selection"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"both </span><span class="si">{</span><span class="n">tally</span><span class="p">[</span><span class="s1">'both'</span><span class="p">]</span><span class="si">}</span><span class="s2">, left </span><span class="si">{</span><span class="n">tally</span><span class="p">[</span><span class="s1">'left'</span><span class="p">]</span><span class="si">}</span><span class="s2">, right </span><span class="si">{</span><span class="n">tally</span><span class="p">[</span><span class="s1">'right'</span><span class="p">]</span><span class="si">}</span><span class="s2">, "</span>
+        <span class="sa">f</span><span class="s2">"neither </span><span class="si">{</span><span class="n">tally</span><span class="p">[</span><span class="s1">'neither'</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">occluded_n</span><span class="si">}</span><span class="s2"> yaw-occluded)"</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># -- 5. inference, per eye ----------------------------------------------</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+
+    <span class="c1"># `frame_features` describes both eyes in one call and computes head pose</span>
+    <span class="c1"># once for the pair -- calling it per side would run 6DRepNet twice per</span>
+    <span class="c1"># frame for the same head.</span>
+    <span class="n">descriptors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">side</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">needs_features</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">used</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">described</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">frame_features</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">eyes</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">face_box</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">side</span><span class="p">,</span> <span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">valid</span><span class="p">)</span> <span class="ow">in</span> <span class="n">described</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">used</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="n">descriptors</span><span class="p">[</span><span class="n">side</span><span class="p">][</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">vector</span>
+
+    <span class="n">signal</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">:</span>
+        <span class="n">usable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">used</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">curve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">usable</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">patches</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">scored</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">usable</span><span class="p">):</span>
+                <span class="n">box</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">eyes</span><span class="p">[</span><span class="n">side</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># `usable` already excludes these; narrows the type</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">needs_features</span><span class="p">:</span>
+                    <span class="n">vector</span> <span class="o">=</span> <span class="n">descriptors</span><span class="p">[</span><span class="n">side</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">vector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># descriptor extraction failed here</span>
+                        <span class="k">continue</span>
+                    <span class="n">feats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+                <span class="c1"># `box.crop` then INTER_AREA to the model's own image size --</span>
+                <span class="c1"># exactly what `stream.py` does when building a corpus. Eye</span>
+                <span class="c1"># boxes scale with the face, so the raw crops differ in size</span>
+                <span class="c1"># frame to frame; matching the builder's resize is also what</span>
+                <span class="c1"># keeps the model's input distribution the one it was trained</span>
+                <span class="c1"># on.</span>
+                <span class="n">patch</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
+                    <span class="n">box</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="n">index</span><span class="p">]),</span>
+                    <span class="p">(</span><span class="n">image_size</span><span class="p">,</span> <span class="n">image_size</span><span class="p">),</span>
+                    <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normalise_image</span><span class="p">(</span><span class="n">patch</span><span class="p">))</span>
+                <span class="n">scored</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">patches</span><span class="p">:</span>
+                <span class="n">signal</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="o">=</span> <span class="n">curve</span>
+                <span class="k">continue</span>
+            <span class="n">usable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="n">usable</span><span class="p">[</span><span class="n">scored</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">patches</span><span class="p">)</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">needs_features</span> <span class="ow">and</span> <span class="n">stats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">stream</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">prepare_features</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">feats</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">"mean"</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">"std"</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="n">curve</span><span class="p">[</span><span class="n">usable</span><span class="p">]</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">score_long</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
+        <span class="n">signal</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="o">=</span> <span class="n">curve</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">curve</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">Stage</span><span class="p">(</span>
+        <span class="mi">5</span><span class="p">,</span>
+        <span class="n">total_stages</span><span class="p">,</span>
+        <span class="s2">"Inference"</span><span class="p">,</span>
+        <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="si">}</span><span class="s2"> frames,"</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">","</span><span class="p">),</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># -- 6. labelling and events --------------------------------------------</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.train.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_intervals</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">events</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Interval</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">rule</span> <span class="o">=</span> <span class="n">extraction</span> <span class="k">if</span> <span class="n">extraction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Extraction</span><span class="o">.</span><span class="n">fitted</span><span class="p">(</span><span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+    <span class="n">rule</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">:</span>
+        <span class="n">curve</span> <span class="o">=</span> <span class="n">signal</span><span class="p">[</span><span class="n">side</span><span class="p">]</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+        <span class="n">events</span><span class="p">[</span><span class="n">side</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_intervals</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">curve</span><span class="p">),</span> <span class="n">mask</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="n">rule</span><span class="o">.</span><span class="n">low</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">Stage</span><span class="p">(</span>
+        <span class="mi">6</span><span class="p">,</span>
+        <span class="n">total_stages</span><span class="p">,</span>
+        <span class="s2">"Labelling"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">rule</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="si">}</span><span class="s2"> -- "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="si">}</span><span class="s2"> blinks"</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">),</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">yield</span> <span class="n">Result</span><span class="p">(</span>
+        <span class="n">frames</span><span class="o">=</span><span class="n">results</span><span class="p">,</span>
+        <span class="n">signal</span><span class="o">=</span><span class="n">signal</span><span class="p">,</span>
+        <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span>
+        <span class="n">fps</span><span class="o">=</span><span class="n">fps</span><span class="p">,</span>
+        <span class="n">model_id</span><span class="o">=</span><span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">model_id</span><span class="p">,</span>
+        <span class="n">truncated</span><span class="o">=</span><span class="n">truncated</span><span class="p">,</span>
+        <span class="n">truth</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">tag_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ground_truth</span><span class="p">(</span><span class="n">tag_path</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">),</span>
+        <span class="n">extraction</span><span class="o">=</span><span class="n">rule</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

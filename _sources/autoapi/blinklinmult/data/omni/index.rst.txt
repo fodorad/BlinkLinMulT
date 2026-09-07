@@ -1,0 +1,155 @@
+blinklinmult.data.omni
+======================
+
+.. py:module:: blinklinmult.data.omni
+
+.. autoapi-nested-parse::
+
+   Bridge from a :class:`~blinklinmult.data.schema.DatasetSpec` to OmniLoader.
+
+   OmniLoader unifies several datasets that annotate different things into one
+   masked, batchable stream. To do that it needs, per dataset, a
+   :class:`omniloader.DatasetSchema` declaring which keys that dataset provides and
+   what shape they have. This module generates those declarations from the same
+   :class:`~blinklinmult.data.schema.DatasetSpec` objects the builder wrote the
+   files with, so the schema a corpus is *read* under can never drift from the one
+   it was *written* under.
+
+   **Shape mapping.** OmniLoader describes values structurally: ``feature_dim``
+   declares a flat trailing axis, ``shape`` declares a structured one. One eye's
+   crops are ``(T, 3, H, W)``, so they are declared with ``shape=(3, H, W)`` and
+   travel in native image form the whole way — stored, padded, masked, mixed and
+   batched without a reshape.
+
+   That needs **omniloader >= 1.1**, which added structured trailing shapes. Before
+   it, images had to be flattened into a wide ``feature_dim`` and reshaped back at
+   the model boundary; the schema then described a 12288-wide feature rather than
+   an image, and nothing validated that the width factorised correctly.
+
+   **Cross-dataset agreement.** OmniLoader requires that specs sharing a name agree
+   on shape and dtype across datasets. The corpora differ in frame rate and
+   therefore in native window length, so :func:`unified_specs` resolves one shared
+   ``time_dim`` for the whole run — the longest any participating corpus needs —
+   and every shorter corpus is padded to it with an all-``False`` mask. That is how
+   a 15 fps and a 30 fps corpus train together while still covering the same real
+   duration.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.omni.logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.data.omni.eye_image_shape
+   blinklinmult.data.omni.dataset_schema
+   blinklinmult.data.omni.unified_specs
+   blinklinmult.data.omni.build_schemas
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:function:: eye_image_shape(image_size: int) -> tuple[int, int, int]
+
+   Trailing shape of one frame's eye crop.
+
+   :param image_size: Side length of a square eye crop.
+   :type image_size: int
+
+   :returns: ``(C, H, W)``.
+   :rtype: tuple[int, int, int]
+
+
+.. py:function:: dataset_schema(spec: blinklinmult.data.schema.DatasetSpec, time_dim: int, image_size: int, feature_dim: int | None, embedding_dim: int | None = None) -> omniloader.DatasetSchema
+
+   Build the OmniLoader schema for one corpus.
+
+   :param spec: The corpus.
+   :type spec: DatasetSpec
+   :param time_dim: Shared window length for the run, in frames. Every
+                    dataset in a joint run declares the same ``T``; OmniLoader pads each
+                    corpus's native window to it and masks the difference.
+   :type time_dim: int
+   :param image_size: Shared eye-crop size for the run.
+   :type image_size: int
+   :param feature_dim: Shared handcrafted-descriptor width, or
+                       ``None`` when no corpus in the run supplies them.
+   :type feature_dim: int | None
+   :param embedding_dim: Width of a precomputed eye embedding, when
+                         the run reads one from a cache, else ``None``. Declaring it is what
+                         lets the field survive collation; see the comment at its
+                         :class:`~omniloader.TensorSpec`.
+   :type embedding_dim: int | None
+
+   :returns: Features and targets this corpus provides. Keys it lacks
+             are simply absent, which is how OmniLoader knows to mask them.
+   :rtype: DatasetSchema
+
+   :raises SchemaError: If the corpus declares a feature width that disagrees with
+       the run's shared width.
+
+
+.. py:function:: unified_specs(specs: list[blinklinmult.data.schema.DatasetSpec], time_dim: int | None = None, image_size: int | None = None, stills: bool = False) -> tuple[int, int, int | None]
+
+   Resolve the shared shape a joint run brings every corpus to.
+
+   :param specs: Corpora participating in the run, already
+                 carrying the run's window length (see
+                 :meth:`~blinklinmult.data.schema.DatasetSpec.with_window`).
+   :type specs: list[DatasetSpec]
+   :param time_dim: Window length in frames to use. ``None`` takes
+                    the maximum any corpus derives from its own rate, so no corpus's
+                    window is truncated by default.
+   :type time_dim: int | None
+   :param image_size: Eye-crop size. ``None`` requires every corpus
+                      to agree, since resizing a crop after extraction would resample an
+                      already-resampled image.
+   :type image_size: int | None
+   :param stills: Whether the run serves single frames. Suppresses the
+                  truncation warning: in still mode the frames are chosen before
+                  OmniLoader sees them (see :mod:`blinklinmult.data.stills`), so
+                  nothing is cropped and warning about it would be false.
+   :type stills: bool
+
+   :returns: ``(time_dim, image_size, feature_dim)``.
+   :rtype: tuple[int, int, int | None]
+
+   :raises SchemaError: If the list is empty, crop sizes disagree with no explicit
+       choice, or the corpora supply descriptors of differing widths.
+
+
+.. py:function:: build_schemas(specs: list[blinklinmult.data.schema.DatasetSpec], time_dim: int | None = None, image_size: int | None = None, stills: bool = False, embedding_dim: int | None = None) -> tuple[list[omniloader.DatasetSchema], int, int, int | None]
+
+   Resolve the run's shared shape and build every corpus's schema.
+
+   :param specs: Corpora participating in the run.
+   :type specs: list[DatasetSpec]
+   :param time_dim: Shared window length in frames, or ``None`` to
+                    infer from the corpora's rates.
+   :type time_dim: int | None
+   :param image_size: Shared crop size, or ``None`` to infer.
+   :type image_size: int | None
+   :param stills: Whether the run serves single frames.
+   :type stills: bool
+   :param embedding_dim: Width of a cached eye embedding, or ``None``
+                         when the run encodes live.
+   :type embedding_dim: int | None
+
+   :returns: ``(schemas, time_dim, image_size, feature_dim)``, with schemas in
+             the same order as ``specs``.
+   :rtype: tuple
+
+

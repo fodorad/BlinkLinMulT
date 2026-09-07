@@ -1,0 +1,230 @@
+blinklinmult.train.module
+=========================
+
+.. py:module:: blinklinmult.train.module
+
+.. autoapi-nested-parse::
+
+   The Lightning module wrapping :class:`~blinklinmult.train.model.BlinkModel`.
+
+   One training step serves all three model families and both tasks. What makes
+   that possible is that every target is handled identically — logits, target, and
+   *mask* — so a joint run and a single-task run differ only in how many entries
+   the target loop has, and a corpus that does not annotate a target simply
+   contributes an all-``False`` mask that the loss and the metrics both skip.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.module.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.train.module.BlinkLightningModule
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:class:: BlinkLightningModule(model_config: blinklinmult.train.config.ModelConfig | collections.abc.Mapping[str, Any], train_config: blinklinmult.train.config.TrainConfig | collections.abc.Mapping[str, Any], image_size: int, eye_feature_dim: int | None = None, steps_per_epoch: int = 1)
+
+   Bases: :py:obj:`lightning.LightningModule`
+
+
+   Trains the blink model on one or both tasks.
+
+   The model is built here from its config rather than injected, so
+   ``load_from_checkpoint(path)`` reconstructs a run without the caller having
+   to rebuild and pass the architecture.
+
+   :param model_config: Architecture settings.
+   :type model_config: ModelConfig
+   :param train_config: Task, loss, and optimizer settings.
+   :type train_config: TrainConfig
+   :param image_size: Side length of a square eye crop, from the datasets.
+   :type image_size: int
+   :param eye_feature_dim: Handcrafted feature width, from the
+                           datasets, or ``None`` when the run has none.
+   :type eye_feature_dim: int | None
+   :param steps_per_epoch: Optimizer steps per epoch, for step schedules.
+   :type steps_per_epoch: int
+
+
+   .. py:property:: feature_names
+      :type: list[str]
+
+
+      Feature keys this model reads from a batch, in input order.
+
+      :returns: One or two keys, depending on the model family.
+      :rtype: list[str]
+
+
+   .. py:method:: forward(batch: dict[str, Any]) -> dict[str, torch.Tensor]
+
+      Run the model over one batch.
+
+      :param batch: A collated OmniLoader batch.
+      :type batch: dict
+
+      :returns: Raw logits per target.
+      :rtype: dict[str, torch.Tensor]
+
+
+
+   .. py:method:: training_step(batch: dict[str, Any], batch_idx: int) -> torch.Tensor
+
+      Run one training step.
+
+      :param batch: A collated batch.
+      :type batch: dict
+      :param batch_idx: Batch index within the epoch.
+      :type batch_idx: int
+
+      :returns: The loss to backpropagate.
+      :rtype: torch.Tensor
+
+
+
+   .. py:method:: validation_step(batch: dict[str, Any], batch_idx: int) -> torch.Tensor
+
+      Run one validation step.
+
+      :param batch: A collated batch.
+      :type batch: dict
+      :param batch_idx: Batch index within the epoch.
+      :type batch_idx: int
+
+      :returns: The loss.
+      :rtype: torch.Tensor
+
+
+
+   .. py:method:: test_step(batch: dict[str, Any], batch_idx: int) -> torch.Tensor
+
+      Run one test step, keeping sample provenance for the artifact dump.
+
+      :param batch: A collated batch.
+      :type batch: dict
+      :param batch_idx: Batch index within the epoch.
+      :type batch_idx: int
+
+      :returns: The loss.
+      :rtype: torch.Tensor
+
+
+
+   .. py:method:: predict_step(batch: dict[str, Any], batch_idx: int) -> dict[str, Any]
+
+      Predict one batch, keeping sample ids alongside the probabilities.
+
+      :param batch: A collated batch.
+      :type batch: dict
+      :param batch_idx: Batch index.
+      :type batch_idx: int
+
+      :returns: ``key``, ``dataset``, and a probability per target.
+      :rtype: dict
+
+
+
+   .. py:method:: on_train_epoch_end() -> None
+
+      Log the training epoch's metrics.
+
+
+
+   .. py:method:: on_validation_epoch_start() -> None
+
+      Clear the per-sample ids before a validation epoch.
+
+      Cleared at the start rather than the end so a callback reading them
+      after the epoch still sees the epoch that just ran.
+
+
+
+   .. py:method:: on_validation_epoch_end() -> None
+
+      Log the validation epoch's metrics.
+
+
+
+   .. py:method:: release_validation_state() -> None
+
+      Free everything the validation epoch accumulated.
+
+      Validation state is deliberately kept alive past its own epoch so the
+      callbacks that fit the event operating point can read it (see
+      :meth:`on_validation_epoch_start`). In a fit run the next epoch clears
+      it; in an **eval-only** run nothing does, so the whole validation split
+      stays resident through the test pass -- measured at 4.75 GB of
+      accelerator memory already held at test batch 0.
+
+      Called between :meth:`~lightning.pytorch.Trainer.validate` and
+      :meth:`~lightning.pytorch.Trainer.test` once the threshold has been
+      fitted, so it frees the state without changing any reported number.
+
+
+
+   .. py:method:: on_test_epoch_start() -> None
+
+      Clear per-sample and metric state before a test epoch.
+
+      Resetting here rather than at epoch end keeps the accumulated
+      predictions readable by the artifact-writing callbacks, whatever order
+      they run in, while still keeping repeated ``trainer.test()`` calls from
+      accumulating on top of each other.
+
+
+
+   .. py:method:: on_test_epoch_end() -> None
+
+      Log the test epoch's metrics.
+
+      The accumulator is deliberately left populated: the prediction-writing
+      and plotting callbacks read it after this hook.
+
+
+
+   .. py:property:: lr
+      :type: float
+
+
+      The optimizer's peak learning rate.
+
+      A thin proxy onto ``train_config.optimizer.lr`` under the flat name
+      Lightning's LR finder requires: it looks for a top-level ``lr`` or
+      ``learning_rate`` attribute to read, and writes the swept value back
+      through it. See :mod:`~blinklinmult.train.lr_find`.
+
+      Nothing in the normal training path reads this --
+      :meth:`configure_optimizers` reads ``train_config.optimizer.lr``
+      directly, so the proxy cannot drift from what actually trains.
+
+      :returns: The peak learning rate for the transformer and head group.
+                ``backbone_lr`` is a separate, deliberately lower rate and is not
+                touched by the finder.
+      :rtype: float
+
+
+   .. py:method:: configure_optimizers() -> dict[str, Any]
+
+      Build the optimizer and LR schedule.
+
+      :returns: Lightning's optimizer configuration.
+      :rtype: dict
+
+
+

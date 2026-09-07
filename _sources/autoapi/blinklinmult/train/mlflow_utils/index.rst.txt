@@ -1,0 +1,195 @@
+blinklinmult.train.mlflow_utils
+===============================
+
+.. py:module:: blinklinmult.train.mlflow_utils
+
+.. autoapi-nested-parse::
+
+   MLflow wiring for blink training runs.
+
+   Logging is explicit rather than via ``mlflow.pytorch.autolog()``: autolog picks
+   its own cadence and parameter names, which would fight the flattened dataclass
+   params and make two runs hard to compare. Everything logged here is chosen.
+
+   What makes a run reproducible is not just its hyperparameters but the exact data
+   it saw, and this project's data is *several* files — one per corpus.
+   :func:`environment_params` therefore records each built dataset's hash, size,
+   and embedded builder SHA individually, so two runs over "the same six corpora"
+   can be told apart when one of them was rebuilt.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.mlflow_utils.logger
+   blinklinmult.train.mlflow_utils.MAX_PARAM_LENGTH
+   blinklinmult.train.mlflow_utils.RUN_ID_FILE
+   blinklinmult.train.mlflow_utils.SKIP_ARTIFACT_DIRS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.mlflow_utils.git_sha
+   blinklinmult.train.mlflow_utils.file_md5
+   blinklinmult.train.mlflow_utils.dataset_params
+   blinklinmult.train.mlflow_utils.environment_params
+   blinklinmult.train.mlflow_utils.truncate_params
+   blinklinmult.train.mlflow_utils.stored_run_id
+   blinklinmult.train.mlflow_utils.remember_run_id
+   blinklinmult.train.mlflow_utils.build_logger
+   blinklinmult.train.mlflow_utils.log_artifacts
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: MAX_PARAM_LENGTH
+   :value: 500
+
+
+   MLflow rejects parameter values longer than this.
+
+.. py:function:: git_sha(root: pathlib.Path = PROJECT_ROOT) -> str
+
+   Return the current commit SHA.
+
+   :param root: Repository root.
+   :type root: Path
+
+   :returns: The SHA, or ``"unknown"`` outside a git checkout.
+   :rtype: str
+
+
+.. py:function:: file_md5(path: pathlib.Path, chunk_size: int = 1 << 20) -> str
+
+   Hash a file's contents.
+
+   :param path: File to hash.
+   :type path: Path
+   :param chunk_size: Read size in bytes.
+   :type chunk_size: int
+
+   :returns: Hex digest, or ``"missing"`` if the file does not exist.
+   :rtype: str
+
+
+.. py:function:: dataset_params(specs: list[blinklinmult.data.schema.DatasetSpec], root: pathlib.Path = PROJECT_ROOT) -> dict[str, Any]
+
+   Record the identity of every dataset file the run reads.
+
+   Two runs with identical hyperparameters over differently-built corpora are
+   not comparable, and nothing else in the config would reveal that.
+
+   :param specs: Corpora the run uses.
+   :type specs: list[DatasetSpec]
+   :param root: Repository root.
+   :type root: Path
+
+   :returns: Per-corpus hash, size, and the builder SHA embedded in the file.
+   :rtype: dict
+
+
+.. py:function:: environment_params(config: blinklinmult.train.config.ExperimentConfig, specs: list[blinklinmult.data.schema.DatasetSpec], root: pathlib.Path = PROJECT_ROOT) -> dict[str, Any]
+
+   Collect the facts that make a run reproducible.
+
+   :param config: The run's configuration.
+   :type config: ExperimentConfig
+   :param specs: Corpora the run uses.
+   :type specs: list[DatasetSpec]
+   :param root: Repository root.
+   :type root: Path
+
+   :returns: Library versions, the commit, and every dataset's identity.
+   :rtype: dict
+
+
+.. py:function:: truncate_params(params: dict[str, Any]) -> dict[str, Any]
+
+   Clip over-long values so MLflow accepts every parameter.
+
+   :param params: Parameters to log.
+   :type params: dict
+
+   :returns: The same parameters, with long values truncated.
+   :rtype: dict
+
+
+.. py:data:: RUN_ID_FILE
+   :value: 'mlflow_run_id.txt'
+
+
+   Name of the file in a run's output directory holding its MLflow run id.
+
+   Written on first launch and read back on resume, so a continued run **appends to
+   the same MLflow run** instead of minting a second, disjoint one. Without it a
+   resumed run's metric curve starts over at the resumed epoch and the two halves
+   cannot be read as one training history.
+
+.. py:function:: stored_run_id(output_dir: pathlib.Path) -> str | None
+
+   The MLflow run id a previous launch recorded, if any.
+
+   :param output_dir: The run's output directory.
+   :type output_dir: Path
+
+   :returns: The id, or ``None`` when this is a first launch.
+   :rtype: str | None
+
+
+.. py:function:: remember_run_id(output_dir: pathlib.Path, mlflow_logger) -> None
+
+   Record a run's MLflow id so a later resume can continue it.
+
+   Reading ``mlflow_logger.run_id`` also materialises the run, which is why
+   this is called once at launch rather than lazily.
+
+   :param output_dir: The run's output directory.
+   :type output_dir: Path
+   :param mlflow_logger: The run's ``MLFlowLogger``.
+
+
+.. py:function:: build_logger(config: blinklinmult.train.config.ExperimentConfig, run_name: str | None = None, run_id: str | None = None)
+
+   Construct the MLflow logger for a run.
+
+   :param config: The run's configuration.
+   :type config: ExperimentConfig
+   :param run_name: Overrides the configured run name.
+   :type run_name: str | None
+   :param run_id: An existing run to append to, for a resumed run.
+                  ``None`` starts a new one.
+   :type run_id: str | None
+
+   :returns: The configured logger.
+   :rtype: MLFlowLogger
+
+
+.. py:data:: SKIP_ARTIFACT_DIRS
+   :type:  frozenset[str]
+
+   Directories excluded from the bulk artifact upload.
+
+   Checkpoints are hundreds of MB and the chosen one is logged deliberately at the
+   end of a run; copying every one of them into the tracking store would bloat it
+   for no benefit.
+
+.. py:function:: log_artifacts(mlflow_logger, output_dir: pathlib.Path) -> None
+
+   Upload a run's output directory as artifacts.
+
+   :param mlflow_logger: The run's ``MLFlowLogger``.
+   :param output_dir: Directory of run outputs.
+   :type output_dir: Path
+
+

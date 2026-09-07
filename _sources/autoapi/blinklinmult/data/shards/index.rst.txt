@@ -1,0 +1,154 @@
+blinklinmult.data.shards
+========================
+
+.. py:module:: blinklinmult.data.shards
+
+.. autoapi-nested-parse::
+
+   Per-clip shards, so a long corpus build can be resumed rather than restarted.
+
+   MPEblink decodes 1 842 untrimmed videos and takes the better part of a day. A
+   single-file build has no notion of progress: :class:`~blinklinmult.data.writer.H5Writer`
+   opens its temporary file with mode ``"w"``, so an interrupted run leaves a
+   partial file that is indistinguishable from a complete one except by sample
+   count, and the next run starts from zero.
+
+   Sharding fixes that by making the **clip** the unit of durability. Each clip
+   writes its own small HDF5 file; a clip whose shard already exists is skipped, and
+   the shards are merged into the corpus file once every clip has one. A shard is
+   only renamed into place after it closes cleanly, so a shard that exists is a clip
+   that finished -- there is no partial-shard ambiguity to reason about.
+
+   The cost is one extra pass over the data at merge time, which is I/O-bound and
+   minutes rather than hours.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.shards.logger
+   blinklinmult.data.shards.SHARD_DIRNAME
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.data.shards.shard_dir
+   blinklinmult.data.shards.shard_path
+   blinklinmult.data.shards.completed_clips
+   blinklinmult.data.shards.merge_shards
+   blinklinmult.data.shards.shard_attrs
+   blinklinmult.data.shards.pending
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: SHARD_DIRNAME
+   :value: 'shards'
+
+
+   Directory, beside the corpus file, holding one HDF5 per completed clip.
+
+.. py:function:: shard_dir(h5_path: pathlib.Path) -> pathlib.Path
+
+   Where a corpus's shards live.
+
+   :param h5_path: The corpus's final ``.h5``.
+   :type h5_path: Path
+
+   :returns: The shard directory, which may not exist yet.
+   :rtype: Path
+
+
+.. py:function:: shard_path(h5_path: pathlib.Path, clip_id: str) -> pathlib.Path
+
+   The shard for one clip.
+
+   :param h5_path: The corpus's final ``.h5``.
+   :type h5_path: Path
+   :param clip_id: Identifier unique within the corpus, e.g. ``test_1``.
+   :type clip_id: str
+
+   :returns: The shard's path.
+   :rtype: Path
+
+
+.. py:function:: completed_clips(h5_path: pathlib.Path) -> set[str]
+
+   Which clips already have a shard.
+
+   A shard is renamed into place only after it closes cleanly, so its presence
+   means that clip finished. A run therefore resumes by skipping these rather
+   than by trusting a progress counter that a crash could have left stale.
+
+   :param h5_path: The corpus's final ``.h5``.
+   :type h5_path: Path
+
+   :returns: Clip identifiers already built.
+   :rtype: set[str]
+
+
+.. py:function:: merge_shards(h5_path: pathlib.Path, attrs: dict, remove: bool = True) -> int
+
+   Combine every shard into the corpus file.
+
+   Samples are copied group by group, which preserves each dataset's
+   compression and dtype exactly -- re-encoding here would silently change what
+   a shard already got right.
+
+   :param h5_path: The corpus's final ``.h5``.
+   :type h5_path: Path
+   :param attrs: Root attributes for the merged file, as the shards'
+                 writer would have written them.
+   :type attrs: dict
+   :param remove: Delete the shard directory once merged. ``False`` keeps
+                  it, which is what a debugging run wants.
+   :type remove: bool
+
+   :returns: Samples written.
+   :rtype: int
+
+   :raises FileNotFoundError: If there are no shards to merge.
+
+
+.. py:function:: shard_attrs(h5_path: pathlib.Path) -> dict
+
+   Root attributes from any one shard, for the merged file.
+
+   Every shard is written by the same writer from the same declaration, so they
+   agree; reading the first avoids reconstructing them at the merge site and
+   lets them drift.
+
+   :param h5_path: The corpus's final ``.h5``.
+   :type h5_path: Path
+
+   :returns: The attributes.
+   :rtype: dict
+
+   :raises FileNotFoundError: If there are no shards.
+
+
+.. py:function:: pending(entries: collections.abc.Iterator, h5_path: pathlib.Path, clip_id) -> list
+
+   The entries whose clips have no shard yet.
+
+   :param entries: Everything the build would process.
+   :type entries: Iterator
+   :param h5_path: The corpus's final ``.h5``.
+   :type h5_path: Path
+   :param clip_id: Callable mapping an entry to its clip identifier.
+
+   :returns: The entries still to do, in the original order.
+   :rtype: list
+
+

@@ -1,0 +1,174 @@
+blinklinmult.compare.bootstrap
+==============================
+
+.. py:module:: blinklinmult.compare.bootstrap
+
+.. autoapi-nested-parse::
+
+   The paired cluster bootstrap, and the refusal to report one when it cannot.
+
+   The estimator is ordinary; the two decisions around it are what matter.
+
+   **Resampling is paired.** One draw of clusters is scored by every model, so the
+   difference between two models is computed within a draw rather than between two
+   independent draws. See :func:`~blinklinmult.compare.clusters.resample`.
+
+   **Below :data:`MIN_CLUSTERS_FOR_INTERVAL` clusters, no interval is returned at
+   all.** This is deliberate and is the module's sharpest opinion. A percentile
+   bootstrap over one cluster resamples that same cluster every time: the spread is
+   exactly zero and the "interval" has zero width, which reads as a *precise*
+   estimate when it is the opposite. TalkingFace (one recording, 524 windows, 61
+   events) is the case this exists for. The alternative -- silently falling back to
+   window-level resampling to manufacture a number -- is the error this whole
+   package was written to avoid.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.compare.bootstrap.MIN_CLUSTERS_FOR_INTERVAL
+   blinklinmult.compare.bootstrap.DEFAULT_ROUNDS
+   blinklinmult.compare.bootstrap.DEFAULT_SEED
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.compare.bootstrap.Interval
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.compare.bootstrap.bootstrap_statistic
+   blinklinmult.compare.bootstrap.two_sided_p
+
+
+Module Contents
+---------------
+
+.. py:data:: MIN_CLUSTERS_FOR_INTERVAL
+   :value: 10
+
+
+   Fewest clusters that can carry a confidence interval.
+
+   Below this the resampling distribution is too coarse for its tails to mean
+   anything: with ``n`` clusters a resample can only take ``n`` distinct values per
+   slot, and the 2.5th percentile is estimated from a handful of distinct
+   compositions. Ten is a judgement, not a theorem -- it admits RN15 (20) and RN30
+   (35) while excluding TalkingFace (1) and MRL (6 subjects).
+
+.. py:data:: DEFAULT_ROUNDS
+   :value: 10000
+
+
+   Bootstrap replicates.
+
+   Large enough that the 2.5%/97.5% endpoints rest on ~250 replicates each, so the
+   Monte Carlo noise on an endpoint is small next to the sampling noise the
+   interval is reporting. Cheap here because a replicate is array arithmetic over
+   precomputed per-recording scores, never a re-run of a model.
+
+.. py:data:: DEFAULT_SEED
+   :value: 20260905
+
+
+   Seed for the resampling draw, recorded alongside every result.
+
+.. py:class:: Interval
+
+   A point estimate, with an interval when the data can carry one.
+
+   :param point: The statistic on the observed sample.
+   :type point: float
+   :param low: Lower bound, or ``None`` when refused.
+   :type low: float | None
+   :param high: Upper bound, or ``None`` when refused.
+   :type high: float | None
+   :param n_clusters: Independent units behind the estimate. The honest
+                      sample size, which is why it travels with the number.
+   :type n_clusters: int
+   :param rounds: Replicates drawn.
+   :type rounds: int
+   :param seed: Seed used.
+   :type seed: int
+   :param reason: Why no interval was produced; empty when there is one.
+   :type reason: str
+
+
+   .. py:property:: reportable
+      :type: bool
+
+
+      Whether an interval was produced.
+
+      :returns: ``True`` when both bounds are present.
+      :rtype: bool
+
+
+   .. py:property:: excludes_zero
+      :type: bool
+
+
+      Whether the interval lies wholly above or below zero.
+
+      :returns: ``False`` when there is no interval, so an unreportable
+                result is never mistaken for a significant one.
+      :rtype: bool
+
+
+   .. py:method:: describe() -> str
+
+      One line for a table cell.
+
+      :returns: e.g. ``"0.5464 [-0.0670, +0.0270]"``, or the refusal.
+      :rtype: str
+
+
+
+.. py:function:: bootstrap_statistic(statistic: collections.abc.Callable[[collections.abc.Sequence[int]], float], n_clusters: int, rounds: int = DEFAULT_ROUNDS, seed: int = DEFAULT_SEED) -> tuple[Interval, numpy.ndarray]
+
+   Resample clusters and summarise a statistic over the draws.
+
+   :param statistic: Maps cluster indices to a
+                     scalar. Called once per replicate, so it should be arithmetic over
+                     precomputed per-cluster values rather than anything that re-scores.
+   :type statistic: Callable[[Sequence[int]], float]
+   :param n_clusters: Clusters available.
+   :type n_clusters: int
+   :param rounds: Replicates.
+   :type rounds: int
+   :param seed: Seed.
+   :type seed: int
+
+   :returns: The summary, and the raw draws for a
+             downstream p-value.
+   :rtype: tuple[Interval, np.ndarray]
+
+
+.. py:function:: two_sided_p(draws: numpy.ndarray) -> float
+
+   Bootstrap p-value for the null that the difference is zero.
+
+   Uses the ``(1 + count) / (B + 1)`` form rather than a bare proportion. The
+   correction matters: without it a difference that never changes sign reports
+   ``p = 0``, claiming certainty no finite resampling can support. With it the
+   floor is ``2 / (B + 1)``, which is exactly what ``B`` replicates can
+   evidence -- and that identity is what
+   ``tests/compare/test_bootstrap.py`` pins.
+
+   :param draws: Bootstrap distribution of the difference.
+   :type draws: np.ndarray
+
+   :returns: Two-sided p-value in ``(0, 1]``.
+   :rtype: float
+
+

@@ -1,0 +1,142 @@
+blinklinmult.models
+===================
+
+.. py:module:: blinklinmult.models
+
+.. autoapi-nested-parse::
+
+   Loading trained v2 models for inference, without the training stack.
+
+   ``BlinkCNN``'s weights live in a Lightning checkpoint, but nothing about
+   *running* one needs Lightning. Importing
+   :mod:`blinklinmult.train.module` pulls in ``lightning``, ``torchmetrics``,
+   ``h5py``, ``omniloader`` and ``pandas`` -- five packages an inference caller has
+   no use for -- so this module rebuilds the bare :class:`~torch.nn.Module` from the
+   checkpoint's own stored hyperparameters instead.
+
+   That is possible because the checkpoint is self-describing: ``save_hyperparameters``
+   stores ``model_config`` and ``train_config`` as plain dicts (deliberately, so
+   ``weights_only=True`` loading works), and ``build_model`` can rebuild the network
+   from them. The weights then load with **zero missing and zero unexpected keys**.
+
+   Published weights are stripped of optimizer and loop state before upload -- 57 MB
+   of Lightning checkpoint is only 19.1 MB of parameters -- so
+   :func:`load_checkpoint` accepts both shapes: a full training checkpoint from
+   ``results/``, and the slim published file.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.models.logger
+   blinklinmult.models.RETIRED_1X_MODELS
+   blinklinmult.models.MODEL_PREFIX
+   blinklinmult.models.DEFAULT_TARGETS
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.models.ModelLoadError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.models.strip_checkpoint
+   blinklinmult.models.load_checkpoint
+   blinklinmult.models.__getattr__
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: RETIRED_1X_MODELS
+   :value: ('DenseNet121', 'BlinkLinT', 'BlinkLinMulT', 'LinT', 'AbstractModule')
+
+
+   Names ``blinklinmult.models`` exported in 1.x, when it was a *package*.
+
+   It is a module now, and a different one: this file loads trained v2 checkpoints.
+   An old script importing one of these gets a bare "cannot import name" otherwise,
+   which says nothing about where the models went -- so :func:`__getattr__` answers
+   that instead. See ``docs/migration.md``.
+
+.. py:data:: MODEL_PREFIX
+   :value: 'model.'
+
+
+   Prefix Lightning adds to the wrapped network's parameter names.
+
+.. py:data:: DEFAULT_TARGETS
+   :value: ['eye_state']
+
+
+   Head names assumed when a checkpoint does not record its own.
+
+.. py:exception:: ModelLoadError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when a checkpoint cannot be rebuilt into a usable model.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: strip_checkpoint(checkpoint: dict[str, Any]) -> dict[str, Any]
+
+   Reduce a training checkpoint to what inference needs.
+
+   Drops optimizer state, LR schedules, loop counters and callback state, all of
+   which exist to *resume* training and are dead weight in a published artifact.
+   On ``fw-focal-augment`` this takes 57 MB down to 19.1 MB.
+
+   :param checkpoint: A loaded Lightning checkpoint.
+   :type checkpoint: dict[str, Any]
+
+   :returns: ``{"state_dict", "hyper_parameters"}`` only.
+   :rtype: dict[str, Any]
+
+   :raises ModelLoadError: If either required key is absent.
+
+
+.. py:function:: load_checkpoint(path: str | pathlib.Path) -> blinklinmult.train.model.BlinkModel
+
+   Rebuild a trained v2 model from its checkpoint, ready for inference.
+
+   :param path: A full training checkpoint or a stripped published one.
+   :type path: str | Path
+
+   :returns: The network in ``eval`` mode with its weights loaded.
+   :rtype: BlinkModel
+
+   :raises ModelLoadError: If the file is not a usable checkpoint, or its weights do
+       not fit the architecture its own hyperparameters describe.
+
+
+.. py:function:: __getattr__(name: str) -> object
+
+   Explain the 1.x models' move rather than failing opaquely.
+
+   :param name: The attribute being looked up.
+   :type name: str
+
+   :returns: Never returns; the lookup always fails.
+   :rtype: object
+
+   :raises AttributeError: Naming the replacement when a retired 1.x symbol is
+       asked for, and the plain message otherwise.
+
+

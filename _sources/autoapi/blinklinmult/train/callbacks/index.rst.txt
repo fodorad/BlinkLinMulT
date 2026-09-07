@@ -1,0 +1,729 @@
+blinklinmult.train.callbacks
+============================
+
+.. py:module:: blinklinmult.train.callbacks
+
+.. autoapi-nested-parse::
+
+   Callbacks for blink training runs.
+
+   MLflow is the metric store, so what remains here is only what MLflow does not do
+   on its own: epoch timing, per-sample prediction dumps, per-corpus score
+   breakdowns, and the diagnostic plots that make a run readable at a glance.
+
+   The per-corpus breakdown matters more here than in a single-dataset project. A
+   joint run mixes six corpora of wildly different size and difficulty, and one
+   aggregate F1 can hide a model that has learned MRL-Eye's stills and fails on
+   EyeBlink8's video entirely. :class:`PerDatasetReport` is what makes that
+   visible.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.callbacks.logger
+   blinklinmult.train.callbacks.SIGNALS_FILENAME
+   blinklinmult.train.callbacks.SIGNALS_TARGET_KEY
+   blinklinmult.train.callbacks.TEST_STATE_FILENAME
+   blinklinmult.train.callbacks.THRESHOLD_FILENAME
+   blinklinmult.train.callbacks.DEFAULT_LOW_RATIOS
+   blinklinmult.train.callbacks.TUNING_CRITERION
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.train.callbacks.TimeTrackingCallback
+   blinklinmult.train.callbacks.EpochPropagator
+   blinklinmult.train.callbacks.PredictionWriter
+   blinklinmult.train.callbacks.PerDatasetReport
+   blinklinmult.train.callbacks.PlotCallback
+   blinklinmult.train.callbacks.AcceleratorCacheLimiter
+   blinklinmult.train.callbacks.TestCheckpointer
+   blinklinmult.train.callbacks.TestStateReleaser
+   blinklinmult.train.callbacks.EventReport
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.callbacks.load_signals
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: SIGNALS_FILENAME
+   :value: 'test_signals.npz'
+
+
+   Per-recording reassembled timelines, saved beside the event report.
+
+   The report keeps only aggregates, so without this the per-frame signal every
+   event score was derived from is discarded and can only be recovered by
+   re-running inference over the whole split.
+
+.. py:data:: SIGNALS_TARGET_KEY
+   :value: '_target'
+
+
+   Archive key naming the target the ``truth`` arrays hold.
+
+   Without it the archive is ambiguous, and the ambiguity is dangerous rather than
+   merely untidy: on the frame-wise benchmark the event report scores
+   ``blink_presence``, so ``truth`` is a blink *interval* -- 3-4x wider than
+   closure, and present for corpora that annotate no closure at all. Read as
+   ``eye_state`` it manufactures phantom false positives without erroring.
+
+.. py:data:: TEST_STATE_FILENAME
+   :value: 'test_state.pt'
+
+
+   Partial test-pass state, so a killed benchmark run can resume.
+
+   See :class:`TestCheckpointer` for why resuming is exact rather than approximate.
+
+.. py:data:: THRESHOLD_FILENAME
+   :value: 'event_threshold.json'
+
+
+   Cache file for the operating point fitted on validation.
+
+   Fitting it costs a full validation pass but produces a single number, so it is
+   persisted: an interrupted or retried test pass can reuse it instead of spending
+   the pass again. See :meth:`EventReport.load_cached_threshold`.
+
+.. py:data:: DEFAULT_LOW_RATIOS
+   :type:  tuple[float | None, ...]
+
+   Hysteresis ratios searched when fitting the operating point.
+
+   The low threshold is ``high * ratio``, so the pair stays ordered across the
+   whole sweep; a constant low value would exceed the high one at the bottom and
+   silently disable hysteresis.
+
+   ``None`` is first so the single-threshold behaviour is always in the search and
+   wins ties -- hysteresis has to *earn* its place on validation rather than being
+   assumed.
+
+   **The range is set by measurement, not by the literature.** The clinical pair
+   (onset 0.25 against complete 0.75, a ratio of 1/3) is in the grid but is not
+   where this model lands. Swept over ``fw-focal``'s 35 RN test recordings at
+   ``iou50``:
+
+   ===========  ======  ==========  ======
+   ratio        high    F1          prec
+   ===========  ======  ==========  ======
+   single       0.30    0.1972      0.152
+   1/3          0.54    0.3397      0.401
+   0.2          0.55    0.4095      0.500
+   **0.15**     0.58    **0.4226**  0.547
+   0.125        0.65    0.4091      0.572
+   0.1          0.65    0.3703      0.519
+   0.075        0.77    0.3344      0.548
+   ===========  ======  ==========  ======
+
+   A clean interior optimum at 0.15 -- F1 falls away on both sides -- so the grid
+   brackets it rather than ending on it. An earlier grid stopping at 0.2 selected
+   its own edge, which is a boundary hit rather than a fitted optimum.
+
+   The gap from the single threshold is the point: **F1 0.197 to 0.423** and
+   **precision 0.152 to 0.547**. One cut has to be low enough for a shallow
+   closure onset and high enough to ignore noise, and no value does both.
+
+.. py:data:: TUNING_CRITERION
+   :value: 'iou50'
+
+
+   Matching criterion the operating point is fitted against.
+
+   ``iou50`` rather than ``any``: it is the criterion MPEblink's Blink-AP uses, so
+   the threshold is tuned for the same notion of "detected" the headline number
+   reports. Tuning on ``any`` would favour a threshold that fires early and often,
+   since a single overlapping frame counts as a hit there.
+
+.. py:class:: TimeTrackingCallback(output_dir: pathlib.Path)
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Records wall-clock time per epoch and for the whole run.
+
+   :param output_dir: Directory to write ``time.json`` into.
+   :type output_dir: Path
+
+
+   .. py:method:: on_fit_start(trainer: lightning.Trainer, pl_module: lightning.LightningModule) -> None
+
+      Start the run timer.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module.
+      :type pl_module: L.LightningModule
+
+
+
+   .. py:method:: on_train_epoch_start(trainer: lightning.Trainer, pl_module: lightning.LightningModule) -> None
+
+      Start the epoch timer.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module.
+      :type pl_module: L.LightningModule
+
+
+
+   .. py:method:: on_train_epoch_end(trainer: lightning.Trainer, pl_module: lightning.LightningModule) -> None
+
+      Record the epoch's duration.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module.
+      :type pl_module: L.LightningModule
+
+
+
+   .. py:method:: on_fit_end(trainer: lightning.Trainer, pl_module: lightning.LightningModule) -> None
+
+      Write the timing summary.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module.
+      :type pl_module: L.LightningModule
+
+
+
+.. py:class:: EpochPropagator
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Advances the datamodule's epoch so mixing and augmentation move on.
+
+   OmniLoader's mixing sampler and its seedable augmentations are both
+   epoch-aware: without this the same mixed draw and the same augmentation
+   parameters repeat every epoch, which silently reduces an N-epoch run to one
+   epoch of data seen N times.
+
+
+   .. py:method:: on_train_epoch_start(trainer: lightning.Trainer, pl_module: lightning.LightningModule) -> None
+
+      Propagate the upcoming epoch to the datamodule.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module.
+      :type pl_module: L.LightningModule
+
+
+
+.. py:class:: PredictionWriter(output_dir: pathlib.Path)
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Writes per-position test predictions next to their targets.
+
+   This artifact is what lets threshold tuning, per-corpus analysis, and
+   significance testing run later without re-running the model.
+
+   :param output_dir: Directory to write the CSVs into.
+   :type output_dir: Path
+
+
+   .. py:method:: on_test_epoch_end(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule) -> None
+
+      Dump each target's probabilities, targets, and masks to CSV.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+
+
+
+.. py:class:: PerDatasetReport(output_dir: pathlib.Path)
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Scores the test split separately for each contributing corpus.
+
+   :param output_dir: Directory to write ``test_per_dataset.json`` into.
+   :type output_dir: Path
+
+
+   .. py:method:: on_test_epoch_end(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule) -> None
+
+      Write per-corpus metrics for every supervised target.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+
+
+
+.. py:class:: PlotCallback(output_dir: pathlib.Path)
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Plots a precision-recall curve per target at the end of testing.
+
+   :param output_dir: Directory to write plots into.
+   :type output_dir: Path
+
+
+   .. py:method:: on_test_epoch_end(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule) -> None
+
+      Write one precision-recall curve per supervised target.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+
+
+
+.. py:class:: AcceleratorCacheLimiter(every_n_batches: int = 100)
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Drops cached accelerator blocks periodically during evaluation.
+
+   PyTorch's MPS allocator keeps freed blocks in a per-shape pool instead of
+   returning them to the system, and over a long evaluation pass that pool
+   grows without bound even though **nothing is retained**. Measured on a bare
+   conv over 300 identical batches: ``current_allocated_memory`` stayed at
+   0.0 MB throughout while ``driver_allocated_memory`` reached 1118 MB, and a
+   single :func:`torch.mps.empty_cache` returned it to 11 MB.
+
+   On the frame-wise benchmark -- 34 906 test batches over seven corpora --
+   that pool reached the 42.4 GiB watermark and a routine 45 MiB convolution
+   failed to allocate, roughly 43% of the way through the split.
+
+   Dropping the cache costs a re-allocation on the next batch, so it runs
+   every ``every_n_batches`` rather than every batch: often enough to bound
+   the pool, rarely enough that the cost stays negligible.
+
+   **Every 100, not 500.** At 500 the pool still reached the 42.43 GiB ceiling
+   partway through the frame-wise test pass, four times in a row -- both BCE
+   arms during their runs and again on a fresh re-evaluation, each dying near
+   batch 15 400-15 900 of 34 819. Raising the dataloader to eight workers had
+   made batches arrive about four times faster, so the pool refilled between
+   drops faster than the drops cleared it. The focal arms survived the
+   identical split, so the margin is thin rather than absent.
+
+   **Training is covered too, since 2026-08-30.** The callback previously ran
+   only on validation and test batches, on the assumption that a training step
+   frees its own activations. It does not free them from the *allocator pool*:
+   on a sequence model, one batch pushes 32 windows x 45 frames = 1 440 crops
+   through the CNN, and the pool grew to **20 GB of wired memory** -- wired,
+   so the OS cannot page it out -- climbing about 8 GB per 20 seconds until
+   the machine had 0.06 GB free. Killing the run returned 20.2 GB at once.
+
+   Wired growth is the signature to watch for: ordinary leaks show up as
+   resident memory, but the MPS pool is pinned for the GPU, so ``ps`` reports
+   a process holding only 0.2 GB while the system runs out of RAM.
+
+   :param every_n_batches: How often to drop the cache.
+   :type every_n_batches: int
+
+
+   .. py:method:: on_train_batch_end(trainer: lightning.Trainer, pl_module: lightning.LightningModule, outputs: Any, batch: Any, batch_idx: int) -> None
+
+      Drop the cache periodically during training.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module.
+      :type pl_module: L.LightningModule
+      :param outputs: The step's return value.
+      :type outputs: Any
+      :param batch: The batch just finished.
+      :type batch: Any
+      :param batch_idx: Its index.
+      :type batch_idx: int
+
+
+
+   .. py:method:: on_test_batch_end(trainer: lightning.Trainer, pl_module: lightning.LightningModule, outputs: Any, batch: Any, batch_idx: int, dataloader_idx: int = 0) -> None
+
+      Bound the allocator pool during the test pass.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: L.LightningModule
+      :param outputs: The step's return value.
+      :type outputs: Any
+      :param batch: The batch just processed.
+      :type batch: Any
+      :param batch_idx: Its index.
+      :type batch_idx: int
+      :param dataloader_idx: Which dataloader it came from.
+      :type dataloader_idx: int
+
+
+
+   .. py:method:: on_validation_batch_end(trainer: lightning.Trainer, pl_module: lightning.LightningModule, outputs: Any, batch: Any, batch_idx: int, dataloader_idx: int = 0) -> None
+
+      Bound the allocator pool during validation.
+
+      The eval-only flow validates over the full unstrided split before
+      testing, which is long enough to grow the pool on its own.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module.
+      :type pl_module: L.LightningModule
+      :param outputs: The step's return value.
+      :type outputs: Any
+      :param batch: The batch just processed.
+      :type batch: Any
+      :param batch_idx: Its index.
+      :type batch_idx: int
+      :param dataloader_idx: Which dataloader it came from.
+      :type dataloader_idx: int
+
+
+
+.. py:class:: TestCheckpointer(output_dir: pathlib.Path, every_n_batches: int = 2000, enabled: bool = False)
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Makes a long test pass resumable after a crash or a kill.
+
+   The frame-wise benchmark scores 2.4M frames across seven corpora and takes
+   hours; losing it at 40% to an out-of-memory kill means starting over. This
+   periodically writes the accumulated predictions to disk, and on a later run
+   reloads them and **skips the batches already scored**.
+
+   **Why this is safe.** The test dataloader is built with ``shuffle=False``,
+   no sampler, and ``drop_last=False``
+   (:meth:`~blinklinmult.data.datamodule.BlinkDataModule.test_dataloader`), so
+   batch *n* holds the same samples on every run over the same split. Every
+   reported metric is an order-independent reduction over per-sample
+   predictions -- counts for the rates, a sort for average precision, a
+   per-recording regroup for the event scores -- so predictions restored from
+   disk are indistinguishable from predictions just computed. The resumed run
+   is not an approximation of the full pass; it is the full pass.
+
+   **What invalidates a checkpoint.** The state is keyed by the split's shape
+   and the targets scored. A checkpoint whose key disagrees with the current
+   run is ignored rather than merged, because silently mixing predictions from
+   two different models or corpora would corrupt the benchmark in a way no
+   later check would catch.
+
+   :param output_dir: Directory to keep the partial state in.
+   :type output_dir: Path
+   :param every_n_batches: How often to persist. Each save rewrites the
+                           accumulated state, so this trades I/O against how much work a kill
+                           can destroy.
+   :type every_n_batches: int
+   :param enabled: Whether to checkpoint at all.
+   :type enabled: bool
+
+
+   .. py:property:: state_path
+      :type: pathlib.Path
+
+
+      Where the partial test state lives.
+
+
+   .. py:method:: on_test_start(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule) -> None
+
+      Restore a previous partial pass, if one matches this run.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+
+
+
+   .. py:method:: on_test_batch_end(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule, outputs: Any, batch: Any, batch_idx: int, dataloader_idx: int = 0) -> None
+
+      Persist the accumulated state on the configured cadence.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+      :param outputs: The step's return value.
+      :type outputs: Any
+      :param batch: The batch just processed.
+      :type batch: Any
+      :param batch_idx: Its index.
+      :type batch_idx: int
+      :param dataloader_idx: Which dataloader it came from.
+      :type dataloader_idx: int
+
+
+
+   .. py:method:: save(pl_module: blinklinmult.train.module.BlinkLightningModule, batches: int) -> None
+
+      Write the accumulated predictions to disk.
+
+      Written to a temporary file and renamed, so a kill during the write
+      cannot leave a half-flushed checkpoint that a later run would trust.
+
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+      :param batches: How many batches have been scored.
+      :type batches: int
+
+
+
+   .. py:method:: clear() -> None
+
+      Delete the partial state once the pass has completed.
+
+
+
+.. py:class:: TestStateReleaser
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Frees the test accumulator once every reporting callback has read it.
+
+   :meth:`BlinkLightningModule.on_test_epoch_end` deliberately leaves the
+   accumulated predictions in place, because the prediction writer, the
+   per-corpus report, the event report, and the plotter all read them
+   afterwards. Nothing then releases them, so a full benchmark pass holds every
+   test prediction -- and the accelerator blocks backing them -- until the
+   process exits.
+
+   Released in ``on_test_end``, **not** ``on_test_epoch_end``. Lightning runs
+   every callback's ``on_test_epoch_end`` *before* the LightningModule's own
+   (``evaluation_loop.py``: ``_call_callback_hooks`` then
+   ``_call_lightning_module_hook``), so releasing there would empty the
+   accumulator before :meth:`BlinkLightningModule.on_test_epoch_end` computed
+   the epoch's metrics -- which reported ``test/mean_f1 = 0.0`` against a real
+   per-corpus F1 of 0.968. ``on_test_end`` runs after the whole stage, once
+   every reporter and the module itself have read the state.
+
+
+   .. py:method:: on_test_end(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule) -> None
+
+      Release the test predictions and drop cached accelerator blocks.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+
+
+
+.. py:class:: EventReport(output_dir: pathlib.Path, fps: float = 30.0, threshold: float = 0.5, tune_threshold: bool = True, target: str = BLINK_PRESENCE, tuning_criterion: str = TUNING_CRITERION, shared_threshold_dir: pathlib.Path | None = None, low_ratios: collections.abc.Sequence[float | None] | None = None, carrier_only: bool = False)
+
+   Bases: :py:obj:`lightning.Callback`
+
+
+   Scores blink detection as events, the way the literature does.
+
+   Frame-wise and window-wise metrics answer "was this frame/window right?".
+   This answers "was this *blink* found?", which is the question the field
+   reports and the only one comparable with published numbers.
+
+   Per-frame predictions are reassembled into one signal per recording,
+   averaged wherever the sweep's windows overlap, thresholded into intervals,
+   and matched against the annotated blinks under all four literature criteria
+   — see :mod:`blinklinmult.train.events`.
+
+   **Grouped per recording**, because false alarms are reported per minute and
+   a duration only means something for one continuous timeline. The corpus row
+   aggregates by summing counts and re-deriving the rates, never by averaging
+   rates: that would weigh a three-second clip the same as a five-minute one.
+
+   **The operating point is fitted on validation, not fixed.** A threshold is
+   a choice, and 0.5 is only the right one if the model happens to be
+   calibrated there. Measured across the RN30 diagnostic arms, it is often
+   not: focal-loss runs peaked at 0.35 and 0.30 and lost 11.5 and 16.5 points
+   of event F1 to the default, while a BCE run happened to peak at 0.50 and
+   lost nothing. Reporting all of them at 0.5 would have compared calibration
+   rather than detection.
+
+   Fitting on validation and applying to test keeps the test split honest --
+   picking the threshold that maximises the *test* score would report a number
+   no deployment could reproduce.
+
+   :param output_dir: Directory to write ``test_events.json`` into.
+   :type output_dir: Path
+   :param fps: Frame rate, for converting frame counts to minutes.
+   :type fps: float
+   :param threshold: Fallback operating point, used when validation
+                     produced nothing to fit on.
+   :type threshold: float
+   :param tune_threshold: Fit the operating point on validation. Set
+                          ``False`` to report at the fixed ``threshold`` instead.
+   :type tune_threshold: bool
+   :param shared_threshold_dir: Read and write the threshold cache
+                                here instead of in the run's own directory, so a per-corpus
+                                evaluation can share **one** universal operating point. ``None``
+                                keeps the cache private to the run.
+   :type shared_threshold_dir: Path | None
+   :param carrier_only: Drop every corpus but the largest, on the
+                        assumption that the smaller ones are only carriers supplying the
+                        prediction head.
+
+                        **Correct for a single-corpus evaluation, wrong for a joint one.**
+                        An eval-only corpus needs a `datasets` entry to build the head, and
+                        those carrier samples would otherwise be counted as recordings --
+                        measured, CEW's 366 stills contributed 192 false positives and no
+                        true positives to every eval-only run. But a *joint* test split has
+                        no carrier: taking the majority there discarded RN, HUST-LEBW and
+                        TalkingFace because MPEblink held 51 083 of 64 027 samples, and the
+                        report then scored a corpus that annotates no closure at all.
+
+                        Off by default, so a joint split is never silently reduced; the
+                        per-corpus eval scripts turn it on.
+   :type carrier_only: bool
+   :param low_ratios: Hysteresis ratios to search
+                      alongside the threshold. The low threshold is ``high * ratio``, so
+                      the pair stays ordered across the whole sweep -- a constant low
+                      value would exceed the high one at the bottom and silently disable
+                      hysteresis. ``None`` searches :data:`DEFAULT_LOW_RATIOS`; pass
+                      ``[None]`` to keep the single-threshold behaviour.
+
+                      A single cut has to be low enough to catch a shallow closure onset
+                      and high enough not to fire on noise, and no value does both.
+                      Measured on ``fw-focal``: a single 0.37 cut gives precision 0.275
+                      with 15 602 false alarms, while 0.75/0.25 gives **0.660** with
+                      **2 133** -- 2.4x the precision for 86% fewer false alarms. The
+                      gain comes from rejecting flickers: 37.4% of false-positive runs
+                      are a single frame, peaking at a median 0.513, against a median
+                      0.919 for real blinks.
+   :type low_ratios: Sequence[float] | None
+
+
+   .. py:method:: on_validation_epoch_end(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule) -> None
+
+      Fit the event threshold on this validation epoch.
+
+      Runs every epoch and keeps the latest, so the threshold matches the
+      weights that testing will actually load -- an early-stopped run tests
+      its best checkpoint, and a threshold fitted on some earlier epoch would
+      describe a different model.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module being validated.
+      :type pl_module: BlinkLightningModule
+
+
+
+   .. py:property:: threshold_path
+      :type: pathlib.Path
+
+
+      Where the fitted operating point is cached.
+
+      ``shared_threshold_dir`` overrides the run's own directory, which is
+      what makes one **universal** operating point possible across a
+      per-corpus evaluation: the corpora that can fit a threshold write it
+      there, and every corpus reads it back instead of fitting its own.
+      Without that, each process fits privately and the corpora end up scored
+      on different scales -- measured at 0.01, 0.06, and two silent 0.50
+      fallbacks across one split run.
+
+
+   .. py:method:: load_cached_threshold() -> float | None
+
+      Restore a previously fitted operating point, if one matches.
+
+      The cache is keyed by target and criterion: a threshold fitted for a
+      different criterion describes a different notion of "detected" and must
+      not be reused silently. A mismatch, a missing file, or malformed content
+      all return ``None``, which leaves the normal fitting path to run.
+
+      :returns: The cached threshold, or ``None`` to refit.
+      :rtype: float | None
+
+
+
+   .. py:property:: operating_point
+      :type: float
+
+
+      The threshold test scoring will use.
+
+      :returns: The validation-fitted threshold when one was found,
+                otherwise the fixed fallback.
+      :rtype: float
+
+
+   .. py:property:: low_operating_point
+      :type: float | None
+
+
+      The hysteresis low threshold test scoring will use.
+
+      Derived from the fitted ratio rather than stored directly, so it stays
+      consistent with :attr:`operating_point` however that was arrived at.
+
+      :returns: ``high * ratio`` when hysteresis was fitted,
+                otherwise ``None`` for a single cut.
+      :rtype: float | None
+
+
+   .. py:method:: on_test_epoch_end(trainer: lightning.Trainer, pl_module: blinklinmult.train.module.BlinkLightningModule) -> None
+
+      Write the event-level report and log its corpus row.
+
+      :param trainer: The trainer.
+      :type trainer: L.Trainer
+      :param pl_module: The module under test.
+      :type pl_module: BlinkLightningModule
+
+
+
+.. py:function:: load_signals(path: pathlib.Path | str, expected_target: str) -> dict[str, dict[str, numpy.ndarray]]
+
+   Read a :data:`SIGNALS_FILENAME` archive, refusing a target mismatch.
+
+   The archive holds one ``signal``/``truth``/``mask`` triple per recording,
+   plus :data:`SIGNALS_TARGET_KEY` naming which target ``truth`` came from.
+   That name is checked rather than trusted, because the failure it guards
+   against is silent: the frame-wise benchmark's event report scores
+   ``blink_presence``, so its ``truth`` is a blink *interval*, 3-4x wider than
+   closure and present for corpora that annotate no closure at all. An analysis
+   that read those arrays as ``eye_state`` counted 200 045 phantom false
+   positives -- 96.7% of its apparent total -- and produced a plausible,
+   entirely wrong number.
+
+   :param path: The ``.npz`` archive to read.
+   :type path: Path | str
+   :param expected_target: The target the caller intends to analyse. A
+                           mismatch raises rather than returning data that would be
+                           misinterpreted.
+   :type expected_target: str
+
+   :returns: ``{recording: {"signal", "truth",
+             "mask"}}``.
+   :rtype: dict[str, dict[str, np.ndarray]]
+
+   :raises ValueError: If the archive names a different target, or predates the
+       provenance key and so cannot be checked.
+
+

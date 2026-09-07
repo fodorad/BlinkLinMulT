@@ -1,0 +1,40 @@
+blinklinmult.train
+==================
+
+.. py:module:: blinklinmult.train
+
+.. autoapi-nested-parse::
+
+   Training layer: configs, model, losses, metrics, and the Lightning loop.
+
+   * :mod:`~blinklinmult.train.config` — typed YAML configuration for a run.
+   * :mod:`~blinklinmult.train.model` — the eye-crop CNN plus LinMulT architecture.
+   * :mod:`~blinklinmult.train.losses` — masked binary losses for partially
+     annotated supervision.
+   * :mod:`~blinklinmult.train.metrics` — masked detection metrics.
+   * :mod:`~blinklinmult.train.module` — the Lightning module.
+   * :mod:`~blinklinmult.train.cli` — the entry point ``make train-*`` calls.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/blinklinmult/train/calibration/index
+   /autoapi/blinklinmult/train/callbacks/index
+   /autoapi/blinklinmult/train/cli/index
+   /autoapi/blinklinmult/train/config/index
+   /autoapi/blinklinmult/train/events/index
+   /autoapi/blinklinmult/train/losses/index
+   /autoapi/blinklinmult/train/lr_find/index
+   /autoapi/blinklinmult/train/metrics/index
+   /autoapi/blinklinmult/train/mlflow_utils/index
+   /autoapi/blinklinmult/train/model/index
+   /autoapi/blinklinmult/train/module/index
+   /autoapi/blinklinmult/train/optim/index
+   /autoapi/blinklinmult/train/phases/index
+
+

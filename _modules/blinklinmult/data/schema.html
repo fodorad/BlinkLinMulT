@@ -1,0 +1,1209 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+        <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/_modules/blinklinmult/data/schema.html">
+        <link rel="prefetch" href="../../../_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>blinklinmult.data.schema - BlinkLinMulT</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #2f6fd0;
+  --color-brand-content: #2f6fd0;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #7bb0ff;
+  --color-brand-content: #7bb0ff;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">BlinkLinMulT</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">BlinkLinMulT</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../training.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../frame_wise.html">The frame-wise backbone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../eye_state_events.html">From eye states to blink events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../comparison.html">Comparing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">Migrating from 1.x</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/index.html">blinklinmult</a><input aria-label="Toggle navigation of blinklinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/assets/index.html">blinklinmult.assets</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/bench/index.html">blinklinmult.bench</a><input aria-label="Toggle navigation of blinklinmult.bench" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/bench/systems/index.html">blinklinmult.bench.systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/bench/timing/index.html">blinklinmult.bench.timing</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/index.html">blinklinmult.compare</a><input aria-label="Toggle navigation of blinklinmult.compare" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/bootstrap/index.html">blinklinmult.compare.bootstrap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/clusters/index.html">blinklinmult.compare.clusters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/protocol/index.html">blinklinmult.compare.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/compare/tests/index.html">blinklinmult.compare.tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/data/index.html">blinklinmult.data</a><input aria-label="Toggle navigation of blinklinmult.data" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/augment/index.html">blinklinmult.data.augment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/collate/index.html">blinklinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/datamodule/index.html">blinklinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/embeddings/index.html">blinklinmult.data.embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/inspect/index.html">blinklinmult.data.inspect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/omni/index.html">blinklinmult.data.omni</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/schema/index.html">blinklinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/shards/index.html">blinklinmult.data.shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/stills/index.html">blinklinmult.data.stills</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/data/writer/index.html">blinklinmult.data.writer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/detector/index.html">blinklinmult.detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/fit/index.html">blinklinmult.fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/live/index.html">blinklinmult.live</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/models/index.html">blinklinmult.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/overlay/index.html">blinklinmult.overlay</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/paper/index.html">blinklinmult.paper</a><input aria-label="Toggle navigation of blinklinmult.paper" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/paper/session/index.html">blinklinmult.paper.session</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/pipeline/index.html">blinklinmult.pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/registry/index.html">blinklinmult.registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/blinklinmult/stream/index.html">blinklinmult.stream</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/blinklinmult/train/index.html">blinklinmult.train</a><input aria-label="Toggle navigation of blinklinmult.train" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/calibration/index.html">blinklinmult.train.calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/callbacks/index.html">blinklinmult.train.callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/cli/index.html">blinklinmult.train.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/config/index.html">blinklinmult.train.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/events/index.html">blinklinmult.train.events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/losses/index.html">blinklinmult.train.losses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/lr_find/index.html">blinklinmult.train.lr_find</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/metrics/index.html">blinklinmult.train.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/mlflow_utils/index.html">blinklinmult.train.mlflow_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/model/index.html">blinklinmult.train.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/module/index.html">blinklinmult.train.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/optim/index.html">blinklinmult.train.optim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/blinklinmult/train/phases/index.html">blinklinmult.train.phases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/fodorad/BlinkLinMulT">GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/blinklinmult/">PyPI</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://huggingface.co/fodorad/blink_detection">Hugging Face</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for blinklinmult.data.schema</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""The common format every blink corpus is brought into.</span>
+
+<span class="sd">Seven corpora annotate eye blinks in incompatible ways: EyeBlink8, TalkingFace,</span>
+<span class="sd">and the two RN rates ship frame-level ``.tag`` files over continuous video; CEW</span>
+<span class="sd">and MRL-Eye are collections of single still images with one label each;</span>
+<span class="sd">HUST-LEBW is a set of short pre-cut clips. This module declares the one</span>
+<span class="sd">representation all of them are mapped onto, and from which the per-dataset HDF5</span>
+<span class="sd">files are written.</span>
+
+<span class="sd">**One sample is one eye.** A sample carries a window of ``T`` frames of *a</span>
+<span class="sd">single* eye — its crops, its optional handcrafted descriptors, and its labels —</span>
+<span class="sd">with an :data:`EYE_SIDE` field saying which. That follows the annotation: the</span>
+<span class="sd">``.tag`` format marks closure per eye (``LE_FC``, ``RE_FC``), so an eye-wise</span>
+<span class="sd">sample trains on the actual ground truth rather than on a label manufactured by</span>
+<span class="sd">collapsing two. It also makes the awkward corpora honest — MRL-Eye supplies one</span>
+<span class="sd">eye and does not say which, and CEW labels the *face* — instead of duplicating a</span>
+<span class="sd">crop into a second slot that does not exist.</span>
+
+<span class="sd">Frame-level evaluation is recovered by aggregating the two eyes' predictions per</span>
+<span class="sd">``(video_id, frame_id)``; see :mod:`blinklinmult.train.metrics`. Training is</span>
+<span class="sd">eye-wise, reporting is frame-wise, and the same aggregation is applied to</span>
+<span class="sd">validation so model selection optimises the number that gets reported.</span>
+
+<span class="sd">**A still-image corpus is the ``T = 1`` case**, which is what lets one schema —</span>
+<span class="sd">and therefore one joint dataloader — span video and image datasets.</span>
+
+<span class="sd">**Windows are declared in seconds, not frames.** The corpora run at 15 and 30</span>
+<span class="sd">fps, and in-the-wild video is worse. A fixed frame count would make a 15 fps</span>
+<span class="sd">window span twice the wall-clock time of a 30 fps one, so the model would have</span>
+<span class="sd">to learn two different notions of how fast a blink is. Each corpus therefore</span>
+<span class="sd">derives its own ``time_dim`` from :attr:`DatasetSpec.fps`, every corpus spans the</span>
+<span class="sd">same real duration, and OmniLoader pads the shorter ones with an all-``False``</span>
+<span class="sd">mask. Nothing is resampled: interpolating a 15 fps clip up to 30 fps would</span>
+<span class="sd">fabricate frames that were never captured, and a blink is only a handful of</span>
+<span class="sd">frames long.</span>
+
+<span class="sd">**Targets and their masks.** The two tasks do not both have supervision in every</span>
+<span class="sd">corpus: HUST-LEBW annotates blink events per clip with no per-frame closure</span>
+<span class="sd">marking, so it has no eye state to teach. Rather than train the wrong head on a</span>
+<span class="sd">guessed label, each target carries a validity mask and a corpus declares only</span>
+<span class="sd">what it actually annotates. OmniLoader fills the rest with a placeholder and an</span>
+<span class="sd">all-``False`` mask, and the loss skips those positions — see</span>
+<span class="sd">:mod:`blinklinmult.train.losses`.</span>
+
+<span class="sd">CEW and MRL-Eye declare eye state alone, but for a different reason: on a still</span>
+<span class="sd">image a blink is not a motion event, it is a closed eye, so the two tasks</span>
+<span class="sd">coincide and one label answers both. Those corpora train the frame-wise model,</span>
+<span class="sd">whose single classifier reads that label directly.</span>
+
+<span class="sd">**Features carry their own masks, independently.** A frame whose eye crop is</span>
+<span class="sd">perfectly usable may still yield no reliable handcrafted descriptors — the iris</span>
+<span class="sd">landmarker can miss, or return low-confidence points on a blurred or</span>
+<span class="sd">half-occluded eye. :data:`EYE_IMAGE` and :data:`EYE_FEATURE` therefore have</span>
+<span class="sd">separate validity masks and the code never assumes they agree.</span>
+
+<span class="sd">**Images travel as images.** ``eye_image`` is declared to OmniLoader with a</span>
+<span class="sd">structured trailing ``shape=(C, H, W)`` rather than a flattened ``feature_dim``,</span>
+<span class="sd">which needs **omniloader &gt;= 1.1**. Before that the crops had to be stored as a</span>
+<span class="sd">wide feature axis and reshaped at the model boundary; the schema then described a</span>
+<span class="sd">12288-wide feature instead of an image, and nothing checked that the width</span>
+<span class="sd">factorised correctly.</span>
+
+<span class="sd">**Why this is not the PersonalityLinMulT layout.** That project stores one</span>
+<span class="sd">columnar ``(N, T, D)`` array per feature and slices row ``i`` out of it. Here the</span>
+<span class="sd">HDF5 is read by :class:`omniloader.HDF5Dataset`, whose contract is one *group per</span>
+<span class="sd">sample* under a split group — ``/{subset}/{sample_id}/{key}``. The builder in</span>
+<span class="sd">:mod:`blinklinmult.data.builder` writes that layout.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="n">SCHEMA_VERSION</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="sd">"""Bumped whenever the on-disk HDF5 layout changes incompatibly.</span>
+
+<span class="sd">Version 3 unifies the annotation vocabulary. Every corpus now supplies the same</span>
+<span class="sd">per-frame **eye-state score** (:data:`EYE_STATE`), from which blink events are</span>
+<span class="sd">derived; head pose becomes a named field rather than three anonymous dimensions</span>
+<span class="sd">buried in :data:`EYE_FEATURE`; and every frame carries a per-eye confidence and</span>
+<span class="sd">the id of the blink it belongs to.</span>
+
+<span class="sd">Version 2 was the eye-wise layout: one sample per eye, with the eye axis removed</span>
+<span class="sd">from every tensor and replaced by the :data:`EYE_SIDE` metadata field.</span>
+<span class="sd">"""</span>
+
+<span class="n">SUBSETS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"train"</span><span class="p">,</span> <span class="s2">"valid"</span><span class="p">,</span> <span class="s2">"test"</span><span class="p">)</span>
+<span class="sd">"""Dataset splits, in canonical order. These are the HDF5 top-level groups."""</span>
+
+<span class="n">DATASETS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"talkingface"</span><span class="p">,</span>
+    <span class="s2">"rn15"</span><span class="p">,</span>
+    <span class="s2">"rn30"</span><span class="p">,</span>
+    <span class="s2">"cew"</span><span class="p">,</span>
+    <span class="s2">"mrl"</span><span class="p">,</span>
+    <span class="s2">"hust_lebw"</span><span class="p">,</span>
+    <span class="s2">"mpeblink"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="sd">"""Corpora this project supports.</span>
+
+<span class="sd">RN is split by recording rate rather than kept as one corpus: the two rates are</span>
+<span class="sd">reported separately in the benchmark, and a shared declaration could not carry</span>
+<span class="sd">two different ``fps`` values. ``config/data/rn.yaml`` lists both for the</span>
+<span class="sd">aggregate run.</span>
+
+<span class="sd">RT-BENE / RT-GENE and ZJU are deliberately absent: they were used in the 1.x</span>
+<span class="sd">paper but are not part of the v2 benchmark.</span>
+<span class="sd">"""</span>
+
+<span class="n">VIDEO_DATASETS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"talkingface"</span><span class="p">,</span>
+    <span class="s2">"rn15"</span><span class="p">,</span>
+    <span class="s2">"rn30"</span><span class="p">,</span>
+    <span class="s2">"hust_lebw"</span><span class="p">,</span>
+    <span class="s2">"mpeblink"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="sd">"""Corpora with a temporal axis, over which a blink is a multi-frame event.</span>
+
+<span class="sd">These train the sequence models; see ``config/data/all.yaml``.</span>
+<span class="sd">"""</span>
+
+<span class="n">IMAGE_DATASETS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"cew"</span><span class="p">,</span> <span class="s2">"mrl"</span><span class="p">)</span>
+<span class="sd">"""Still-image corpora: the ``T = 1`` case, where a closed eye is the label.</span>
+
+<span class="sd">These train the frame-wise model, whose single classifier reads eye state</span>
+<span class="sd">directly. A sequence model given one of them would be modelling a degenerate</span>
+<span class="sd">one-frame window, which ``ExperimentConfig`` rejects.</span>
+<span class="sd">"""</span>
+
+<span class="n">LEFT</span> <span class="o">=</span> <span class="s2">"left"</span>
+<span class="sd">"""Value of :data:`EYE_SIDE` for a left eye."""</span>
+
+<span class="n">RIGHT</span> <span class="o">=</span> <span class="s2">"right"</span>
+<span class="sd">"""Value of :data:`EYE_SIDE` for a right eye."""</span>
+
+<span class="n">UNKNOWN_EYE</span> <span class="o">=</span> <span class="s2">"unknown"</span>
+<span class="sd">"""Value of :data:`EYE_SIDE` when the corpus does not say which eye it supplied.</span>
+
+<span class="sd">MRL-Eye is the case: it ships one eye per image without labelling the side.</span>
+<span class="sd">Recorded honestly rather than guessed, so a per-side analysis can exclude it.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_SIDES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">RIGHT</span><span class="p">,</span> <span class="n">UNKNOWN_EYE</span><span class="p">)</span>
+<span class="sd">"""Recognised values of the :data:`EYE_SIDE` metadata field."""</span>
+
+<span class="n">EYE_EMBEDDING</span> <span class="o">=</span> <span class="s2">"eye_embedding"</span>
+<span class="sd">"""Precomputed eye embedding, ``(T, D)``.</span>
+
+<span class="sd">Not a stored corpus field: attached to a batch by the datamodule when a frozen</span>
+<span class="sd">encoder makes the embedding constant across epochs, so the model can skip its</span>
+<span class="sd">encoder pass. See :mod:`blinklinmult.data.embeddings`.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_IMAGE</span> <span class="o">=</span> <span class="s2">"eye_image"</span>
+<span class="sd">"""Feature key: one eye's cropped images, ``(T, C, H, W)``.</span>
+
+<span class="sd">Stored and loaded in native image form. OmniLoader &gt;= 1.1 lets a spec declare a</span>
+<span class="sd">structured trailing ``shape``, so the array that is written is the array the</span>
+<span class="sd">model receives — no flatten on the way in, no reshape on the way out.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_FEATURE</span> <span class="o">=</span> <span class="s2">"eye_feature"</span>
+<span class="sd">"""Feature key: one eye's per-frame handcrafted descriptors, ``(T, F)``.</span>
+
+<span class="sd">The second modality of the published BlinkLinMulT: iris landmarks, iris</span>
+<span class="sd">diameters, eyelid-pupil distances and eye-aspect-ratio from exordium, plus head</span>
+<span class="sd">pose. A corpus without them declares the key absent rather than zero-filling,</span>
+<span class="sd">and OmniLoader masks it out.</span>
+<span class="sd">"""</span>
+
+<span class="n">BLINK_PRESENCE</span> <span class="o">=</span> <span class="s2">"blink_presence"</span>
+<span class="sd">"""Target key: per-frame blink label, ``(T,)``.</span>
+
+<span class="sd">Stored per frame even though **blink presence detection is scored per window**,</span>
+<span class="sd">because the model has one sequence head and the clip decision is a ``max`` over</span>
+<span class="sd">its output. Keeping a single head is what makes the two tasks structurally</span>
+<span class="sd">consistent: a window cannot come out "no eye ever closed" *and* "a blink</span>
+<span class="sd">occurred", which two independent heads would permit.</span>
+
+<span class="sd">A frame is a blink frame when its ``blink_id`` is not</span>
+<span class="sd">:data:`~blinklinmult.preprocess.annotation.NO_BLINK`.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_STATE</span> <span class="o">=</span> <span class="s2">"eye_state"</span>
+<span class="sd">"""Target key: per-frame closed label for this sample's eye, ``(T,)``.</span>
+
+<span class="sd">The eye-state recognition target, scored **per frame**.</span>
+<span class="sd">"""</span>
+
+<span class="n">INVALID_BLINK</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+<span class="sd">"""Sentinel in :data:`BLINK_IDS`: this frame was never readable.</span>
+
+<span class="sd">Distinct from :data:`NO_BLINK`, which asserts the eye was **open**. Without the</span>
+<span class="sd">distinction an unseen frame and a confirmed open eye are the same value, and a</span>
+<span class="sd">reader who forgets to cross-check ``eye_image_mask`` silently treats one as the</span>
+<span class="sd">other. Making the field self-describing costs one integer.</span>
+<span class="sd">"""</span>
+
+<span class="n">NO_BLINK</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="sd">"""``blink_id`` value meaning "this frame is not part of a blink".</span>
+
+<span class="sd">Lives here rather than in :mod:`blinklinmult.preprocess.annotation` because the</span>
+<span class="sd">builder and the HDF5 layout use it, and the data layer must not depend on the</span>
+<span class="sd">preprocess package — which needs the heavyweight extraction stack and does not</span>
+<span class="sd">ship in the wheel.</span>
+<span class="sd">"""</span>
+
+<span class="n">BLINK_ID</span> <span class="o">=</span> <span class="s2">"blink_id"</span>
+<span class="sd">"""Per-sample field: which annotated blink a positive window was cut around.</span>
+
+<span class="sd">Stored so a prediction can be traced to the event it was meant to detect, and so</span>
+<span class="sd">the test protocol can assert that every annotated blink appears in exactly one</span>
+<span class="sd">window. ``-1`` for a blink-free window.</span>
+<span class="sd">"""</span>
+
+<span class="n">BLINK_IDS</span> <span class="o">=</span> <span class="s2">"blink_ids"</span>
+<span class="sd">"""Per-frame field: which annotated blink each frame belongs to.</span>
+
+<span class="sd">The per-frame refinement of :data:`BLINK_ID`, which is one integer per window</span>
+<span class="sd">and so cannot tell one long blink from two adjacent ones inside the same window.</span>
+<span class="sd">That distinction is what event-level work needs: separating a double blink from</span>
+<span class="sd">a single long closure, recognising an incomplete blink as its own event, and</span>
+<span class="sd">supervising an event count rather than a frame label.</span>
+
+<span class="sd">:data:`NO_BLINK` outside every event.</span>
+
+<span class="sd">A **first-class per-frame field**, not a quality extra: quality fields are</span>
+<span class="sd">written but never declared in the OmniLoader schema, so they never reach</span>
+<span class="sd">training. It supervises nothing on its own -- it individuates the annotation</span>
+<span class="sd">:data:`BLINK_PRESENCE` already carries -- but event-level work cannot run</span>
+<span class="sd">without it.</span>
+<span class="sd">"""</span>
+
+<span class="n">NO_CATEGORY</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="sd">"""Sentinel in :data:`BLINK_CATEGORY`: this frame has no category.</span>
+
+<span class="sd">Either the frame is outside every blink, or the annotation gave no value -- 11</span>
+<span class="sd">events across the corpus have ``None`` in the slot. The categories themselves</span>
+<span class="sd">are non-negative, so the sentinel cannot collide with one.</span>
+<span class="sd">"""</span>
+
+<span class="n">BLINK_CATEGORY</span> <span class="o">=</span> <span class="s2">"blink_category"</span>
+<span class="sd">"""MPEblink's undocumented third annotation field, per frame.</span>
+
+<span class="sd">The corpus writes ``[start, end, category]`` and the category takes three</span>
+<span class="sd">values, but the CVPR paper documents only the start and end frames, and the</span>
+<span class="sd">authors' own converter reads elements ``[0]`` and ``[1]`` only. Measured over</span>
+<span class="sd">8 072 segments the split is 83.8% / 6.5% / 9.8%, and it is **not** a duration</span>
+<span class="sd">distinction: median lengths are 6, 7 and 7 frames.</span>
+
+<span class="sd">Values across the whole corpus: **0** (15 083), **1** (1 210), **2** (1 406),</span>
+<span class="sd">plus two anomalies written through as-is rather than corrected -- a single</span>
+<span class="sd">**10** (``train/184`` person1, frames 284-292, almost certainly a typo) and 11</span>
+<span class="sd">events with no value, which become :data:`NO_CATEGORY`.</span>
+
+<span class="sd">Stored as a diagnostic rather than a target, because nothing is known about what</span>
+<span class="sd">it supervises. Preserving it keeps the question answerable from the built corpus</span>
+<span class="sd">-- 522 category-1 and 787 category-2 events can be inspected directly -- instead</span>
+<span class="sd">of requiring the raw tree and a re-run.</span>
+<span class="sd">"""</span>
+
+<span class="n">HEAD_POSE</span> <span class="o">=</span> <span class="s2">"head_pose"</span>
+<span class="sd">"""Per-frame field: ``(T, 3)`` head rotation in **degrees**, ``[yaw, pitch, roll]``.</span>
+
+<span class="sd">Estimated once per face by 6DRepNet and shared by both eyes of a frame. Stored</span>
+<span class="sd">as a named field in degrees rather than only as the trailing three dimensions of</span>
+<span class="sd">:data:`EYE_FEATURE` divided by 90, which nothing decoded and no analysis could</span>
+<span class="sd">read.</span>
+
+<span class="sd">Yaw is what makes an eye **self-occluded**: past roughly 30-45 degrees the far</span>
+<span class="sd">eye is behind the nose, and the crop shows something that is not an eye. That</span>
+<span class="sd">rule is applied in the dataloader rather than baked in here, so the threshold</span>
+<span class="sd">stays a hyperparameter -- see</span>
+<span class="sd">:data:`~blinklinmult.data.stills.OCCLUSION_YAW`.</span>
+
+<span class="sd">Absent on the still corpora, which have no face box to estimate pose from.</span>
+<span class="sd">"""</span>
+
+<span class="n">HEAD_POSE_DIM</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="sd">"""Width of :data:`HEAD_POSE`: ``[yaw, pitch, roll]``."""</span>
+
+<span class="n">QUALITY_SIGNALS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"eye_blur"</span><span class="p">,</span>
+    <span class="s2">"eye_exposure"</span><span class="p">,</span>
+    <span class="s2">"eye_contour_fit"</span><span class="p">,</span>
+    <span class="s2">"eye_jitter"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="sd">"""Per-frame quality signals, each ``(T,)`` in ``[0, 1]``, stored **separately**.</span>
+
+<span class="sd">Deliberately not combined into one confidence score at build time. How to weigh</span>
+<span class="sd">motion blur against foreshortening against a bad contour fit is an empirical</span>
+<span class="sd">question, and the answer is only visible once the corpora are built and the</span>
+<span class="sd">distributions can be inspected. A single number baked in here would freeze that</span>
+<span class="sd">choice into tens of gigabytes; storing the components lets the dataloader decide</span>
+<span class="sd">and lets the decision change without re-preprocessing.</span>
+
+<span class="sd">``eye_blur``</span>
+<span class="sd">    Sharpness, as Laplacian variance over intensity variance. Motion blur</span>
+<span class="sd">    destroys the eyelid edge -- the one thing blink detection reads -- while</span>
+<span class="sd">    every geometric check still passes.</span>
+<span class="sd">``eye_exposure``</span>
+<span class="sd">    Dynamic range. Catches near-black and blown-out patches.</span>
+<span class="sd">``eye_contour_fit``</span>
+<span class="sd">    Whether the fitted eyelid contour sits on real image structure or on flat</span>
+<span class="sd">    skin. **The signal that catches the profile failure** where landmarks track</span>
+<span class="sd">    an edge-on, invisible eye and every other check passes.</span>
+<span class="sd">``eye_jitter``</span>
+<span class="sd">    Box movement between frames in eye-widths. A detector losing lock produces</span>
+<span class="sd">    misaligned crops that each look fine alone.</span>
+
+<span class="sd">**Every signal describes one eye alone**, never a comparison against its</span>
+<span class="sd">partner: a sample is one eye, so a signal read from the other would leak across</span>
+<span class="sd">samples and would be undefined exactly when one eye is occluded.</span>
+
+<span class="sd">All are computed at build time because they need the full-resolution crop and</span>
+<span class="sd">the frame-level boxes, neither of which survives into the dataloader. Together</span>
+<span class="sd">they enable curriculum learning: train on clean frames first, then admit the</span>
+<span class="sd">rest. See :mod:`blinklinmult.preprocess.quality`.</span>
+<span class="sd">"""</span>
+
+<span class="n">TASK_ESR</span> <span class="o">=</span> <span class="s2">"eye_state"</span>
+<span class="sd">"""Eye state recognition: is this eye closed in this frame?</span>
+
+<span class="sd">Scored **frame-wise**, over every corpus. On the still-image corpora it is the</span>
+<span class="sd">whole task: with no temporal axis, a closed eye is all a blink can mean, so this</span>
+<span class="sd">protocol and blink presence detection ask the same question.</span>
+<span class="sd">"""</span>
+
+<span class="n">TASK_BPD</span> <span class="o">=</span> <span class="s2">"blink_presence"</span>
+<span class="sd">"""Blink presence detection: does this window contain a blink?</span>
+
+<span class="sd">Scored **window-wise**, over the video corpora, where a blink is a multi-frame</span>
+<span class="sd">event: the corpora make it recoverable because every frame of one blink shares a</span>
+<span class="sd">``blink_id``. On a still image the question degenerates to :data:`TASK_ESR` —</span>
+<span class="sd">the window is one frame and a closed eye is the positive — so the still corpora</span>
+<span class="sd">train the frame-wise model rather than being scored under this protocol.</span>
+
+<span class="sd">More error-tolerant than frame-wise scoring, which is why it is the headline</span>
+<span class="sd">protocol: the corpora do not annotate blink boundaries precisely, since a</span>
+<span class="sd">closure begins before and ends after the frames marked as blinking.</span>
+<span class="sd">"""</span>
+
+<span class="n">TASKS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">TASK_ESR</span><span class="p">,</span> <span class="n">TASK_BPD</span><span class="p">)</span>
+<span class="sd">"""The two evaluation protocols, which are distinct tasks over the same window."""</span>
+
+<span class="n">FEATURE_KEYS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">EYE_IMAGE</span><span class="p">,</span> <span class="n">EYE_FEATURE</span><span class="p">)</span>
+<span class="sd">"""Every feature key, in model input order."""</span>
+
+<span class="n">TARGET_KEYS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">BLINK_PRESENCE</span><span class="p">,</span> <span class="n">EYE_STATE</span><span class="p">)</span>
+<span class="sd">"""Every target key, in head order."""</span>
+
+<span class="n">SAMPLE_KEY</span> <span class="o">=</span> <span class="s2">"key"</span>
+<span class="sd">"""Metadata key holding a sample's unique identifier.</span>
+
+<span class="sd">Named ``key`` rather than ``sample_id`` because that is what OmniLoader's</span>
+<span class="sd">:data:`omniloader.schema.unify.METADATA_KEYS` copies verbatim through the</span>
+<span class="sd">unifier; a differently-named field would be dropped before it reached the batch,</span>
+<span class="sd">and every prediction would lose its provenance.</span>
+<span class="sd">"""</span>
+
+<span class="n">SOURCE_KEY</span> <span class="o">=</span> <span class="s2">"dataset"</span>
+<span class="sd">"""Metadata key holding the corpus a sample came from.</span>
+
+<span class="sd">Also passed through by OmniLoader, and what</span>
+<span class="sd">:class:`~blinklinmult.train.callbacks.PerDatasetReport` groups the test scores</span>
+<span class="sd">by.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_SIDE</span> <span class="o">=</span> <span class="s2">"eye_side"</span>
+<span class="sd">"""Per-sample field naming which eye this sample carries.</span>
+
+<span class="sd">Stored in the HDF5 for offline inspection and written into the sample id, since</span>
+<span class="sd">OmniLoader only forwards :data:`SAMPLE_KEY`, :data:`SOURCE_KEY` and ``subset``</span>
+<span class="sd">into the batch. :func:`parse_sample_id` recovers it at evaluation time.</span>
+<span class="sd">"""</span>
+
+<span class="n">FRAME_GROUP</span> <span class="o">=</span> <span class="s2">"frame_group"</span>
+<span class="sd">"""Per-sample field identifying the frames a window covers.</span>
+
+<span class="sd">Two eye-wise samples describe the same frames of the same recording exactly when</span>
+<span class="sd">their frame groups match, which is what lets</span>
+<span class="sd">:class:`~blinklinmult.train.metrics.FrameAggregator` recombine them into one</span>
+<span class="sd">prediction per frame.</span>
+<span class="sd">"""</span>
+
+<span class="n">FACE_BOX</span> <span class="o">=</span> <span class="s2">"face_box"</span>
+<span class="sd">"""Per-frame face box, ``(T, 4)`` int32 as ``(x, y, w, h)``.</span>
+
+<span class="sd">**Stored instead of the face crop itself.** A face stream at 112 px would add</span>
+<span class="sd">~47 GB to MPEblink alone -- a 4x blowup -- and because a sample is one *eye*,</span>
+<span class="sd">the ``|left`` and ``|right`` samples of a window would hold byte-identical</span>
+<span class="sd">copies of it. The box is four numbers and reconstructs the crop exactly.</span>
+
+<span class="sd">What it buys is reproducibility: the geometry is frozen at build time, so a</span>
+<span class="sd">face crop taken later from the raw video is the same crop the builder saw,</span>
+<span class="sd">rather than a fresh guess at the same preprocessing. Negative or overhanging</span>
+<span class="sd">values are kept verbatim -- MPEblink tracks faces past the frame edge, and</span>
+<span class="sd">clamping here would destroy that information.</span>
+
+<span class="sd">``None`` for corpora that annotate no face box (CEW, MRL-Eye).</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_ON_SCREEN</span> <span class="o">=</span> <span class="s2">"eye_on_screen"</span>
+<span class="sd">"""Per-frame fraction of an eye's landmarks inside the frame, ``(T,)`` float16.</span>
+
+<span class="sd">``1.0`` is fully visible. The builder masks a frame below</span>
+<span class="sd">:data:`~blinklinmult.preprocess.geometry.MIN_EYE_ON_SCREEN`, but the raw value</span>
+<span class="sd">is kept so a marginal eye can be found and looked at rather than merely</span>
+<span class="sd">trusted.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_SPAN</span> <span class="o">=</span> <span class="s2">"eye_span"</span>
+<span class="sd">"""Per-frame eye width in pixels, corner to corner, ``(T,)`` float16.</span>
+
+<span class="sd">The crop's scale before resizing, so it says how much real detail a 64 px patch</span>
+<span class="sd">holds: a 12 px eye upsampled to 64 is mostly interpolation. Films put faces at</span>
+<span class="sd">every scale, so this varies by an order of magnitude within one corpus.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_ASPECT</span> <span class="o">=</span> <span class="s2">"eye_aspect"</span>
+<span class="sd">"""Per-frame eye height/width ratio, ``(T,)`` float16.</span>
+
+<span class="sd">**The profile detector.** A face turned edge-on keeps a healthy eye *span* --</span>
+<span class="sd">``test/183`` measures a perfectly ordinary 21.5 px median -- while the eye</span>
+<span class="sd">itself becomes invisible, so span alone cannot find those clips. The landmark</span>
+<span class="sd">contour flattens as the face rotates away, which this catches.</span>
+
+<span class="sd">Low values also occur legitimately during a blink, so it is a ranking signal</span>
+<span class="sd">for inspection, not a rejection rule.</span>
+<span class="sd">"""</span>
+
+<span class="n">BOX_SHIFTED</span> <span class="o">=</span> <span class="s2">"box_shifted"</span>
+<span class="sd">"""Per-frame flag, ``(T,)`` bool: the crop was slid to fit inside the frame.</span>
+
+<span class="sd">Set by :meth:`~blinklinmult.preprocess.geometry.EyeBox.shifted_into`. The eye is</span>
+<span class="sd">present and the scale is unchanged, but it sits off centre, so a model that</span>
+<span class="sd">learned to expect a centred eye may behave differently here. 0.46% of MPEblink</span>
+<span class="sd">crops.</span>
+<span class="sd">"""</span>
+
+<span class="n">LANDMARK_SOURCE</span> <span class="o">=</span> <span class="s2">"landmark_source"</span>
+<span class="sd">"""Per-sample string naming which landmark scheme located the eye.</span>
+
+<span class="sd">``"wflw"`` (98-point) or ``"ibug"`` (68-point). MPEblink ships WFLW for most</span>
+<span class="sd">clips but only iBUG for 30 of its test clips, and the two place the eye</span>
+<span class="sd">slightly differently -- iBUG has no pupil point, so those crops centre on the</span>
+<span class="sd">contour mean. Worth being able to score the two groups separately before</span>
+<span class="sd">trusting a single test number.</span>
+<span class="sd">"""</span>
+
+<span class="n">CONFIDENCE</span> <span class="o">=</span> <span class="s2">"confidence"</span>
+<span class="sd">"""Per-sample scalar in ``[0, 1]``, float32: how trustworthy this window looks.</span>
+
+<span class="sd">A ranking aid for finding bad data, **not** a training weight and not a</span>
+<span class="sd">probability. Pooled from the per-frame signals above so a notebook can sort</span>
+<span class="sd">tracklets and render the worst; see</span>
+<span class="sd">:func:`~blinklinmult.preprocess.quality.window_confidence`.</span>
+
+<span class="sd">It exists because the automated checks are not sufficient on their own: the</span>
+<span class="sd">``test/183`` profile crops scored *higher* contrast than good clips and were</span>
+<span class="sd">still unusable. Only looking at them revealed it, and this is what makes</span>
+<span class="sd">looking cheap.</span>
+<span class="sd">"""</span>
+
+<span class="n">METADATA_KEYS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">SAMPLE_KEY</span><span class="p">,</span> <span class="n">SOURCE_KEY</span><span class="p">,</span> <span class="s2">"subset"</span><span class="p">)</span>
+<span class="sd">"""Per-sample metadata that survives OmniLoader's unifier into the batch.</span>
+
+<span class="sd">These three are exactly the keys OmniLoader copies verbatim; anything else is</span>
+<span class="sd">dropped, which is why the eye side and the frame group are encoded into the</span>
+<span class="sd">sample id rather than stored only as separate fields.</span>
+<span class="sd">"""</span>
+
+<span class="n">TARGET_PLACEHOLDER</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+<span class="sd">"""Value filled in where a corpus does not supply a target.</span>
+
+<span class="sd">Chosen outside ``[0, 1]`` so that a placeholder surviving into a metric is</span>
+<span class="sd">visibly wrong rather than plausible. The mask is what the loss actually reads;</span>
+<span class="sd">this is the second line of defence.</span>
+<span class="sd">"""</span>
+
+<span class="n">IMAGE_CHANNELS</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="sd">"""Channel count of an eye crop. RGB, matching the ImageNet-pretrained backbones."""</span>
+
+<span class="n">DEFAULT_WINDOW_SECONDS</span> <span class="o">=</span> <span class="mf">1.5</span>
+<span class="sd">"""Default analysis window, in seconds.</span>
+
+<span class="sd">Matched to MPEblink, whose InstBlink++ runs inference on **36-frame clips with</span>
+<span class="sd">a stride of 18** — a 50% overlap at ~24-30 fps, so roughly 1.2-1.5 s. Adopting</span>
+<span class="sd">the same duration is what lets this project's numbers be read beside theirs.</span>
+
+<span class="sd">**Not chosen to contain the blink.** Measured over MPEblink 2.0's 17 711</span>
+<span class="sd">annotated events, the median blink is 6 frames and the 95th percentile 12, so a</span>
+<span class="sd">15-frame window already contains 97.9% of them and 45 frames raises that only to</span>
+<span class="sd">99.8%. The window is for *context*: what separates a blink from a downward</span>
+<span class="sd">glance, a squint or motion blur is what the eye was doing before and after the</span>
+<span class="sd">closure, not the closure itself.</span>
+
+<span class="sd">1.x used 0.5 s (15 frames at 30 fps). Widening it costs preprocessing time and</span>
+<span class="sd">memory in proportion, and no published ablation measures what the extra context</span>
+<span class="sd">buys -- InstBlink++'s report asserts its clip length without one. Treat this as</span>
+<span class="sd">a protocol choice for comparability, not as an established optimum.</span>
+<span class="sd">"""</span>
+
+<span class="n">EYE_FEATURE_DIM</span> <span class="o">=</span> <span class="mi">160</span>
+<span class="sd">"""Width of the handcrafted descriptor vector for one eye.</span>
+
+<span class="sd">157 from exordium's :meth:`IrisWrapper.eye_to_feature` — 71x2 eye-region</span>
+<span class="sd">landmarks, 5x2 iris landmarks, 2 iris diameters, 2 eyelid-pupil distances and 1</span>
+<span class="sd">eye-aspect-ratio — plus 3 head-pose angles. See</span>
+<span class="sd">:mod:`blinklinmult.preprocess.features`.</span>
+<span class="sd">"""</span>
+
+
+<div class="viewcode-block" id="SchemaError">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.SchemaError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SchemaError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when a dataset declaration is invalid or self-inconsistent."""</span></div>
+
+
+
+<div class="viewcode-block" id="frames_for">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.frames_for">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">frames_for</span><span class="p">(</span><span class="n">fps</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">window_seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Frames spanning a duration at a given rate.</span>
+
+<span class="sd">    Rounds **half up** rather than using :func:`round`, whose banker's rounding</span>
+<span class="sd">    breaks an exact ``.5`` towards the even integer — so 25 fps over 0.5 s would</span>
+<span class="sd">    give 12 frames while 30 fps over 0.5 s gives 15, and the shortfall would be</span>
+<span class="sd">    invisible. Rounding up never gives a window fewer frames than its duration</span>
+<span class="sd">    implies.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fps (float): Frame rate of the recording.</span>
+<span class="sd">        window_seconds (float): Window duration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Frame count, at least 1.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        SchemaError: If either argument is not positive.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">fps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"fps must be positive, got </span><span class="si">{</span><span class="n">fps</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window_seconds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"window_seconds must be positive, got </span><span class="si">{</span><span class="n">window_seconds</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">fps</span> <span class="o">*</span> <span class="n">window_seconds</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="build_sample_id">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.build_sample_id">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_sample_id</span><span class="p">(</span><span class="n">video_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">frame_group</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">eye_side</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Compose the identifier that carries a sample's provenance.</span>
+
+<span class="sd">    OmniLoader forwards only :data:`SAMPLE_KEY`, :data:`SOURCE_KEY` and</span>
+<span class="sd">    ``subset`` into a batch, so the eye side and the frame group have to travel</span>
+<span class="sd">    inside the id to survive as far as the metrics.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        video_id (str): Source recording.</span>
+<span class="sd">        frame_group (str): Identifier of the frames the window covers, usually</span>
+<span class="sd">            the first frame id.</span>
+<span class="sd">        eye_side (str): One of :data:`EYE_SIDES`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: e.g. ``"rn30_1|000881|left"``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        SchemaError: If the eye side is unrecognised, or a component contains</span>
+<span class="sd">            the ``|`` separator.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">eye_side</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">EYE_SIDES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown eye side </span><span class="si">{</span><span class="n">eye_side</span><span class="si">!r}</span><span class="s2">; expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">EYE_SIDES</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">part</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">((</span><span class="n">video_id</span><span class="p">,</span> <span class="s2">"video_id"</span><span class="p">),</span> <span class="p">(</span><span class="n">frame_group</span><span class="p">,</span> <span class="s2">"frame_group"</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="s2">"|"</span> <span class="ow">in</span> <span class="n">part</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">part</span><span class="si">!r}</span><span class="s2"> contains the '|' separator, which would make the "</span>
+                <span class="s2">"sample id ambiguous."</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">video_id</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">frame_group</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">eye_side</span><span class="si">}</span><span class="s2">"</span></div>
+
+
+
+<div class="viewcode-block" id="parse_sample_id">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.parse_sample_id">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_sample_id</span><span class="p">(</span><span class="n">sample_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Recover a sample's provenance from its identifier.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sample_id (str): An id built by :func:`build_sample_id`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str, str]: ``(video_id, frame_group, eye_side)``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        SchemaError: If the id does not have the three expected components.</span>
+<span class="sd">    """</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">sample_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"|"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Sample id </span><span class="si">{</span><span class="n">sample_id</span><span class="si">!r}</span><span class="s2"> does not have the expected "</span>
+            <span class="s2">"'&lt;video_id&gt;|&lt;frame_group&gt;|&lt;eye_side&gt;' form."</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="DatasetSpec">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.DatasetSpec">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DatasetSpec</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""What one corpus provides, and in what shape.</span>
+
+<span class="sd">    This is the single source of truth for a corpus: the builder writes what it</span>
+<span class="sd">    declares, the OmniLoader schema is generated from it, and training reads it</span>
+<span class="sd">    to know which heads that corpus can supervise. A corpus cannot be written</span>
+<span class="sd">    under one interpretation and read under another.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): Corpus name; must be one of :data:`DATASETS`. Becomes the</span>
+<span class="sd">            ``data/processed/&lt;name&gt;`` directory and the HDF5 filename.</span>
+<span class="sd">        fps (float | None): Native frame rate, or ``None`` for a still-image</span>
+<span class="sd">            corpus. Together with the run's window length in seconds this</span>
+<span class="sd">            determines :attr:`time_dim`, so that every corpus spans the same</span>
+<span class="sd">            real duration whatever its rate.</span>
+<span class="sd">        window_seconds (float | None): Analysis window for this corpus. ``None``</span>
+<span class="sd">            means the corpus is not windowed (still images).</span>
+<span class="sd">        image_size (int): Side length of a square eye crop.</span>
+<span class="sd">        feature_dim (int | None): Width of :data:`EYE_FEATURE`, or ``None`` when</span>
+<span class="sd">            the corpus supplies no handcrafted descriptors.</span>
+<span class="sd">        has_blink_presence (bool): Whether the corpus annotates blink presence.</span>
+<span class="sd">        has_eye_state (bool): Whether the corpus annotates per-eye closure.</span>
+<span class="sd">        has_eye_side (bool): Whether the corpus says which eye a sample is.</span>
+<span class="sd">            ``False`` for MRL-Eye, whose samples are recorded as</span>
+<span class="sd">            :data:`UNKNOWN_EYE`.</span>
+<span class="sd">        has_head_pose (bool): Whether the corpus supplies :data:`HEAD_POSE`.</span>
+<span class="sd">            ``False`` for the still corpora, which have no face box to estimate</span>
+<span class="sd">            pose from -- and so cannot be occlusion-filtered.</span>
+<span class="sd">        has_blink_ids (bool): Whether the corpus supplies per-frame</span>
+<span class="sd">            :data:`BLINK_IDS`, which event-level work needs to tell one long</span>
+<span class="sd">            blink from two adjacent ones.</span>
+<span class="sd">        quality_signals (tuple[str, ...]): Which of :data:`QUALITY_SIGNALS` this</span>
+<span class="sd">            corpus supplies. Deliberately per-signal rather than all-or-nothing:</span>
+<span class="sd">            a still-image corpus has one frame and so no</span>
+<span class="sd">            :data:`~blinklinmult.preprocess.quality.box_jitter`. Empty means the</span>
+<span class="sd">            corpus supplies none.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        SchemaError: If the declaration is invalid.</span>
+<span class="sd">    """</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">window_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">DEFAULT_WINDOW_SECONDS</span>
+    <span class="n">image_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">feature_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">has_blink_presence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">has_eye_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">has_eye_side</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">has_head_pose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">has_blink_ids</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">quality_signals</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="DatasetSpec.__post_init__">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.DatasetSpec.__post_init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Validate the declaration.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SchemaError: If a field is out of range, the name is unknown, or the</span>
+<span class="sd">                corpus annotates neither task.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DATASETS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown dataset </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">; expected one of </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">DATASETS</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: image_size must be &gt;= 1, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: feature_dim must be positive or None, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span><span class="si">}</span><span class="s2">."</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: fps must be positive or None, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">quality_signals</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">QUALITY_SIGNALS</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: unknown quality signals </span><span class="si">{</span><span class="n">unknown</span><span class="si">}</span><span class="s2">; "</span>
+                <span class="sa">f</span><span class="s2">"expected a subset of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">QUALITY_SIGNALS</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_seconds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_seconds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: window_seconds must be positive or None, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">window_seconds</span><span class="si">}</span><span class="s2">."</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">has_blink_presence</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_eye_state</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: declares neither blink presence nor eye state. A corpus "</span>
+                <span class="s2">"that supervises no task cannot contribute to training."</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_blink_presence</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: blink presence is a window-level target, but the corpus "</span>
+                <span class="s2">"declares no fps and so has no window. On a still image a blink is a "</span>
+                <span class="s2">"closed eye -- annotate it as eye state, which the frame-wise model "</span>
+                <span class="s2">"reads directly."</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_video</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_seconds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: declares an fps but no window_seconds, so its window "</span>
+                <span class="s2">"length is undefined."</span>
+            <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_video</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether this corpus has a temporal axis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: ``True`` when the corpus declares a frame rate.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Frames spanned by this corpus's analysis window.</span>
+
+<span class="sd">        Derived from the corpus's own rate rather than fixed, so a 15 fps and a</span>
+<span class="sd">        30 fps recording cover the same wall-clock duration. A still-image</span>
+<span class="sd">        corpus is the degenerate single-frame case.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Window length in frames; ``1`` for a still-image corpus.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_seconds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">frames_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_seconds</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_quality_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether this corpus supplies any per-frame quality signal.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: ``True`` when :attr:`quality_signals` is non-empty.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quality_signals</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_eye_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether this corpus supplies handcrafted eye descriptors.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: ``True`` when :attr:`feature_dim` is set.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">feature_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Feature keys this corpus provides, in model input order.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: A subset of :data:`FEATURE_KEYS`.</span>
+<span class="sd">        """</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">EYE_IMAGE</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_eye_feature</span><span class="p">:</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EYE_FEATURE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">keys</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Target keys this corpus annotates, in head order.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: A subset of :data:`TARGET_KEYS`.</span>
+<span class="sd">        """</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_blink_presence</span><span class="p">:</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BLINK_PRESENCE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_eye_state</span><span class="p">:</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EYE_STATE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">keys</span>
+
+<div class="viewcode-block" id="DatasetSpec.with_window">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.DatasetSpec.with_window">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DatasetSpec</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return this spec with a different analysis window.</span>
+
+<span class="sd">        Used by a run config to apply one window length across every corpus,</span>
+<span class="sd">        each of which then re-derives its own frame count.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            window_seconds (float | None): The new window length.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DatasetSpec: A new spec; this one is unchanged.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">window_seconds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_video</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)}</span>
+        <span class="n">values</span><span class="p">[</span><span class="s2">"window_seconds"</span><span class="p">]</span> <span class="o">=</span> <span class="n">window_seconds</span>
+        <span class="k">return</span> <span class="n">DatasetSpec</span><span class="p">(</span><span class="o">**</span><span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatasetSpec.from_dict">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.DatasetSpec.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DatasetSpec</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Build a spec from a plain dict, e.g. parsed YAML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): Declaration values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DatasetSpec: The validated spec.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SchemaError: If keys are unknown or required ones are missing.</span>
+<span class="sd">        """</span>
+        <span class="n">known</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">)}</span>
+        <span class="n">unknown</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">known</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span><span class="w"> </span><span class="s1">'&lt;unnamed&gt;'</span><span class="p">)</span><span class="si">}</span><span class="s2">: unknown keys </span><span class="si">{</span><span class="n">unknown</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="sa">f</span><span class="s2">"Known keys: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">known</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"name"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SchemaError</span><span class="p">(</span><span class="s2">"Dataset declaration is missing 'name'."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BuildStats">
+<a class="viewcode-back" href="../../../autoapi/blinklinmult/data/schema/index.html#blinklinmult.data.schema.BuildStats">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BuildStats</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Counters describing one builder run, for logging and tests.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (str): Corpus that was built.</span>
+<span class="sd">        per_subset (dict[str, int]): Samples written per split.</span>
+<span class="sd">        bytes_written (int): Size of the resulting file.</span>
+<span class="sd">        positive_fraction (dict[str, float]): Fraction of blink windows per</span>
+<span class="sd">            split, which is what reveals a split that accidentally lost its</span>
+<span class="sd">            positives.</span>
+<span class="sd">    """</span>
+
+    <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">per_subset</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">bytes_written</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">positive_fraction</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Total samples written across every split.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Sample count.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">per_subset</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2026, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

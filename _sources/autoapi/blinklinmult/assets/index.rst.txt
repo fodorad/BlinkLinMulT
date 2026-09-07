@@ -1,0 +1,52 @@
+blinklinmult.assets
+===================
+
+.. py:module:: blinklinmult.assets
+
+.. autoapi-nested-parse::
+
+   Small files that ship with the package.
+
+   Only the demo clip lives here, and only because a demo with nothing to run is
+   not a demo: a fresh ``pip install`` should be able to show the pipeline working
+   without the user first obtaining a corpus.
+
+   The clip is the **first 10 seconds** of TalkingFace, 1.6 MB rather than the
+   22 MB source, carrying three annotated blinks (frames 168, 225 and 274) and its
+   matching ``.tag`` slice so a prediction can be read against the annotation.
+
+   Nothing else belongs here. Model weights are downloaded from the Hub on first
+   use and cached; the corpora are gigabytes and stay out of the wheel entirely.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.assets.ASSETS_DIR
+   blinklinmult.assets.EXAMPLE_VIDEO
+   blinklinmult.assets.EXAMPLE_TAG
+
+
+Package Contents
+----------------
+
+.. py:data:: ASSETS_DIR
+
+   Directory this module lives in, and the files sit beside it.
+
+.. py:data:: EXAMPLE_VIDEO
+
+   TalkingFace, first 10 s at 30 fps.
+
+   :type: The bundled demo clip
+
+.. py:data:: EXAMPLE_TAG
+
+   Its annotation, sliced to the same 300 frames.
+
+   Frame ids are unchanged from the source, so a prediction on this clip lines up
+   with the published TalkingFace numbers.
+

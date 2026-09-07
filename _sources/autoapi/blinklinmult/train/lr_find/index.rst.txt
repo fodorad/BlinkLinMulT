@@ -1,0 +1,129 @@
+blinklinmult.train.lr_find
+==========================
+
+.. py:module:: blinklinmult.train.lr_find
+
+.. autoapi-nested-parse::
+
+   Find a good peak learning rate for a run, via Lightning's LR range test.
+
+   Ramps the learning rate exponentially over a few hundred steps, records the
+   loss at each, and suggests the point of steepest descent just before the loss
+   diverges -- the standard LR-range-test heuristic. It prints the suggestion and
+   saves a loss-vs-lr plot, because the automatic suggestion is readily fooled by
+   a noisy curve and is meant to be checked by eye rather than trusted.
+
+   This only probes the LR. It trains nothing and writes no checkpoint.
+
+   **Read the plot; do not take the printed suggestion.** Lightning picks the
+   point of steepest descent, which on this model lands on a small early bump --
+   the measured RN30 sweep suggested 5.25e-06 while the loss went on falling
+   steadily for another three decades, bottoming out near 1e-02. Taking the
+   suggestion literally would have trained ~200x slower than the data supports.
+   The suggestion is a starting point for reading the curve, not a result.
+
+   **Why this matters here.** The optimiser recipe was carried over from
+   PersonalityLinMulT, which found its peak LR by running exactly this test on
+   *its* model and data. A learning rate is not a portable constant: this project
+   trains a CNN encoder jointly with a transformer under discriminative rates,
+   which that project did not. Inheriting its 0.005 would be borrowing the answer
+   without the measurement.
+
+   Note the reported suggestion applies to ``optimizer.lr``, the transformer and
+   head group. ``optimizer.backbone_lr`` is deliberately a tenth of it -- a
+   pretrained backbone fine-tuned at the head's rate loses its features within a
+   few hundred steps -- so scale that separately rather than reading it off the
+   same curve.
+
+   .. rubric:: Example
+
+   Probe the LR for BlinkLinT on RN30, saving under that run's results
+   directory::
+
+       uv run python -m blinklinmult.train.lr_find \\
+           --data config/data/single_rn30.yaml \\
+           --model config/model/blinklint_baseline.yaml \\
+           --train config/train/lint_blink.yaml
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.lr_find.logger
+   blinklinmult.train.lr_find.DEFAULT_MIN_LR
+   blinklinmult.train.lr_find.DEFAULT_MAX_LR
+   blinklinmult.train.lr_find.DEFAULT_NUM_TRAINING_STEPS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.lr_find.find_lr
+   blinklinmult.train.lr_find.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: DEFAULT_MIN_LR
+   :value: 1e-06
+
+
+   Sweep start.
+
+.. py:data:: DEFAULT_MAX_LR
+   :value: 1.0
+
+
+   Sweep end -- high enough that the loss diverges for any reasonable model.
+
+.. py:data:: DEFAULT_NUM_TRAINING_STEPS
+   :value: 200
+
+
+   Steps in the sweep.
+
+   Lightning's default of 100 is coarse enough that the suggestion jitters between
+   runs; 200 gives a smoother curve at no meaningful cost.
+
+.. py:function:: find_lr(config: blinklinmult.train.config.ExperimentConfig, root: pathlib.Path | None = None, config_dir: pathlib.Path | None = None, output_path: pathlib.Path | None = None, min_lr: float = DEFAULT_MIN_LR, max_lr: float = DEFAULT_MAX_LR, num_training: int = DEFAULT_NUM_TRAINING_STEPS) -> float
+
+   Run the LR range test and save its plot.
+
+   :param config: The run the LR is being chosen for.
+   :type config: ExperimentConfig
+   :param root: Dataset root, as the CLI uses it.
+   :type root: Path | None
+   :param config_dir: Where per-dataset config lives.
+   :type config_dir: Path | None
+   :param output_path: Plot destination. Defaults to
+                       ``lr_find.png`` inside the run's own results directory.
+   :type output_path: Path | None
+   :param min_lr: Sweep start.
+   :type min_lr: float
+   :param max_lr: Sweep end.
+   :type max_lr: float
+   :param num_training: Steps in the sweep.
+   :type num_training: int
+
+   :returns: The suggested peak learning rate.
+   :rtype: float
+
+   :raises RuntimeError: If the sweep produces no result or no suggestion, which
+       means the loss never decreased across the swept range.
+
+
+.. py:function:: main() -> None
+
+   CLI entry point.
+
+

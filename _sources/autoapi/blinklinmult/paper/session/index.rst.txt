@@ -1,0 +1,172 @@
+blinklinmult.paper.session
+==========================
+
+.. py:module:: blinklinmult.paper.session
+
+.. autoapi-nested-parse::
+
+   Running a frozen ONNX graph, with numpy and ``onnxruntime`` alone.
+
+   No torch here, and none reachable from here. That is the whole point of shipping
+   the 1.x models as graphs: their inference path cannot be broken by a PyTorch
+   upgrade, a ``linmult`` release, or anything else this repository does later.
+
+   The class is deliberately thin. It holds a session, remembers what the graph's
+   inputs are called, and returns numpy arrays --
+   :class:`~blinklinmult.detector.BlinkDetector` supplies the normalisation and the
+   event extraction on top, exactly as it does for the PyTorch-backed v2 model.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.paper.session.logger
+   blinklinmult.paper.session.IMAGENET_MEAN
+   blinklinmult.paper.session.IMAGENET_STD
+   blinklinmult.paper.session.CROPS_INPUT
+   blinklinmult.paper.session.FEATURES_INPUT
+   blinklinmult.paper.session.SEQUENCE_OUTPUT
+   blinklinmult.paper.session.CLIP_OUTPUT
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.paper.session.SessionError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.paper.session.OnnxModel
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.paper.session.load_onnx
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: IMAGENET_MEAN
+   :type:  tuple[float, float, float]
+   :value: (0.485, 0.456, 0.406)
+
+
+   Per-channel mean the 1.x models were trained against.
+
+   Torchvision's standard ImageNet normalisation, applied after a bicubic resize to
+   64x64. The v2 ``BlinkCNN`` uses plain ``/255`` instead; the two are **not**
+   interchangeable, and applying the wrong one degrades accuracy without erroring.
+
+.. py:data:: IMAGENET_STD
+   :type:  tuple[float, float, float]
+   :value: (0.229, 0.224, 0.225)
+
+
+   Per-channel standard deviation. See :data:`IMAGENET_MEAN`.
+
+.. py:data:: CROPS_INPUT
+   :value: 'crops'
+
+
+   Name of the eye-crop input in every exported graph.
+
+.. py:data:: FEATURES_INPUT
+   :value: 'features'
+
+
+   Name of the descriptor input, present only in the two-stream graph.
+
+.. py:data:: SEQUENCE_OUTPUT
+   :value: 'sequence'
+
+
+   Name of the per-frame output in every exported graph.
+
+.. py:data:: CLIP_OUTPUT
+   :value: 'clip'
+
+
+   Name of the pooled output, present only in the two-stream graph.
+
+.. py:exception:: SessionError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when a graph cannot be loaded or is fed the wrong inputs.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: OnnxModel(session: onnxruntime.InferenceSession, metadata: dict[str, Any] | None = None)
+
+   A frozen 1.x model, backed by an ``onnxruntime`` session.
+
+   :param session: The loaded graph.
+   :type session: ort.InferenceSession
+   :param metadata: Its sidecar, if one was found beside it.
+   :type metadata: dict[str, Any]
+
+
+   .. py:property:: needs_features
+      :type: bool
+
+
+      Whether this graph takes the 160-d descriptor stream.
+
+
+   .. py:method:: __call__(crops: numpy.ndarray, features: numpy.ndarray | None = None) -> dict[str, numpy.ndarray]
+
+      Run the graph.
+
+      :param crops: ``(B, T, 3, H, W)`` float32, already normalised.
+      :type crops: np.ndarray
+      :param features: ``(B, T, 160)`` float32, for the
+                       two-stream graph.
+      :type features: np.ndarray | None
+
+      :returns:
+
+                Output name to array. Always carries
+                    ``"sequence"`` ``(B, T, 1)``; the two-stream graph also carries
+                    ``"clip"`` ``(B, 1)``.
+      :rtype: dict[str, np.ndarray]
+
+      :raises SessionError: If a required input is missing.
+
+
+
+.. py:function:: load_onnx(path: str | pathlib.Path, providers: list[str] | None = None) -> OnnxModel
+
+   Open an exported graph.
+
+   :param path: The ``.onnx`` file. A ``.onnx.json`` sidecar beside it
+                is read if present.
+   :type path: str | Path
+   :param providers: Execution providers, in preference order.
+                     Defaults to ``onnxruntime``'s own choice.
+   :type providers: list[str] | None
+
+   :returns: Ready to run.
+   :rtype: OnnxModel
+
+   :raises SessionError: If the file is missing, or ``onnxruntime`` is not installed.
+
+

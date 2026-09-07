@@ -1,0 +1,255 @@
+blinklinmult.detector
+=====================
+
+.. py:module:: blinklinmult.detector
+
+.. autoapi-nested-parse::
+
+   One interface over every published model: crops in, blinks out.
+
+   The four shipped models were trained years apart, in two codebases, with
+   different input conventions and different output shapes. Comparing them fairly
+   means holding everything but the weights constant -- the same crops, the same
+   normalisation rule applied per model, the same event extractor, the same
+   metrics. That is what this class is for::
+
+       from blinklinmult import BlinkDetector
+
+       v1 = BlinkDetector.from_pretrained("densenet121-union")
+       v2 = BlinkDetector.from_pretrained("blinkcnn")
+
+       v1.detect(crops)   # [(12, 15), (48, 52)]
+       v2.detect(crops)   # same crops, same extractor -- only the weights differ
+
+   Two methods, and the split is deliberate:
+
+   :meth:`BlinkDetector.score`
+       Per-frame closure probability. A continuous physiological signal -- how shut
+       the eye is -- which carries blink *shape*: depth, duration, the asymmetry
+       between a fast closing ramp and a slower reopening.
+   :meth:`BlinkDetector.detect`
+       Discrete ``(start, end)`` intervals, by running
+       :func:`~blinklinmult.train.events.to_intervals` over that signal at the
+       model's own fitted operating point.
+
+   ``T=1`` is a single frame and any larger ``T`` is video, so one object serves
+   both. The sequence models need real temporal context to be worth anything, but
+   they accept ``T=1`` rather than failing.
+
+   **Normalisation travels with the model, never with the caller.** The 1.x networks
+   were trained on ImageNet-standardised crops and ``BlinkCNN`` on plain ``/255``;
+   applying the wrong convention costs accuracy and raises nothing. Pass raw
+   ``[0, 1]`` crops and let :data:`~blinklinmult.registry.MODELS` decide.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.detector.logger
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.detector.DetectorError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.detector.BlinkDetector
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:exception:: DetectorError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when a detector is built or called with something it cannot use.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: BlinkDetector(model: torch.nn.Module | blinklinmult.paper.session.OnnxModel, model_spec: blinklinmult.registry.ModelSpec)
+
+   A published model plus the preprocessing and extraction around it.
+
+   Build one with :meth:`from_pretrained` rather than calling the constructor,
+   unless wiring a model you loaded yourself.
+
+   :param model: A loaded model -- a PyTorch module for the
+                 v2 generation, an ONNX session for the frozen 1.x graphs.
+   :type model: nn.Module | OnnxModel
+   :param model_spec: Its entry from :data:`~blinklinmult.registry.MODELS`,
+                      carrying the normalisation and the fitted operating point.
+   :type model_spec: ModelSpec
+
+
+   .. py:method:: from_pretrained(model_id: str, weights: str | pathlib.Path | None = None) -> BlinkDetector
+      :classmethod:
+
+
+      Load a published model by id.
+
+      :param model_id: A key of :data:`~blinklinmult.registry.MODELS` --
+                       ``densenet121-union``, ``blinklint-union``, ``blinklinmult-union``
+                       or ``blinkcnn``.
+      :type model_id: str
+      :param weights: A local checkpoint, instead of the
+                      published one.
+      :type weights: str | Path | None
+
+      :returns: Ready to score.
+      :rtype: BlinkDetector
+
+      :raises DetectorError: If the id is unknown or its weights cannot be loaded.
+
+
+
+   .. py:method:: prepare_features(features: numpy.ndarray, mean: numpy.ndarray | None = None, std: numpy.ndarray | None = None) -> numpy.ndarray
+
+      Put a v2 feature vector into the layout this model expects.
+
+      Only ``blinklinmult-union`` needs this, and it needs two things the v2
+      schema does not provide:
+
+      * **head pose first.** 1.x ordered the blocks
+        ``[pose, landmarks, iris, diameters, eyelid, ear]``; v2 puts pose last.
+      * **corpus-wide standardisation.** 1.x z-scored each descriptor against
+        dataset statistics. Fed raw values the model's logits sit near -9.9 and
+        it never fires -- silently, with no error.
+
+      :param features: ``(T, 160)`` in the v2 layout.
+      :type features: np.ndarray
+      :param mean: Per-dimension corpus mean, in the v2
+                   layout. Required when the model standardises.
+      :type mean: np.ndarray | None
+      :param std: Per-dimension corpus standard deviation.
+      :type std: np.ndarray | None
+
+      :returns: ``(T, 160)`` ready to pass to :meth:`score`.
+      :rtype: np.ndarray
+
+      :raises DetectorError: If standardisation is required but no statistics were
+          given.
+
+
+
+   .. py:method:: calibrate(point: blinklinmult.fit.OperatingPoint) -> None
+
+      Adopt a fitted operating point in place of the registered default.
+
+      The 1.x models ship with a placeholder 0.5 threshold, never a fitted one.
+      Once :func:`~blinklinmult.fit.fit_operating_point` has measured a better
+      pair on **validation** data, this applies it so :meth:`detect` uses it.
+
+      :param point: The fitted point, from
+                    :func:`~blinklinmult.fit.fit_operating_point`.
+      :type point: OperatingPoint
+
+
+
+   .. py:method:: score(crops: numpy.ndarray | torch.Tensor, features: numpy.ndarray | torch.Tensor | None = None) -> numpy.ndarray
+
+      Per-frame closure probability.
+
+      :param crops: Crops in ``[0, 1]``, channel-first,
+                    as ``(3, H, W)``, ``(T, 3, H, W)`` or ``(B, T, 3, H, W)``.
+      :type crops: np.ndarray | torch.Tensor
+      :param features: ``(T, 160)`` or
+                       ``(B, T, 160)`` descriptors, required only by ``blinklinmult-union``.
+      :type features: np.ndarray | torch.Tensor | None
+
+      :returns:
+
+                ``(T,)`` for one window, else ``(B, T)``. Probabilities
+                    in ``[0, 1]``, not logits.
+      :rtype: np.ndarray
+
+      :raises DetectorError: If the crop rank is unusable, or a needed feature
+          stream is absent.
+
+
+
+   .. py:method:: score_long(crops: numpy.ndarray | torch.Tensor, features: numpy.ndarray | torch.Tensor | None = None, stride: int = 1) -> numpy.ndarray
+
+      Score a recording longer than the model's native window.
+
+      The 1.x sequence models were trained on 15-frame clips and lose accuracy
+      on longer input, so a long recording is scored by sliding that window
+      across it and **averaging** the overlapping predictions per frame.
+
+      **Averaging, not taking the maximum.** A maximum can only push a frame's
+      score up, so a single badly-positioned window -- one where the blink sits
+      at the very edge, an input distribution the model never trained on --
+      raises that frame permanently and errors accumulate instead of
+      cancelling. Measured over 200 rn30 windows carrying an annotated blink:
+
+      ==========  =========  ========  =========  ======
+      reduction   precision  recall    F1         stride
+      ==========  =========  ========  =========  ======
+      maximum     0.236      0.954     0.379      1
+      **mean**    **0.346**  0.899     **0.500**  1
+      mean        0.322      0.876     0.471      15
+      ==========  =========  ========  =========  ======
+
+      The maximum's near-perfect recall against 0.24 precision is the
+      signature of over-firing: it fires almost everywhere, so it never misses.
+      Dense striding also beats non-overlapping windows, so ``stride=1`` is the
+      default despite costing more forward passes.
+
+      A frame-wise model has no native window and is scored in one pass.
+
+      :param crops: ``(T, 3, H, W)`` in ``[0, 1]``.
+      :type crops: np.ndarray | torch.Tensor
+      :param features: ``(T, 160)`` descriptors,
+                       required only by ``blinklinmult-union``.
+      :type features: np.ndarray | torch.Tensor | None
+      :param stride: Frames between successive windows.
+      :type stride: int
+
+      :returns: ``(T,)`` closure probability per frame.
+      :rtype: np.ndarray
+
+      :raises DetectorError: If ``stride`` is not positive.
+
+
+
+   .. py:method:: detect(crops: numpy.ndarray | torch.Tensor, features: numpy.ndarray | torch.Tensor | None = None) -> list[blinklinmult.train.events.Interval]
+
+      Find blink intervals in a single window.
+
+      Scores every frame, then merges runs with
+      :func:`~blinklinmult.train.events.to_intervals` at this model's fitted
+      operating point. Where a low threshold is registered the extraction is
+      *hysteretic*: a run must peak above the high threshold to count, but
+      extends while above the low one, which recovers the shallow onset and
+      offset a single cut clips away.
+
+      :param crops: One window; see :meth:`score`.
+      :type crops: np.ndarray | torch.Tensor
+      :param features: Descriptors, if needed.
+      :type features: np.ndarray | torch.Tensor | None
+
+      :returns: Inclusive ``(start, end)`` frame indices.
+      :rtype: list[Interval]
+
+      :raises DetectorError: If more than one window is passed, since intervals are
+          indices into a single timeline.
+
+
+

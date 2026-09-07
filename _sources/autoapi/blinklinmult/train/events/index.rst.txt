@@ -1,0 +1,587 @@
+blinklinmult.train.events
+=========================
+
+.. py:module:: blinklinmult.train.events
+
+.. autoapi-nested-parse::
+
+   Event-level scoring: recovering blinks from a per-frame signal.
+
+   This is the evaluation protocol the blink literature uses, and following it is
+   what makes numbers here comparable with published ones. The window a model sees
+   is its receptive field and nothing more — no blink is ever assigned to a window.
+   Events are recovered afterwards:
+
+   1. **Sweep** the recording with 50%-overlapping windows, annotation-blind.
+   2. **Average** the per-frame predictions wherever windows overlap.
+   3. **Threshold** the averaged signal and merge consecutive above-threshold
+      frames into predicted intervals.
+   4. **Match** those intervals against the annotated blinks.
+
+   Steps 3 and 4 are exactly MPEblink's Figure 6 procedure.
+
+   **Four matching criteria, all reported.** Papers differ in which they use, and
+   they are not interchangeable — a detection one frame short of the annotation is
+   a hit under ``any`` and a miss under ``iou75``:
+
+   =========  ==================================================================
+   ``any``    ≥1 frame of intersection — Drutarovsky & Fogelton (2015)
+   ``iou20``  temporal IoU > 0.2 — Fogelton & Beneš (2016)
+   ``iou50``  temporal IoU ≥ 0.50 — MPEblink Blink-AP
+   ``iou75``  temporal IoU ≥ 0.75 — MPEblink Blink-AP
+   =========  ==================================================================
+
+   **Matching is one-to-one**, as in MPEblink's Hungarian assignment, and that
+   cuts both ways:
+
+   * Two predicted intervals on the same blink score one true positive and one
+     *false* positive — otherwise a model that fires twice per blink reports twice
+     the recall it earned.
+   * One long prediction spanning two annotated blinks scores one true positive and
+     one *false negative*. Failing to separate a close pair is a real failure —
+     MPEblink's "consecutive rapid eyeblink" case — and crediting both would hide
+     it. A model that resolves the pair gets full credit.
+
+   **No single threshold.** The operating point changes every number, so the
+   headline is an FROC curve: recall against false alarms per minute, swept across
+   thresholds. A single-threshold table is still reported for readability, but the
+   curve is what the comparison rests on.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.events.logger
+   blinklinmult.train.events.CRITERIA
+   blinklinmult.train.events.DEFAULT_THRESHOLDS
+   blinklinmult.train.events.Interval
+   blinklinmult.train.events.BLINK_AP_TIOU
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.train.events.EventError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.train.events.MatchResult
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.train.events.average_overlapping
+   blinklinmult.train.events.to_intervals
+   blinklinmult.train.events.temporal_iou
+   blinklinmult.train.events.segment_iou
+   blinklinmult.train.events.interpolated_average_precision
+   blinklinmult.train.events.to_exclusive
+   blinklinmult.train.events.blink_ap
+   blinklinmult.train.events.blink_ap_summary
+   blinklinmult.train.events.matches
+   blinklinmult.train.events.match
+   blinklinmult.train.events.froc
+   blinklinmult.train.events.pool_curves
+   blinklinmult.train.events.average_precision
+   blinklinmult.train.events.event_metrics
+   blinklinmult.train.events.annotated_intervals
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: CRITERIA
+   :type:  dict[str, float]
+
+   Matching criteria, as minimum temporal IoU.
+
+   ``any`` is the degenerate case: a threshold of ``0.0`` accepts any non-empty
+   intersection, so it needs no separate code path. ``iou20`` is *strictly*
+   greater than 0.2 in the source; the difference from ``>=`` is one frame in
+   edge cases and is documented on :func:`matches`.
+
+.. py:data:: DEFAULT_THRESHOLDS
+
+   Operating points swept for the FROC curve.
+
+   0.01 resolution over ``[0.01, 0.99]``. The original 0.05-step sweep over
+   ``[0.05, 0.95]`` was too coarse to distinguish a fitted optimum from a boundary
+   hit: the frame-wise model's operating point landed on 0.05 -- the sweep's floor
+   -- for both RN15 and RN30, which is the signature of a search running out of
+   range rather than finding a minimum. Extending below the old floor makes that
+   distinguishable, and the finer step recovers calibration that 0.05 buckets lost.
+
+.. py:data:: Interval
+
+   A closed frame interval ``(start, end)``, both inclusive.
+
+.. py:exception:: EventError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when a signal and its annotation cannot be scored together.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: MatchResult
+
+   Counts from matching predictions to annotations under one criterion.
+
+   :param true_positives: Annotated blinks that were detected.
+   :type true_positives: int
+   :param false_positives: Predicted intervals matching no annotation.
+   :type false_positives: int
+   :param false_negatives: Annotated blinks that were missed.
+   :type false_negatives: int
+   :param matched: Annotation index to the prediction
+                   indices that hit it, for inspecting *how* a blink was detected.
+   :type matched: dict[int, list[int]]
+
+
+   .. py:property:: recall
+      :type: float
+
+
+      Fraction of annotated blinks detected.
+
+      :returns: ``TP / (TP + FN)``; ``0.0`` when nothing was annotated.
+      :rtype: float
+
+
+   .. py:property:: precision
+      :type: float
+
+
+      Fraction of predictions that hit an annotation.
+
+      :returns: ``TP / (TP + FP)``; ``0.0`` when nothing was predicted.
+      :rtype: float
+
+
+   .. py:property:: f1
+      :type: float
+
+
+      Harmonic mean of precision and recall.
+
+      :returns: ``0.0`` when either is zero.
+      :rtype: float
+
+
+   .. py:method:: false_alarms_per_minute(minutes: float) -> float
+
+      False positives normalised by recording length.
+
+      The natural rate on continuous footage: a count alone is not comparable
+      between a 3-second clip and a 5-minute recording.
+
+      :param minutes: Recording duration.
+      :type minutes: float
+
+      :returns: ``FP / minutes``; ``0.0`` for a zero-length recording.
+      :rtype: float
+
+
+
+.. py:function:: average_overlapping(probabilities: collections.abc.Sequence[float] | numpy.ndarray, frame_ids: collections.abc.Sequence[int] | numpy.ndarray, n_frames: int) -> tuple[numpy.ndarray, numpy.ndarray]
+
+   Collapse overlapping window predictions into one signal per frame.
+
+   A frame covered by several windows receives the mean of their predictions.
+   A frame no window covers has no prediction at all and is **masked**, not
+   zeroed — a zero is a confident "no blink", which is a different claim from
+   "not evaluated".
+
+   :param probabilities: ``(N,)`` per-frame
+                         predictions, flattened across windows and eyes.
+   :type probabilities: Sequence[float] | np.ndarray
+   :param frame_ids: ``(N,)`` frame id each
+                     prediction belongs to.
+   :type frame_ids: Sequence[int] | np.ndarray
+   :param n_frames: Length of the recording.
+   :type n_frames: int
+
+   :returns: ``(n_frames,)`` averaged signal and its
+             ``(n_frames,)`` coverage mask.
+   :rtype: tuple[np.ndarray, np.ndarray]
+
+   :raises EventError: If the inputs disagree in length, or a frame id is out of
+       range for the declared recording length.
+
+
+.. py:function:: to_intervals(signal: numpy.ndarray, mask: numpy.ndarray, threshold: float, low_threshold: float | None = None) -> list[Interval]
+
+   Merge consecutive above-threshold frames into predicted intervals.
+
+   An uncovered frame **breaks** a run rather than extending it: with no
+   prediction there, joining across the gap would assert a continuity the
+   model never claimed.
+
+   **Hysteresis.** With ``low_threshold`` set, a run must *peak* above
+   ``threshold`` to count as an event but extends while it stays above
+   ``low_threshold``. A single cut is the crudest possible extractor and is
+   what makes the operating point brittle -- it has to be low enough to catch
+   the shallow start of a closure and high enough not to fire on noise, and no
+   single value does both. Two thresholds separate those jobs: the high one
+   decides *whether* this is a blink, the low one decides *where* it begins and
+   ends.
+
+   This matters for the physical shape of a blink. The eye-state signal ramps
+   down through closing, plateaus while closed, and ramps back up through
+   opening; the ramps cross the low threshold well before the high one, so
+   hysteresis recovers the true onset and offset rather than clipping to the
+   part of the closure that happened to be deepest. It also makes an
+   *incomplete* blink -- one that crosses low but never high -- explicitly
+   detectable rather than silently truncated.
+
+   :param signal: ``(T,)`` averaged per-frame predictions.
+   :type signal: np.ndarray
+   :param mask: ``(T,)`` coverage mask.
+   :type mask: np.ndarray
+   :param threshold: Frames strictly above this are "blinking". With
+                     hysteresis this is the *high* threshold, which a run must reach.
+   :type threshold: float
+   :param low_threshold: Extend a run while it stays strictly above
+                         this. ``None`` -- the default -- keeps the single-threshold
+                         behaviour exactly, so every existing caller is unchanged. Values at
+                         or above ``threshold`` are treated as ``None``, since they could
+                         only shrink a run rather than extend it.
+   :type low_threshold: float | None
+
+   :returns: Inclusive ``(start, end)`` frame intervals, in order.
+   :rtype: list[Interval]
+
+   :raises EventError: If the signal and mask disagree in length.
+
+
+.. py:function:: temporal_iou(a: Interval, b: Interval) -> float
+
+   Intersection over union of two inclusive frame intervals.
+
+   :param a: First interval.
+   :type a: Interval
+   :param b: Second.
+   :type b: Interval
+
+   :returns: ``|a ∩ b| / |a ∪ b|`` in frames; ``0.0`` when disjoint.
+   :rtype: float
+
+
+.. py:data:: BLINK_AP_TIOU
+
+   The ten tIoU thresholds MPEblink's Blink-AP averages over.
+
+   ``np.linspace(0.5, 0.95, 10)`` verbatim from the authors' ``action_ap``, so
+   ``[0]`` is Blink-AP@0.5, ``[5]`` is @0.75 and the mean is the headline
+   @0.5:0.95. Reproducing the grid exactly is what makes the numbers comparable.
+
+.. py:function:: segment_iou(target: tuple[float, float], candidates: numpy.ndarray) -> numpy.ndarray
+
+   Temporal IoU of one interval against many, in the authors' convention.
+
+   **Endpoints are exclusive here**, unlike :func:`temporal_iou`: the authors
+   compute ``t_end - t_start`` with no ``+1``, so a blink annotated
+   ``[10, 14]`` has length 4 rather than 5. Keeping their convention matters --
+   on a five-frame blink the two differ by 20%, which is enough to move a
+   detection across a tIoU threshold and change the reported AP.
+
+   Both arguments must already be **half-open**; use :func:`to_exclusive` to
+   convert this project's inclusive intervals.
+
+   :param target: The predicted interval, half-open.
+   :type target: tuple[float, float]
+   :param candidates: ``(N, 2)`` annotated intervals, half-open.
+   :type candidates: np.ndarray
+
+   :returns: ``(N,)`` temporal IoU against each candidate.
+   :rtype: np.ndarray
+
+
+.. py:function:: interpolated_average_precision(precision: numpy.ndarray, recall: numpy.ndarray) -> float
+
+   Area under the precision-recall curve, VOC-style.
+
+   Precision is made monotonically decreasing from the right, then the area is
+   summed over the steps where recall changes. This is the authors'
+   ``interpolated_prec_rec`` verbatim.
+
+   :param precision: ``(N,)`` cumulative precision.
+   :type precision: np.ndarray
+   :param recall: ``(N,)`` cumulative recall.
+   :type recall: np.ndarray
+
+   :returns: The average precision.
+   :rtype: float
+
+
+.. py:function:: to_exclusive(interval: Interval) -> tuple[float, float]
+
+   Convert an inclusive frame interval to the authors' half-open one.
+
+   Everything else here treats ``(start, end)`` as **inclusive** of both
+   endpoints, because that is what the corpora annotate: a blink over frames
+   10 to 14 covers five frames. The authors' ``segment_iou`` measures
+   ``end - start`` with no ``+1``, so the same pair means a length of four.
+
+   Without this conversion a **single-frame prediction has length zero**, its
+   IoU against itself is ``0/0 = 0``, and a perfect detection scores as a
+   miss -- measured on the real corpus, that alone cost 2.4 points of AP.
+   The annotation never triggers it (its shortest blink spans two frames, and
+   none is degenerate across 4 809 events), but a thresholded signal readily
+   produces one-frame intervals.
+
+   :param interval: Inclusive ``(start, end)``.
+   :type interval: Interval
+
+   :returns: Half-open ``(start, end + 1)``, so an inclusive
+             span of ``n`` frames has exclusive length ``n``.
+   :rtype: tuple[float, float]
+
+
+.. py:function:: blink_ap(annotated: dict[str, list[Interval]], predicted: dict[str, list[tuple[int, int, float]]], tiou_thresholds: numpy.ndarray | None = None) -> numpy.ndarray
+
+   MPEblink's Blink-AP: average precision over a sweep of tIoU thresholds.
+
+   A faithful reimplementation of the authors' ``compute_average_precision_detection``,
+   so a number produced here can be placed beside their published 8.58
+   (@0.5:0.95) and 25.13 (@0.5).
+
+   The algorithm, and why each step matters:
+
+   1. **Rank every prediction across the whole corpus by score**, not per
+      recording. AP integrates one global precision-recall curve, so a
+      confident detection in one clip outranks a doubtful one in another.
+   2. For each prediction, compute tIoU against the annotations **of its own
+      instance**, and try them from highest overlap down.
+   3. At each tIoU threshold independently: the first annotation clearing the
+      threshold *and not already claimed* makes this a true positive and locks
+      it. One already claimed is skipped in favour of the next. A prediction
+      that clears the threshold against nothing unclaimed is a false positive.
+   4. Integrate precision against recall with
+      :func:`interpolated_average_precision`, once per threshold.
+
+   Because matching is one-to-one *per threshold*, a model firing twice on one
+   blink earns one true positive and one false positive -- the same discipline
+   :func:`match` applies at a single operating point.
+
+   **This is oracle-instance Blink-AP.** The authors score only the instances
+   their detector already matched; here the instances come from the annotation,
+   so instance detection is free and the result is an upper bound on their
+   joint figure. It must be reported as such -- see
+   :mod:`blinklinmult.preprocess.mpeblink`.
+
+   :param annotated: Instance id to its annotated blink intervals.
+   :type annotated: dict
+   :param predicted: Instance id to ``(start, end, score)`` predictions.
+                     Ids absent from ``annotated`` contribute only false positives.
+   :type predicted: dict
+   :param tiou_thresholds: The sweep; defaults to
+                           :data:`BLINK_AP_TIOU`.
+   :type tiou_thresholds: np.ndarray | None
+
+   :returns: ``(len(tiou_thresholds),)`` average precision per threshold.
+             All zeros when nothing is annotated or nothing is predicted.
+   :rtype: np.ndarray
+
+
+.. py:function:: blink_ap_summary(scores: numpy.ndarray) -> dict[str, float]
+
+   Name the Blink-AP figures the authors report.
+
+   :param scores: The output of :func:`blink_ap`, length 10.
+   :type scores: np.ndarray
+
+   :returns: ``blink_ap`` (the @0.5:0.95 mean, their headline),
+             plus ``blink_ap50``, ``blink_ap75`` and ``blink_ap95``.
+   :rtype: dict[str, float]
+
+
+.. py:function:: matches(predicted: Interval, annotated: Interval, criterion: str) -> bool
+
+   Whether one prediction counts as detecting one annotated blink.
+
+   :param predicted: Predicted interval.
+   :type predicted: Interval
+   :param annotated: Annotated blink.
+   :type annotated: Interval
+   :param criterion: A key of :data:`CRITERIA`.
+   :type criterion: str
+
+   :returns: Whether the pair matches.
+   :rtype: bool
+
+   :raises EventError: If the criterion is unknown.
+
+
+.. py:function:: match(predicted: list[Interval], annotated: list[Interval], criterion: str = 'any') -> MatchResult
+
+   Count hits, misses, and false alarms under one criterion.
+
+   An annotated blink is detected when *any* prediction matches it, and counts
+   once however many do. Every prediction matching no annotation is a false
+   alarm — including the surplus ones when several land on the same blink,
+   which is what stops a jittery model from inflating its recall.
+
+   :param predicted: Predicted intervals.
+   :type predicted: list[Interval]
+   :param annotated: Annotated blinks.
+   :type annotated: list[Interval]
+   :param criterion: A key of :data:`CRITERIA`.
+   :type criterion: str
+
+   :returns: The counts, with the annotation-to-prediction map.
+   :rtype: MatchResult
+
+
+.. py:function:: froc(signal: numpy.ndarray, mask: numpy.ndarray, annotated: list[Interval], minutes: float, criterion: str = 'any', thresholds: numpy.ndarray | None = None, low_ratio: float | None = None) -> dict[str, numpy.ndarray]
+
+   Sweep the threshold, tracing recall against false alarms per minute.
+
+   The headline result. A single operating point is a choice that changes
+   every number reported at it; the curve makes the trade-off visible instead
+   of burying it in a constant.
+
+   :param signal: ``(T,)`` averaged per-frame predictions.
+   :type signal: np.ndarray
+   :param mask: ``(T,)`` coverage mask.
+   :type mask: np.ndarray
+   :param annotated: Annotated blinks.
+   :type annotated: list[Interval]
+   :param minutes: Recording duration, for the false-alarm rate.
+   :type minutes: float
+   :param criterion: A key of :data:`CRITERIA`.
+   :type criterion: str
+   :param thresholds: Operating points; defaults to
+                      :data:`DEFAULT_THRESHOLDS`.
+   :type thresholds: np.ndarray | None
+   :param low_ratio: Hysteresis, as a fraction of the swept
+                     threshold. Expressed as a ratio rather than an absolute value so the
+                     pair stays ordered across the whole sweep -- a constant low
+                     threshold would exceed the high one at the bottom of the sweep and
+                     silently disable hysteresis. ``None`` keeps the single cut.
+   :type low_ratio: float | None
+
+   :returns: ``thresholds``, ``recall``, ``precision``,
+             ``f1``, ``false_alarms_per_minute``, and the ``tp``/``fp``/``fn``
+             counts they were derived from, aligned by index.
+
+             The counts are returned because **curves from several recordings pool by
+             summing counts at each threshold, never by averaging rates** — a
+             thirty-second clip must not weigh the same as a five-minute recording.
+             Without them a corpus curve could only be assembled the wrong way.
+   :rtype: dict[str, np.ndarray]
+
+
+.. py:function:: pool_curves(curves: collections.abc.Sequence[dict[str, numpy.ndarray]], minutes: float) -> dict[str, numpy.ndarray]
+
+   Combine per-recording FROC curves into one corpus curve.
+
+   **Counts are summed at each threshold and the rates re-derived**, which is
+   the same rule :meth:`~blinklinmult.train.callbacks.EventReport._aggregate`
+   applies to the single operating point. Averaging the per-recording rates
+   instead would give a thirty-second clip the same weight as a five-minute
+   recording, and a corpus is not a mean of its recordings.
+
+   :param curves: One :func:`froc` result per
+                  recording, all swept over the same thresholds.
+   :type curves: Sequence[dict[str, np.ndarray]]
+   :param minutes: Total duration across the recordings, for the
+                   false-alarm rate.
+   :type minutes: float
+
+   :returns: A curve in the same shape :func:`froc` returns.
+             Empty when no curves are given.
+   :rtype: dict[str, np.ndarray]
+
+   :raises EventError: If the curves were swept over different thresholds, which
+       would make summing them index-by-index meaningless.
+
+
+.. py:function:: average_precision(curve: dict[str, numpy.ndarray]) -> float
+
+   Area under the precision-recall curve of a threshold sweep.
+
+   The curve is anchored at ``recall = 0`` before integrating. Without that
+   anchor a *perfect* detector scores zero: it holds recall at 1.0 across every
+   threshold, the recall axis has no extent, and the trapezoid collapses —
+   the best possible result reported as the worst. Anchoring is what the
+   standard definition does, and it makes the integral the fraction of the
+   recall range achieved at a given precision.
+
+   :param curve: Output of :func:`froc`.
+   :type curve: dict[str, np.ndarray]
+
+   :returns: Average precision over the swept operating points.
+   :rtype: float
+
+
+.. py:function:: event_metrics(signal: numpy.ndarray, mask: numpy.ndarray, annotated: list[Interval], minutes: float, threshold: float = 0.5, thresholds: numpy.ndarray | None = None, curves: dict[str, dict[str, numpy.ndarray]] | None = None, low_threshold: float | None = None, low_ratio: float | None = None) -> dict[str, float]
+
+   Every event-level metric, under every criterion.
+
+   :param signal: ``(T,)`` averaged per-frame predictions.
+   :type signal: np.ndarray
+   :param mask: ``(T,)`` coverage mask.
+   :type mask: np.ndarray
+   :param annotated: Annotated blinks.
+   :type annotated: list[Interval]
+   :param minutes: Recording duration.
+   :type minutes: float
+   :param threshold: Operating point for the single-threshold counts.
+   :type threshold: float
+   :param thresholds: Sweep for the curves.
+   :type thresholds: np.ndarray | None
+   :param curves: Filled in with the
+                  FROC curve per criterion when given. The curve is what
+                  ``average_precision`` and ``best_f1`` are derived from, and callers
+                  that pool several recordings need the points themselves — returning
+                  only the two scalars discards the headline result.
+   :type curves: dict[str, dict[str, np.ndarray]] | None
+   :param low_threshold: Absolute hysteresis threshold for the
+                         single-point counts. See :func:`to_intervals`.
+   :type low_threshold: float | None
+   :param low_ratio: Hysteresis as a fraction of the threshold,
+                     used for the swept curves and as a fallback for the single point
+                     when ``low_threshold`` is not given.
+   :type low_ratio: float | None
+
+   :returns: ``event/<criterion>/<metric>`` for each of
+             :data:`CRITERIA`, plus descriptive counts that keep a rate readable.
+   :rtype: dict[str, float]
+
+
+.. py:function:: annotated_intervals(blink_ids: numpy.ndarray) -> list[Interval]
+
+   Recover annotated blink intervals from a per-frame id array.
+
+   Runs of *consecutive* frames sharing an id, so a reused id yields two
+   events rather than one spanning the gap between them — which is what the
+   annotation means, and what the corpora's own notes describe when a subject
+   "blinks twice very fast".
+
+   :param blink_ids: ``(T,)`` per-frame blink id; negative means no
+                     blink.
+   :type blink_ids: np.ndarray
+
+   :returns: Inclusive intervals, in frame order.
+   :rtype: list[Interval]
+
+

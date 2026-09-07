@@ -1,0 +1,246 @@
+blinklinmult.data.embeddings
+============================
+
+.. py:module:: blinklinmult.data.embeddings
+
+.. autoapi-nested-parse::
+
+   Precomputed eye embeddings, for frozen-encoder runs.
+
+   A **frozen** encoder computes the identical 256-d vector for a given crop on
+   every epoch: the weights are fixed and so is the input, so every epoch after the
+   first recomputes a constant. Caching that turns the expensive part of a batch
+   into a lookup.
+
+   Measured on this benchmark: a batch is ``batch_size x 45`` crops through
+   ConvNeXt, costing **0.74 s** with a frozen encoder against milliseconds from
+   cache, and 3.4 GB of embeddings replaces 51 GB of crops -- small enough to sit
+   in RAM, which removes the I/O question along with the compute one.
+
+   **Two preconditions, both refused in config rather than warned about**
+   (:class:`~blinklinmult.train.config.DataConfig`):
+
+   * ``model.encoder_freeze`` -- an encoder that is still learning produces
+     different embeddings after every step, so a cache is stale from step one.
+   * ``data.augment`` must be ``None`` -- augmentation perturbs the crop *before*
+     the encoder, so caching would freeze one augmented view per window for the
+     whole run, keeping the distortion and losing the variety.
+
+   Either mistake trains against embeddings from a model that no longer exists and
+   reports a plausible, wrong number. That is the same failure class as the
+   carrier-corpus contamination and the write-only quality signals found earlier in
+   this project, so the checks here are hard errors that name the mismatched field.
+
+   **The cache is keyed by the encoder's own weights.** ``encoder_digest`` hashes
+   the state dict, and the digest is part of the directory path, so pointing
+   ``model.encoder_weights`` at a different arm misses the cache and rebuilds
+   rather than silently reusing the wrong vectors.
+
+   Caches are **not** deleted after a run. One cache serves every frozen arm that
+   shares a seed checkpoint -- deleting it between arms would rebuild it each time,
+   at a full forward pass over the corpus per rebuild, to reclaim 3.4 GB against
+   the corpora's 51 GB. ``make clean-cache`` removes them when that is actually
+   wanted.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.embeddings.logger
+   blinklinmult.data.embeddings.MANIFEST_NAME
+   blinklinmult.data.embeddings.EMBEDDING_DTYPE
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   blinklinmult.data.embeddings.EmbeddingCacheError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   blinklinmult.data.embeddings.CacheKey
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   blinklinmult.data.embeddings.encoder_digest
+   blinklinmult.data.embeddings.shard_path
+   blinklinmult.data.embeddings.write_shard
+   blinklinmult.data.embeddings.read_shard
+   blinklinmult.data.embeddings.describe
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: MANIFEST_NAME
+   :value: 'manifest.json'
+
+
+   Per-shard sidecar describing what the cache holds and what built it.
+
+.. py:data:: EMBEDDING_DTYPE
+
+   Stored precision.
+
+   Half the size at no measurable cost: these are inputs to a ``d_model=32``
+   transformer, far above float16's resolution. The equivalence test in
+   ``tests/data/test_embeddings.py`` asserts the round trip stays within tolerance
+   rather than assuming it.
+
+.. py:exception:: EmbeddingCacheError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when a cache cannot be used for the run that asked for it.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: CacheKey
+
+   Everything that determines a cache's contents.
+
+   Compared field by field on load, so a mismatch names the field that changed
+   rather than failing obscurely later. A cache that silently disagreed with
+   its run would train on the wrong vectors and report a believable number.
+
+   .. attribute:: encoder_digest
+
+      Hash of the encoder's ``state_dict``.
+
+      :type: str
+
+   .. attribute:: backbone
+
+      Backbone name, for a readable error.
+
+      :type: str
+
+   .. attribute:: output_dim
+
+      Embedding width.
+
+      :type: int
+
+   .. attribute:: image_size
+
+      Crop size the encoder was fed.
+
+      :type: int
+
+
+   .. py:method:: as_dict() -> dict[str, object]
+
+      Serialise for the manifest.
+
+      :returns: JSON-safe fields.
+      :rtype: dict[str, object]
+
+
+
+.. py:function:: encoder_digest(encoder: torch.nn.Module) -> str
+
+   Hash an encoder's parameters, to key a cache by the weights that built it.
+
+   Parameters are hashed in sorted name order so the digest is stable across
+   runs, and on the CPU in float32 so it does not depend on the device or the
+   autocast state a run happened to use.
+
+   :param encoder: The eye encoder.
+   :type encoder: torch.nn.Module
+
+   :returns: Hex SHA-256 of the parameter tensors.
+   :rtype: str
+
+
+.. py:function:: shard_path(root: pathlib.Path | str, key: CacheKey, corpus: str, subset: str) -> pathlib.Path
+
+   Where one corpus-split's embeddings live.
+
+   The digest is a path component, not merely a manifest field: a different
+   encoder lands in a different directory, so the wrong cache cannot be picked
+   up even if a manifest check were somehow skipped.
+
+   :param root: Cache root from ``data.embedding_cache``.
+   :type root: Path | str
+   :param key: Identity of the encoder that built it.
+   :type key: CacheKey
+   :param corpus: Corpus name.
+   :type corpus: str
+   :param subset: Split name.
+   :type subset: str
+
+   :returns: The shard's ``.h5`` path.
+   :rtype: Path
+
+
+.. py:function:: write_shard(path: pathlib.Path, key: CacheKey, keys: list[str], embeddings: numpy.ndarray, masks: numpy.ndarray) -> None
+
+   Write one corpus-split's embeddings and its manifest.
+
+   Written to a temporary file and renamed, so an interrupted build leaves no
+   half-written shard that a later run would trust.
+
+   :param path: Destination, from :func:`shard_path`.
+   :type path: Path
+   :param key: Identity to record.
+   :type key: CacheKey
+   :param keys: Sample ids, in row order.
+   :type keys: list[str]
+   :param embeddings: ``(N, T, D)``.
+   :type embeddings: np.ndarray
+   :param masks: ``(N, T)`` bool.
+   :type masks: np.ndarray
+
+
+.. py:function:: read_shard(path: pathlib.Path, key: CacheKey) -> dict[str, numpy.ndarray]
+
+   Load a shard, refusing one built by a different encoder or config.
+
+   :param path: The shard.
+   :type path: Path
+   :param key: What this run requires.
+   :type key: CacheKey
+
+   :returns: ``keys``, ``embedding`` and ``mask``.
+   :rtype: dict[str, np.ndarray]
+
+   :raises EmbeddingCacheError: If the shard or its manifest is missing, or any
+       identity field disagrees with ``key``.
+
+
+.. py:function:: describe(root: pathlib.Path | str) -> list[dict[str, object]]
+
+   Every shard under a cache root, with what it holds.
+
+   Answers "which corpora and splits are cached, and which encoder built
+   them?" without reading the embedding arrays -- the manifests alone carry
+   it. Sorted by encoder digest, then corpus, then split, so several encoders'
+   caches under one root stay visually grouped.
+
+   :param root: Cache root, as passed to ``data.embedding_cache``.
+   :type root: Path | str
+
+   :returns: One manifest per shard, each with an added
+             ``path``. Empty when the root does not exist or holds no shard.
+   :rtype: list[dict[str, object]]
+
+
