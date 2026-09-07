@@ -56,7 +56,7 @@ train = [
   # torch<=2.11 for their own runtime, and a floor above the versions a target
   # environment can supply makes the package uninstallable there rather than
   # merely untested.
-  "torch>=2.12",
+  "torch>=2.14.0",
   "torchvision",
   "lightning",
   "torchmetrics",
@@ -100,7 +100,7 @@ onnx = [
 # Running the v2 *checkpoint* rather than its frozen graph -- for fine-tuning, or
 # to compare the two runtimes. `blinkcnn-onnx` needs none of this.
 torch = [
-  "torch>=2.12",
+  "torch>=2.14.0",
   "torchvision",
   "linmult>=2.1",
   "timm>=1.0",
