@@ -155,7 +155,7 @@ preprocess = [
   # >=2.11.1 removed exordium's own dependency on blinklinmult (its 1.x
   # DenseNet121 wrapper). Below that, importing exordium.video.face raises
   # ModuleNotFoundError against a v2 checkout, which has no blinklinmult.models.
-  "exordium[video]>=2.11.1",
+  "exordium[video]>=2.11.3",
   # **Pinned below 1.0.** mediapipe 1.0.x aborts the process inside
   # `TensorsToDetectionsCalculator::Open` -- "Check failed: service_ Service is
   # unavailable" -- on macOS arm64 / Python 3.13, for any input including a
