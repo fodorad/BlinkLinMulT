@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/fodorad/BlinkLinMulT/compare/v2.0.0...v2.0.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **demo:** pin the HF Space to a released version and add a deploy target ([#17](https://github.com/fodorad/BlinkLinMulT/issues/17)) ([efae6b7](https://github.com/fodorad/BlinkLinMulT/commit/efae6b74390060a6382007127112834c0b68a099))
+
 ## [2.0.0](https://github.com/fodorad/BlinkLinMulT/compare/v1.0.4...v2.0.0) (2026-09-07)
 
 
