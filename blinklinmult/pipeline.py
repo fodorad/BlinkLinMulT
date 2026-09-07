@@ -323,7 +323,10 @@ def _read_video(
         PipelineError: If the file cannot be read, the start lies past its end,
             or the segment holds no frames.
     """
-    from exordium.video.core.io import get_video_metadata, load_video
+    from exordium.video.core.io import (  # ty: ignore[unresolved-import]
+        get_video_metadata,
+        load_video,
+    )
 
     if start < 0:
         raise PipelineError(f"Start timestamp must be at or after 0 s; got {start}.")
@@ -432,7 +435,7 @@ def run(
             f"{detector.spec.model_id!r} needs corpus feature statistics; pass stats=..."
         )
 
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     total_stages = 7
     image_size = detector.spec.image_size

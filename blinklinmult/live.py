@@ -155,7 +155,7 @@ def draw_plot(
     Returns:
         np.ndarray: ``(height, width, 3)`` uint8 RGB.
     """
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     canvas = np.full((height, width, 3), PLOT_BACKGROUND, dtype=np.uint8)
     cv2.rectangle(canvas, (0, 0), (width - 1, height - 1), GRID_COLOUR, 1)
@@ -238,7 +238,7 @@ def compose(frame: np.ndarray, left: np.ndarray, right: np.ndarray) -> np.ndarra
         np.ndarray: ``(H + plot_height, W, 3)`` uint8 RGB, the plots side by
         side beneath the frame at half its width each.
     """
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     width = frame.shape[1]
     half = width // 2
@@ -273,7 +273,7 @@ def draw_overlay(
     Returns:
         np.ndarray: A new annotated frame.
     """
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     canvas = np.ascontiguousarray(frame.copy())
     if detection is not None:
@@ -316,7 +316,7 @@ def _panel(canvas: np.ndarray, lines: list[str]) -> None:
         canvas (np.ndarray): Modified in place.
         lines (list[str]): Readout lines.
     """
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     from blinklinmult.overlay import LINE_HEIGHT, PANEL_ALPHA
 
@@ -351,7 +351,7 @@ def eye_crops(detection, frame: np.ndarray, image_size: int = 64) -> np.ndarray 
         than scored: the caller reads the two scores positionally, so a missing
         side would silently shift the right eye's score onto the left.
     """
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     from blinklinmult.preprocess.geometry import LEFT, RIGHT
 

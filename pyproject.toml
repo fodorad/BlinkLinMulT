@@ -334,3 +334,14 @@ python-version = "3.13"
 # The preprocess scripts import the heavy optional extraction stack; they are
 # not part of the published library API.
 exclude = ["blinklinmult/preprocess", "blinklinmult/paper/_linmult"]
+
+[tool.ty.rules]
+# `cv2` and `exordium` are optional extras, imported lazily inside the functions
+# that need them (see the packaging note above `[tool.hatch.build.targets.wheel]`).
+# Whether they resolve depends on which extras are installed: a full local dev
+# environment pulls opencv in transitively, while CI installs a narrower set and
+# does not. The `ty: ignore[unresolved-import]` comments on those imports are
+# therefore load-bearing in CI and redundant locally, so the "unused directive"
+# warning fires in exactly one of the two. Disable it rather than let the same
+# source tree pass one environment and fail the other.
+unused-ignore-comment = "ignore"

@@ -94,7 +94,7 @@ def _text(frame: np.ndarray, lines: list[str]) -> None:
         frame (np.ndarray): ``(H, W, 3)`` uint8 RGB, modified in place.
         lines (list[str]): One string per line.
     """
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     x, y = TEXT_ORIGIN
 
@@ -166,7 +166,7 @@ def draw(frame: np.ndarray, result: Result, index: int) -> np.ndarray:
     Returns:
         np.ndarray: A new annotated frame.
     """
-    import cv2
+    import cv2  # ty: ignore[unresolved-import]
 
     canvas = np.ascontiguousarray(frame.copy())
     frame_result = result.frames[index]
@@ -216,7 +216,7 @@ def render(frames: np.ndarray, result: Result, output_path: str | Path) -> Path:
     """
     from pathlib import Path as _Path
 
-    from exordium.video.core.io import save_video
+    from exordium.video.core.io import save_video  # ty: ignore[unresolved-import]
 
     annotated = np.stack([draw(frames[i], result, i) for i in range(len(result.frames))])
     destination = _Path(output_path)
