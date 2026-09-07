@@ -253,7 +253,11 @@ Upload a video, pick a model and an event-extraction rule, get an annotated vide
 make app        # http://127.0.0.1:7860
 ```
 
-Also deployed as a Hugging Face Space at [`fodorad/blink_detection`](https://huggingface.co/spaces/fodorad/blink_detection).
+Also deployed as a Hugging Face Space at [`fodorad/blink_detection`](https://huggingface.co/spaces/fodorad/blink_detection), which runs the released package rather than this checkout:
+
+```bash
+make push-space      # upload app.py, README.md and requirements.txt
+```
 
 ## Notebook
 

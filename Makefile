@@ -1,4 +1,4 @@
-.PHONY: docker-build docker-build-demo docker-run docker-run-demo docker-push serve app export-paper-onnx export-blinkcnn push-model push-model-card push-corpus pull-corpus push-dataset-card help install dev install-docs train preprocess fix lint type-check test test-full docs docs-serve docs-deploy check check-full check-ci clean \
+.PHONY: docker-build docker-build-demo docker-run docker-run-demo docker-push serve app export-paper-onnx export-blinkcnn push-model push-model-card push-space push-corpus pull-corpus push-dataset-card help install dev install-docs train preprocess fix lint type-check test test-full docs docs-serve docs-deploy check check-full check-ci clean \
         export-blinkcnn-onnx compare-models compare-shipped score-models benchmark-runtime benchmark-streaming \
         webcam video-demo \
         preprocess-talkingface preprocess-rn15 preprocess-rn30 \
@@ -28,6 +28,7 @@ help:
 	@echo "Docs:                docs-serve | docs-deploy"
 	@echo "Build a corpus:      preprocess-<db> | preprocess-all"
 	@echo "Artifacts (HF):      push-<db> | pull-<db> | push-all | pull-all | push-hf-card"
+	@echo "Deploy the demo:     push-space (then factory-reboot to change python_version)"
 	@echo "Training:            train-joint | train-blink-presence | train-eye-state"
 	@echo "Shipped models:      train-cnn | train-lint | train-linmult |"
 	@echo "Quick check:         train-encoder (CEW) -> train-lint-rn15"
@@ -90,7 +91,8 @@ lint:
 type-check:
 	uv run $(EXTRAS) ty check blinklinmult
 
-# The fast gate. Skips the real Lightning training runs, ~49s of the ~85s suite. Nothing here touches the network: the whole suite passes under
+# The fast gate. Skips the real Lightning training runs, ~49s of the ~85s
+# suite. Nothing here touches the network: the whole suite passes under
 # HF_HUB_OFFLINE=1, and every model test reads the local graphs in $(ONNX_DIR).
 # `python -m tests`, not `unittest discover`. Same tests, different exit path:
 # tests/__main__.py sets the discovery root to the repo (so `demos.docker.serve`
@@ -1000,6 +1002,32 @@ push-model:
 		$(ONNX_DIR)/$(MODEL_ID) $(MODEL_ID) --repo-type model
 	HF_XET_HIGH_PERFORMANCE=1 uv run hf upload $(HF_MODEL_REPO) \
 		$(ONNX_DIR)/$(MODEL_ID).json $(MODEL_ID).json --repo-type model
+
+# Deploy the Gradio demo. The Space is the one published surface with no CI
+# behind it: nothing builds it on a push, and nothing notices when it breaks. It
+# had no deploy target at all, so its files were uploaded by hand and drifted --
+# the live app.py still read the example clip from `data/raw/`, a corpus
+# directory that does not exist on a Space, while the repo had long since moved
+# to the bundled `blinklinmult.assets` copy. This target makes the repo the
+# source of truth so that cannot happen twice.
+#
+# Uploaded one file at a time rather than as a directory: the Space keeps
+# `app.py` and `README.md` at its root, while they live under `demos/gradio/`
+# here, so each needs its destination named.
+#
+# A rebuild after this does NOT pick up a changed `python_version` on its own --
+# Hugging Face reuses the cached base image. To change the interpreter, follow
+# this with a factory reboot, which discards those layers:
+#
+#   uv run python -c "from huggingface_hub import HfApi; \
+#     HfApi().restart_space('$(HF_SPACE_REPO)', factory_reboot=True)"
+push-space:
+	HF_XET_HIGH_PERFORMANCE=1 uv run hf upload $(HF_SPACE_REPO) \
+		demos/gradio/app.py app.py --repo-type space
+	HF_XET_HIGH_PERFORMANCE=1 uv run hf upload $(HF_SPACE_REPO) \
+		demos/gradio/README.md README.md --repo-type space
+	HF_XET_HIGH_PERFORMANCE=1 uv run hf upload $(HF_SPACE_REPO) \
+		demos/gradio/requirements.txt requirements.txt --repo-type space
 
 # The model card, built from its canonical source so the GitHub docs and the Hub
 # page cannot drift.
