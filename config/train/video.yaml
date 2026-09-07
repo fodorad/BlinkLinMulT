@@ -1,0 +1,120 @@
+# The video-level benchmark: sequence models supervising both targets.
+#
+# Two heads, not one. This is the difference from every earlier recipe here, and
+# it is what lets the largest corpus contribute at all:
+#
+# * `eye_state` -- per-frame closure, annotated by RN15, RN30 and TalkingFace.
+# * `blink_presence` -- the rasterised blink interval, annotated by all four
+#   training corpora *including* mpeblink and hust_lebw, which carry no closure
+#   label whatever.
+#
+# mpeblink alone is 63 758 training windows against RN15+RN30's 6 300 combined.
+# Supervising `blink_presence` is the only way it reaches the loss at all; its
+# `eye_state` target is masked per corpus, so the closure head simply sees no
+# gradient from it rather than being trained on a fabricated label.
+#
+# The two are genuinely different quantities and must never be conflated: a
+# blink interval covers 3-4x more frames than actual closure (measured
+# P(closed | inside a blink) = 0.237 / 0.310 / 0.344 on RN15 / RN30 /
+# TalkingFace). Scoring one against the other measures a convention gap rather
+# than a model, which is the failure the whole v2 rebuild exists to remove.
+task: joint
+targets:
+  - eye_state
+  - blink_presence
+
+# focal, matching the frame-wise arm that won. Over the four frame-wise arms,
+# focal beat BCE on unweighted per-corpus mean F1 (0.8156 against 0.7660), and
+# the mechanism was precision: on RN30 it lifted 0.361 to 0.567 while giving up
+# only 0.933 to 0.870 of recall. BCE was buying recall by firing at everything,
+# which is exactly the failure this benchmark is trying to cure.
+#
+# alpha weights the POSITIVE class as `alpha_t = alpha * y + (1 - alpha) * (1 - y)`.
+# 0.5 is neutral and the honest default: over the video corpora 6.6% of
+# supervised frames are blink frames (14.2:1), and RetinaNet's 0.25 -- tuned
+# against a ~1000:1 background problem -- would make the effective imbalance
+# ~42:1, three times worse than the data.
+loss: focal
+loss_kwargs:
+  gamma: 2.0
+  alpha: 0.5
+
+# Mask an eye the head has turned away from, at 45 degrees.
+#
+# Measured rather than assumed. RN15 sits at a median yaw of 25.2 degrees and
+# RN30 at 17.3, tight per recording (train_5 34.2 +/- 5, train_10 5.5 +/- 4) --
+# a fixed camera angle per subject, not a head turning away. A 30 degree cut
+# would discard 29.9% of RN15 for camera placement alone; 45 discards 0.5%. On
+# the corpora where heads genuinely turn it still bites: hust_lebw is 17.9%
+# beyond 45 degrees, mpeblink 35.7%.
+#
+# Applied in the training step from the stored head pose, so sweeping it costs a
+# config change rather than a re-preprocess.
+occlusion_yaw: 45.0
+
+# A ceiling, not a target: early stopping (patience 10) halts once valid/mean_f1
+# plateaus, and the LR-plateau schedule (patience 3) cuts the rate before that.
+#
+# **50, raised from 30 once the training subsample began shifting per epoch.**
+# A corpus thinned to 10% is covered in 10 epochs, so 30 epochs saw MPEblink
+# about three times over and 50 sees it five times -- more distinct windows for
+# the event head at no extra cost per epoch. The earlier reasoning for 30 (an
+# epoch cost ~28 minutes) no longer applies: the embedding cache took a frozen
+# epoch to ~2.7 minutes.
+#
+# Note this is fixed at first launch for `--resume` only under a cosine
+# schedule; `plateau` anneals on the measured metric, so a resumed run is free
+# to run longer.
+max_epochs: 50
+
+accelerator: auto
+devices: auto
+# fp32. 16-mixed collapsed its AMP loss scale mid-run on this MPS hardware (all
+# losses to exactly 0.0) and bf16-mixed crashes at test time because numpy has
+# no bfloat16. Neither failure shows up in a smoke run.
+precision: 32-true
+seed: 42
+deterministic: false
+output_dir: results
+
+# `backbone_lr` is a tenth of `lr`, so a *fine-tuned* encoder adapts gently
+# rather than being washed out in the first epochs. It is simply unused by the
+# frozen arms, where the encoder takes no gradient at all.
+#
+# **plateau, not cosine.** Cosine is a fixed-length curve sized at first launch,
+# which forces `--resume` to keep the original `max_epochs` and anneals on a
+# schedule rather than on evidence. On this benchmark an epoch costs ~28 minutes,
+# so reacting to the *measured* validation curve matters more than following a
+# preset shape: plateau cuts the LR only when the metric has actually stopped
+# moving, and a resumed run picks up wherever it was.
+optimizer:
+  name: adamw
+  lr: 0.001
+  backbone_lr: 0.0001
+  weight_decay: 0.05
+  scheduler: plateau
+  # 3 epochs without improvement halves the LR. Measured on vid-lint-scratch-rn:
+  # validation event F1 went 0.7277 -> 0.7332 -> 0.7321 over three consecutive
+  # epochs -- flat inside noise -- so a patience longer than this spends hours
+  # confirming what one epoch already showed.
+  scheduler_patience: 3
+  scheduler_factor: 0.5
+  warmup_ratio: 0.15
+  gradient_clip_val: 1.0
+
+# **patience 10, down from 20.** At ~28 minutes an epoch, 20 epochs of no
+# improvement is nearly ten hours of confirming a plateau. 10 still gives the
+# LR-plateau schedule (patience 3) room to cut the rate twice and let the model
+# recover before the run is abandoned.
+early_stopping:
+  enabled: true
+  monitor: valid/mean_f1
+  mode: max
+  patience: 10
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: blink-video
+  run_name: null
+  log_model: true

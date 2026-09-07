@@ -1,9 +1,63 @@
 # project specific
-data/db_processed
-blinklinmult/train
-data/db/talkingface/norm*
-data/db/talkingface/talking.*
-blinklinmult/preprocess/convert.py
+tmp/
+.build/
+
+# Data. Raw corpora are licensed by their original authors and are never
+# committed; processed trees and the built .h5 files are large derived artifacts
+# published to Hugging Face instead (`make push-all`). The directory structure
+# is kept via .gitkeep.
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Local working directories. None of these belong in git: the Hub holds the
+# artifacts, and git-LFS is deliberately not used (see CONTRIBUTING).
+#
+# artifacts/onnx    -- the four published model weights, ~106 MB. **The Hub copy
+#                      at `fodorad/blink_detection` is the source of truth**,
+#                      not this directory -- `BlinkDetector.from_pretrained` and
+#                      both Dockerfiles fetch from there, and the local files are
+#                      byte-identical to it. Note that only `blinkcnn.pt` can be
+#                      rebuilt here (`make export-blinkcnn`, from a training
+#                      checkpoint); `make export-paper-onnx` needs the 1.x model
+#                      definitions, which were removed at 2.0, so the three 1.x
+#                      graphs exist *only* on the Hub. Do not delete these
+#                      without checking the Hub still serves them.
+# cache/embeddings  -- ~3 GB of frozen-encoder .h5 features, rebuilt by
+#                      `make build-cache`
+# logs/             -- training and eval console output, plus .status files
+cache/
+artifacts/
+logs/
+
+# Experiment outputs
+results/
+mlruns/
+mlflow.db
+site/
+coverage_html/
+
+# Figures the notebooks render from raw data; regenerate rather than commit.
+notebooks/output/
+
+# Editors and tooling scratch
+*.swp
+*.swo
+*~
+.idea/
+.ruff_cache/
+.uv-cache/
+
+# Gradio writes uploaded videos and rendered output here when the demo runs
+# locally; every file is a copy of something the user already has.
+gradio_cached_examples/
+flagged/
+.gradio/
+
+# Notebook checkpoints (the outputs committed with notebooks/demo are
+# deliberate -- a demo is more useful with its plots rendered).
+**/.ipynb_checkpoints/
 
 # macOS
 .DS_Store
@@ -171,3 +225,6 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# The throwaway CI-parity environment built by `make check-ci`.
+.venv-ci/

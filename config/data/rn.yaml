@@ -1,0 +1,23 @@
+# Both RN rates as one aggregate run, reported alongside rn15 and rn30
+# separately. The two spans the same real duration at different frame counts;
+# OmniLoader pads rn15 to rn30's length with an all-False mask.
+datasets:
+  - rn15
+  - rn30
+window_seconds: 1.5
+image_size: 64
+
+strategy: temperature
+strategy_kwargs: {temperature: 2.0}
+
+batch_size: 32
+# In-process: the HDF5 reader's handle cannot cross a process boundary, so a
+# positive count is clamped to 0 (see datamodule.MAX_WORKERS) and would only
+# mislead here.
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42

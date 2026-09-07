@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120"
+     role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">BlinkLinMulT</title>
+  <desc id="logo-desc">An eye above a blink-score trace, beside the BlinkLinMulT wordmark.</desc>
+      
+  <rect width="400" height="120" rx="14" fill="#1a1a2e"/>
+
+  <!-- The eye sits above the signal it produces. The trace is the per-frame
+       closure score: near zero while the eye is open, with one excursion per
+       blink. That is the repository's idea in one line, since the models
+       predict a continuous score and blink events are derived from it rather
+       than classified directly. The three blinks differ in height and width,
+       because real closures do. -->
+  <g transform="translate(58,52)">
+    <path d="M-28 0 C -18 -17, 18 -17, 28 0" fill="none" stroke="#7bb0ff"
+          stroke-width="3" stroke-linecap="round"/>
+    <path d="M-28 0 C -18 17, 18 17, 28 0" fill="none" stroke="#7bb0ff"
+          stroke-width="3" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="9" fill="#4f8ef7" fill-opacity="0.32"
+            stroke="#7bb0ff" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="3.2" fill="#7bb0ff"/>
+  </g>
+
+  <!-- The blink trace, spanning the full lockup beneath eye and wordmark. -->
+  <path d="M30 100 L 54 100 Q 58 100 60 86 Q 62 71 65 86 Q 67 100 71 100
+           L 170 100 Q 174 100 176 87 Q 179 76 182 87 Q 184 100 188 100
+           L 316 100 Q 320 100 322 85 Q 325 68 328 85 Q 330 100 334 100
+           L 370 100"
+        fill="none" stroke="#4f8ef7" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="112" y="50" font-family="'Segoe UI', Arial, sans-serif" font-size="32" font-weight="700">
+    <tspan fill="#e8eaf6">Blink</tspan><tspan fill="#4f8ef7">Lin</tspan><tspan fill="#e8eaf6">Mul</tspan><tspan fill="#4f8ef7">T</tspan>
+  </text>
+
+  <text x="113" y="71" font-family="'Segoe UI', Arial, sans-serif" font-size="11"
+        fill="#7986cb" letter-spacing="0.3">eye state recognition · blink presence detection</text>
+</svg>

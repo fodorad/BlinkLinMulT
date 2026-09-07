@@ -1,0 +1,14 @@
+# Closed Eyes in the Wild: 2423 independent 100x100 face stills, two eye-wise
+# samples each.
+#
+# No fps: a still corpus is the degenerate single-frame case. On a still image a
+# blink is not a motion event but a closed eye, so the one eye-state label
+# already answers both questions; blink presence is a window-level target and
+# there is no window, so has_blink_presence is false and OmniLoader masks it out.
+# This corpus trains the frame-wise model -- see config/data/stills.yaml.
+name: cew
+fps: null
+window_seconds: null
+image_size: 64
+has_blink_presence: false
+has_eye_state: true

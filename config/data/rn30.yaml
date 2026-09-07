@@ -1,0 +1,14 @@
+# Researcher's Night, 30 fps half. See rn15.yaml for why the two rates are
+# separate corpora.
+name: rn30
+fps: 30.0
+window_seconds: 1.5   # -> 45 frames at this rate
+image_size: 64
+
+# The 160-d handcrafted stream: 157 iris/eyelid dims from exordium's landmarker
+# plus 3 of head pose. Written by `make preprocess-rn30`; drop this line (or
+# rebuild with --no-features) for an image-only corpus that BlinkLinT can still
+# read but BlinkLinMulT cannot.
+feature_dim: 160
+has_blink_presence: true
+has_eye_state: true

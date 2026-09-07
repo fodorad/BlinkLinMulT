@@ -1,0 +1,109 @@
+# Frame-wise eye-state training, benchmarked on every corpus.
+#
+# The model predicts one thing -- is this eye closed -- and is then scored two
+# ways: directly on the still corpora, and as blink *events* on the video
+# corpora, by thresholding its per-frame signal into intervals.
+task: eye_state
+targets:
+  - eye_state
+
+# Scored, never trained. No head is grown for this and it reaches no loss; the
+# closure prediction is measured against the blink annotation.
+#
+# The bridge is sound because closure implies a blink: measured on every corpus
+# that carries both labels, P(blink | closed) = 100.00%. It is *narrower* than
+# a blink, covering only 19-34% of an event's frames, which is why the headline
+# criterion is `any` rather than iou50 -- see cli.build_callbacks.
+eval_targets:
+  - blink_presence
+
+# **focal, measured.** The original reasoning for bce was that CEW and MRL are
+# roughly balanced and `StillFramesDataset` balances the video corpora too, so
+# focal's down-weighting should buy nothing. The four-arm comparison disagreed:
+#
+#     arm                cew      mrl     rn15     rn30   talkingface
+#     fw-bce          0.9683   0.9879   0.6114   0.5206   0.7420
+#     fw-focal        0.9800   0.9880   0.6554   0.6861   0.7682
+#
+# focal wins on every corpus, and by 16.6 points on RN30. The mechanism is
+# precision -- 0.361 to 0.567 there -- against a recall cost of 0.933 to 0.870:
+# bce was buying recall by firing at everything, which is the expensive
+# direction for a blink detector.
+#
+# `make train-fw-bce` still overrides this for the comparison arm.
+loss: focal
+loss_kwargs:
+  gamma: 2.0
+  alpha: 0.5
+
+# Self-occlusion: past this absolute head yaw the far eye is behind the nose and
+# its crop shows something that is not an eye, while every geometric check still
+# passes because the landmarks track a face that is genuinely there.
+#
+# `null` until the corpora have been looked at. 30 and 45 degrees are both
+# defensible and the choice belongs to inspection -- see the head-pose block of
+# `notebooks/corpus_report.py`, which shows crops binned by yaw beside the
+# original frame. Only MPEblink is materially affected: 35.7% of its frames sit
+# beyond 45 degrees, against ~0% for RN15, RN30 and TalkingFace.
+#
+# Applied in the dataloader, so changing it costs a config edit rather than a
+# re-preprocess of tens of gigabytes.
+occlusion_yaw: null
+
+# A ceiling, not a target: early stopping halts once valid/mean_f1 plateaus.
+max_epochs: 30
+
+accelerator: auto
+devices: auto
+# fp32: 16-mixed collapsed its AMP loss scale mid-run on this MPS hardware and
+# bf16-mixed crashes at test time (numpy has no bfloat16).
+precision: 32-true
+seed: 42
+deterministic: false
+output_dir: results
+
+# Cosine + warmup rather than onecycle, which early stopping cuts off mid-anneal
+# leaving the LR near peak.
+#
+# lr is the peak reached at the end of warmup, which cosine then anneals down
+# from -- so it is the *maximum* rate the run ever sees, held briefly.
+#
+# 3e-3 read off the LR range test (`make lr-find-frame-wise`), NOT taken from
+# its printed suggestion. That run reported 5.62e-06, which sits on a small
+# local bump between 1e-6 and 1e-5 where the loss briefly *rises*; Lightning
+# picks steepest descent and the bump has a locally steep slope. The loss in
+# fact falls for another three decades, from 0.65 to a 0.26 minimum near 5e-3,
+# and does not diverge until ~1e-1. Taking the suggestion would have trained
+# ~500x slower than the data supports.
+#
+# 3e-3 sits just below the flat minimum with ~1.7x margin to where the curve
+# turns. 1e-3 is the conservative alternative and the gap between them is
+# probably small next to seed variance.
+#
+# backbone_lr stays a tenth of it -- 3e-4, raised alongside the peak. A
+# pretrained backbone fine-tuned at the head's rate loses its features within a
+# few hundred steps, but leaving it at 1e-4 while the head moved to 3e-3 would
+# have made the ratio 30x rather than the intended 10x, freezing the encoder in
+# all but name. The sweep only measures the head, so this is scaled with it
+# rather than read off the curve.
+optimizer:
+  name: adamw
+  lr: 0.003
+  backbone_lr: 0.0003
+  weight_decay: 0.05
+  scheduler: cosine
+  warmup_ratio: 0.15
+  gradient_clip_val: 1.0
+
+early_stopping:
+  enabled: true
+  monitor: valid/mean_f1
+  mode: max
+  patience: 10
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: frame-wise
+  run_name: null
+  log_model: true

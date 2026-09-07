@@ -1,0 +1,78 @@
+# BlinkLinT on blink presence: the sequence-model recipe.
+#
+# The optimiser settings follow PersonalityLinMulT, where they were arrived at
+# by an HPO search and a scheduler comparison rather than chosen. What carries
+# over is the *reasoning*, not a validated result -- that project regresses five
+# continuous traits from precomputed features; this one detects a rare temporal
+# event from a CNN encoder. Each value below says which it is.
+task: blink_presence
+targets:
+  - blink_presence
+
+# alpha weights the POSITIVE class: the implementation is
+# `alpha_t = alpha * y + (1 - alpha) * (1 - y)`, so 0.25 gives blink frames a
+# quarter of the weight and non-blink frames three quarters.
+#
+# Measured over the video corpora, 6.6% of supervised frames are blink frames
+# (14.2:1). alpha=0.25 therefore makes the *effective* imbalance ~42:1 -- three
+# times worse than the data. RetinaNet's 0.25 default was tuned against a
+# ~1000:1 background problem where suppressing negatives is the whole task; at
+# 14:1 it mainly starves the positive class.
+#
+# 0.5 is the neutral choice and the honest default until measured. `make
+# ablation-loss` sweeps 0.25/0.5/0.75 and a pos_weight'd BCE against it.
+loss: focal
+loss_kwargs:
+  gamma: 2.0
+  alpha: 0.5
+
+# A ceiling, not a target: early stopping halts the run once valid/mean_f1
+# plateaus, so headroom costs nothing unless the model is still improving.
+max_epochs: 50
+
+accelerator: auto
+devices: auto
+# fp32. PersonalityLinMulT found 16-mixed collapsing its AMP loss scale
+# mid-run (all losses to exactly 0.0) on this same MPS hardware, and bf16-mixed
+# crashing at test time because numpy has no bfloat16. Neither failure shows up
+# in a smoke run. Revisit only if epoch time becomes binding.
+precision: 32-true
+seed: 42
+deterministic: false
+output_dir: results
+
+# Cosine + linear warmup rather than onecycle. onecycle sizes its schedule for
+# max_epochs and is cut off mid-anneal by early stopping, leaving the LR near
+# peak when training stops; cosine degrades gracefully under an unknown stopping
+# point. `lr` is the peak reached at the end of warmup, which cosine anneals
+# down from.
+#
+# lr is deliberately NOT PersonalityLinMulT's 0.005 -- that was found by an LR
+# range test on a different architecture and task. Run `make lr-find-lint` and
+# set what it reports; 0.001 is a placeholder until then.
+#
+# weight_decay 0.05 (up from 0.01) accompanies the higher peak LR the schedule
+# reaches, following the same project.
+optimizer:
+  name: adamw
+  lr: 0.001
+  backbone_lr: 0.0001
+  weight_decay: 0.05
+  scheduler: cosine
+  warmup_ratio: 0.15
+  gradient_clip_val: 1.0
+
+# patience 20 (up from 10) to give cosine's longer, gentler anneal room to
+# recover before stopping.
+early_stopping:
+  enabled: true
+  monitor: valid/mean_f1
+  mode: max
+  patience: 20
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: blink-lint
+  run_name: null
+  log_model: true

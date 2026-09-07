@@ -1,0 +1,19 @@
+# Researcher's Night, 15 fps half. The corpus's own train/val/test division is
+# honoured rather than re-derived; it divides by participant.
+#
+# The window is declared in seconds, so this corpus covers the same real
+# duration as rn30 in half the frames (8 vs 15). In a joint run OmniLoader pads
+# these samples to the shared length with an all-False mask -- nothing is
+# resampled, because interpolating up to 30 fps would fabricate frames.
+name: rn15
+fps: 15.0
+window_seconds: 1.5   # -> 22 frames at this rate
+image_size: 64
+
+# The 160-d handcrafted stream: 157 iris/eyelid dims from exordium's landmarker
+# plus 3 of head pose. Written by `make preprocess-rn15`; drop this line (or
+# rebuild with --no-features) for an image-only corpus that BlinkLinT can still
+# read but BlinkLinMulT cannot.
+feature_dim: 160
+has_blink_presence: true
+has_eye_state: true

@@ -1,0 +1,123 @@
+# The video-level benchmark: sequence models over eye-crop windows.
+#
+# Where `stills_all.yaml` expands windows into frames for the frame-wise model,
+# this keeps the temporal axis intact -- which is the whole point, since a blink
+# is a trajectory over ~200-330 ms and the frame-wise model, having no sequence
+# model at all, cannot express one.
+#
+# The still corpora (CEW, MRL-Eye) are deliberately absent: one frame carries no
+# temporal signal, so including them would train a sequence model on degenerate
+# one-frame windows. They trained the frame-wise encoder that seeds this one.
+
+# Trained on. Each corpus supervises whichever targets it actually annotates;
+# `train.targets` selects, and the per-corpus masks do the rest.
+#
+# **mpeblink is the largest training asset in the benchmark** -- 63 758 windows
+# against RN15+RN30's 6 300 combined, ten times as many. It annotates blink
+# *events* and no per-frame closure, so it cannot train the eye-state head; its
+# `eye_state` target is masked and it supervises `blink_presence` alone. That
+# masking is not a workaround: it is what lets the largest corpus contribute at
+# all, and it is the single biggest difference from the frame-wise setup.
+#
+# hust_lebw is included here, unlike in the frame-wise benchmark. Its annotation
+# is clip-wise with no per-frame boundaries, which is disqualifying for a
+# closure benchmark but perfectly usable for event supervision -- and its film
+# footage carries real head turning (p01 -63 degrees, p99 +71) that no other
+# corpus supplies.
+datasets:
+  - rn15
+  - rn30
+  - mpeblink
+  - hust_lebw
+
+# Held out entirely. TalkingFace ships 0 train and 0 valid windows -- it is one
+# ~200 s recording of one subject -- so nothing may be fitted on it: not a
+# threshold, not a calibration parameter, nothing. It is the only corpus in this
+# benchmark that is genuinely unseen, which is exactly what makes it worth
+# reporting.
+eval_datasets:
+  - talkingface
+
+# Sequence windows, not expanded frames. This is the axis the whole benchmark
+# turns on.
+stills: false
+
+window_seconds: 1.5
+image_size: 64
+
+# sqrt-size mixing. mpeblink is 10x RN15+RN30 combined, so proportional mixing
+# would make this an MPEblink benchmark wearing another name; temperature 2.0
+# keeps it dominant without letting it own every batch. Worth revisiting once
+# the arms are measured -- it is a hyperparameter, not a law.
+strategy: temperature
+strategy_kwargs:
+  temperature: 2.0
+
+# **On by default**, unlike the frame-wise benchmark, which kept it off so the
+# augmentation axis could be measured. It has now been measured: focal+augment
+# is the best arm on the established webcam benchmark (rn15 0.7972, rn30 0.7963
+# event F1, both highest of the four), so it is the default here rather than an
+# open question.
+#
+# The transform ranges themselves were **softened** on 2026-08-30 -- rotation
+# 12 to 6 degrees, blur sigma 0.8 to 0.5, translate 5% to 3% -- because
+# augmentation was measured to cost recall on every pairing, and recall is the
+# binding constraint on this task. See `blinklinmult/data/augment.py`.
+#
+# Disable with `--set data.augment=null` to run the un-augmented arm.
+augment:
+  strength: 1.0
+
+# Smaller than the frame-wise 64: a window is T frames rather than one, so the
+# same batch size would be ~45x the pixels.
+# **8, not 32.** A batch is the memory lever on this model, and the smaller one
+# is *also* faster. One batch is `batch_size x 45` frames through the CNN, and
+# the MPS allocator's working set scales with it almost exactly linearly:
+#
+#     =======  ==========  =========  ===========
+#     batch    peak pool   s/batch    windows/s
+#     =======  ==========  =========  ===========
+#     **8**    **6.0 GB**  **1.341**  **6.0**
+#     16        10.8 GB     2.749      5.8
+#     32        20.3 GB     5.815      5.5
+#     =======  ==========  =========  ===========
+#
+# At 32 a single batch took the pool from 5.3 GB to 20.4 GB -- with only 0.09 GB
+# of *live* tensors -- and that memory is **wired**, so the OS cannot page it
+# out. The machine reached 0.06 GB free while `ps` reported the process holding
+# 0.2 GB, because wired GPU memory does not show up as process RSS.
+#
+# The pool is flat after the first batch, so this is the working-set size of one
+# forward+backward, not a leak: dropping the cache periodically cannot lower a
+# peak that is reached on batch one.
+batch_size: 8
+
+# **0 -- in-process.** The HDF5 reader's handle cannot safely cross a process
+# boundary, and on the sequence path a positive count **deadlocks**: the run
+# reaches the end of setup, spawns its workers, and then hangs forever with
+# every process in uninterruptible I/O wait (`STAT UN`), 0% CPU, and no log
+# output. Observed at 6 workers on 2026-08-30; the run sat dead for 9 minutes
+# before it was killed.
+#
+# **A loader benchmark does not catch this.** Iterating the dataloader alone
+# measured a clean throughput peak at 6 workers (607 windows/s against 277 at
+# 3), which is what motivated setting it there. The deadlock only appears once
+# Lightning's training loop and the workers contend for the same h5 handles --
+# so the benchmark measured a configuration that cannot actually train.
+#
+# In-process is slower per batch but it *runs*, which dominates. Revisit only
+# with a worker_init_fn that reopens each corpus's file inside the worker, and
+# validate it by training a real epoch rather than by iterating the loader.
+num_workers: 0
+
+pin_memory: true
+persistent_workers: true
+
+# Kept at 2. Prefetch hides loader latency behind GPU compute, and its cost is
+# small -- 3 workers x 2 batches x 32 windows is ~0.2 GB of tensor buffers,
+# negligible beside the page cache that actually caused the thrashing. Drop to 1
+# only if memory is still tight after the worker reduction.
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42

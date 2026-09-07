@@ -1,0 +1,53 @@
+# BlinkLinT: the single-stream sequence model.
+#
+# Eye-crop CNN into a LinT transformer over one analysis window of eye patches,
+# (T, 3, H, W) plus their (T,) validity mask. Video corpora only -- a still
+# image carries no temporal signal for it to use.
+name: BlinkLinT
+family: lint
+
+# ConvNeXt-Femto, chosen on measured CEW eye-state accuracy: 96.6% over three
+# seeds against densenet121's 94.4%, at 4.8M parameters and ~4x the throughput.
+# See docs/training.md for the full backbone comparison.
+backbone: convnext_femto
+backbone_pretrained: true
+# Not frozen: the backbone and the sequence model are one nn.Module trained end
+# to end, with optimizer.backbone_lr fine-tuning it at a tenth the head's rate.
+backbone_freeze: false
+# A 64px crop collapses to a 2x2 feature map on every ImageNet backbone; this
+# drops one stride-2 reduction to keep more of it.
+backbone_wide_stem: true
+# The raw ConvNeXt-Femto embedding is 384-d. Projecting first keeps the
+# transformer's input width independent of which backbone is chosen.
+backbone_output_dim: 256
+
+d_model: 32
+num_heads: 8
+cmt_num_layers: 5
+
+attention_type: flash
+
+dropout_input: 0.0
+dropout_output: 0.2
+dropout_pe: 0.1
+dropout_ffn: 0.2
+# Raised from 0.0 following the HPO search in PersonalityLinMulT (30 trials,
+# TPE+Hyperband on fi_lint_wavlm): `dropout_attention` was by far the most
+# influential parameter searched (importance 0.35, against 0.06-0.22 for the
+# rest), every completed trial preferred ~0.11-0.25 over 0.0, and the
+# un-regularised 0.0 baseline showed the clearest train/valid divergence late
+# in training.
+#
+# That search ran on a different task and on precomputed features rather than a
+# CNN encoder, so this is a well-motivated starting point carried across, not a
+# result validated here. `make ablation-dropout` measures it on this data.
+dropout_attention: 0.2
+
+# linmult 2.x defaults this to true, but the published results had no TCN.
+# Explicit here so parity is a choice; flip it to run the TCN experiment.
+add_module_tcn: false
+add_module_ffn_fusion: true
+
+head_dropout: 0.2
+head_hidden_dim: 256
+head_norm: bn

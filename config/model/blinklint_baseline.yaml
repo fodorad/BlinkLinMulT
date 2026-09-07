@@ -1,0 +1,78 @@
+# BlinkLinT baseline: the quick sequence check.
+#
+# Eye patches only -- no handcrafted stream -- so this is the smallest sequence
+# model the benchmark defines and the fastest way to confirm the whole chain
+# works end to end: h5 -> OmniLoader -> CNN encoder -> LinT -> sweep evaluation.
+#
+# It is also the honest baseline for BlinkLinMulT. The published claim is that
+# the 160-d iris/eyelid descriptors add something over the images alone; that
+# claim needs this number to be measured against.
+name: BlinkLinT-baseline
+family: lint
+
+# ImageNet only. `backbone_pretrained: true` below already loads ConvNeXt-Femto's
+# ImageNet weights; setting `encoder_weights` *overwrites* them with a
+# frame-wise BlinkCNN checkpoint, so the two are alternatives rather than a
+# stack -- and measurement says the extra stage does not pay for itself.
+#
+# Measured on RN30 (4 epochs, 33% of train, seed 42, everything else identical):
+#
+#   encoder        frame F1   event F1   Blink-AP
+#   CEW-finetuned    55.96%     51.92%     24.18%
+#   ImageNet only    56.33%     58.21%     27.27%
+#
+# Why the CEW stage adds so little is visible in the weights themselves: the
+# CEW checkpoint's backbone is cosine-similarity 1.0000 to ImageNet's (it was
+# initialised from ImageNet and fine-tuned at backbone_lr=1e-4 on 3 388 still
+# images, which barely moves it). What it *does* carry over is a projection
+# head trained for a frame-wise task, which the sequence model then has to
+# unlearn.
+#
+# Set this to a checkpoint path to use one -- the loader is unchanged, and a
+# backbone pretrained on a *larger* or more relevant corpus is exactly the case
+# where it should win. This is a default, not a verdict on transfer in general;
+# it is one seed on one corpus at a reduced budget.
+encoder_weights: null
+
+backbone: convnext_femto
+backbone_pretrained: true
+# Not frozen. The ImageNet weights are a starting point, and
+# optimizer.backbone_lr (1e-4 against the head's 1e-3) fine-tunes them from
+# there -- a rate low enough that the pretrained features survive, which is
+# also why a second fine-tuning stage on a small still-image corpus moves them
+# so little.
+backbone_freeze: false
+backbone_wide_stem: true
+backbone_output_dim: 256
+
+# Deliberately small. The backbone is 4.83M parameters and the transformer at
+# this size is 0.18M -- under 4% of the model -- so growing it buys little while
+# costing every run. rn15 windows are 8 frames; there is not much sequence for a
+# larger model to use.
+d_model: 32
+num_heads: 8
+cmt_num_layers: 5
+
+attention_type: flash
+
+dropout_input: 0.0
+dropout_output: 0.2
+dropout_pe: 0.1
+dropout_ffn: 0.2
+# Raised from 0.0 following the HPO search in PersonalityLinMulT (30 trials,
+# TPE+Hyperband on fi_lint_wavlm): `dropout_attention` was by far the most
+# influential parameter searched (importance 0.35, against 0.06-0.22 for the
+# rest), every completed trial preferred ~0.11-0.25 over 0.0, and the
+# un-regularised 0.0 baseline showed the clearest train/valid divergence late
+# in training.
+#
+# That search ran on a different task and on precomputed features rather than a
+# CNN encoder, so this is a well-motivated starting point carried across, not a
+# result validated here. `make ablation-dropout` measures it on this data.
+dropout_attention: 0.2
+
+add_module_tcn: false
+
+head_dropout: 0.2
+head_hidden_dim: 256
+head_norm: bn

@@ -1,0 +1,37 @@
+# Every sequence corpus, mixed into one training stream: the union experiment.
+#
+# The still corpora (CEW, MRL-Eye) are deliberately absent. They have no
+# temporal axis, so a sequence model would be training on degenerate one-frame
+# windows; they train the frame-wise model instead -- see config/data/stills.yaml,
+# which also draws frames from these video corpora.
+#
+# The corpora still differ in size by orders of magnitude (TalkingFace is a
+# single recording). Proportional mixing would let the largest dominate, so the
+# default is temperature=2.0 -- sampling by sqrt(size), which keeps the large
+# corpora dominant without erasing the small ones. Raise it towards uniform,
+# lower it towards proportional.
+#
+# TalkingFace contributes to the test split only; see its declaration.
+datasets:
+  - talkingface
+  - rn15
+  - rn30
+  - hust_lebw
+  - mpeblink
+window_seconds: 1.5
+image_size: 64
+
+strategy: temperature
+strategy_kwargs: {temperature: 2.0}
+
+batch_size: 32
+# In-process: the HDF5 reader's handle cannot cross a process boundary, so a
+# positive count is clamped to 0 (see datamodule.MAX_WORKERS) and would only
+# mislead here.
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42

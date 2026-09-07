@@ -1,0 +1,45 @@
+# MPEblink 2.0: 921 untrimmed film clips, 17 711 annotated blink events.
+#
+# The only corpus here that is genuinely multi-person and untrimmed: up to 24
+# faces co-exist in a video, and lengths run to 5 976 frames. The annotation
+# ships one tracklet per person -- per-frame face box, 68-point iBUG landmarks,
+# 98-point WFLW landmarks -- plus the blinks of that person as `[start, end]`
+# segments rather than a per-frame vector.
+#
+# **Instances are given, not detected.** This project evaluates the blink
+# detector alone, so the annotated tracklets are used as oracle instances. That
+# is the limiting case MPEblink's own Blink-AP approximates: it already scores
+# only the true-positive instances of Inst-AP, "as the blink accuracy of these
+# predictions is rarely affected by the face detection and tracking accuracy".
+# Numbers produced this way are an upper bound on their joint figures and must
+# be reported as oracle-instance -- see docs/data.md.
+#
+# **No eye annotation exists.** MPEblink labels faces; the eye regions are
+# derived from the landmarks, exactly as the authors' own dataset class does.
+# Here they are derived *per eye* rather than as one binocular box, so a sample
+# is one eye as in every other corpus and a pretrained BlinkLinMulT transfers
+# without a shape change.
+#
+# **No eye-state supervision.** The annotation marks blink *events*; it carries
+# no per-frame closure flag and no openness value. `has_eye_state: false`.
+name: mpeblink
+
+# Films vary; 25 is the mode across the corpus and what the window is derived
+# against. The builder reads each video's own rate and derives its frame count
+# from that, so a 30 fps clip still spans the same real duration.
+fps: 25.0
+
+# 1.5 s, matching InstBlink++'s 36-frame test clip at a stride of 18. Their
+# clips are the reference protocol; see schema.DEFAULT_WINDOW_SECONDS for why
+# the window is about context rather than about containing the blink.
+window_seconds: 1.5
+
+image_size: 64
+
+# The 160-d handcrafted stream: 157 iris/eyelid dims from exordium's landmarker
+# plus 3 of head pose. Available because the corpus ships full frames with a
+# face box, so pose is computable.
+feature_dim: 160
+
+has_blink_presence: true
+has_eye_state: false

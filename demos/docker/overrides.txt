@@ -1,0 +1,12 @@
+# Version overrides for `uv pip install --override` (deploy/Dockerfile),
+# mirroring pyproject.toml's [tool.uv].override-dependencies used by `uv sync`.
+#
+# `uv pip install` does not read [tool.uv] at all, so without this file the
+# override silently vanishes in a Docker build and reappears only as a runtime
+# ImportError -- at request time, not build time, which is the worst place to
+# find it.
+#
+# exordium's transitive unigaze dependency hard-pins timm==0.3.2, which imports
+# `torch._six`. That module was removed from torch years ago, so the pin makes
+# exordium's face-detection import chain unimportable on any current torch.
+timm>=1.0

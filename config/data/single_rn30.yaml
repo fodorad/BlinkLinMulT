@@ -1,0 +1,21 @@
+# rn30 alone: the per-dataset arm of the benchmark, so the union result can be
+# compared against training on each corpus on its own.
+datasets:
+  - rn30
+window_seconds: 1.5
+image_size: 64
+
+strategy: proportional
+strategy_kwargs: {}
+
+batch_size: 32
+# In-process: the HDF5 reader's handle cannot cross a process boundary, so a
+# positive count is clamped to 0 (see datamodule.MAX_WORKERS) and would only
+# mislead here.
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42

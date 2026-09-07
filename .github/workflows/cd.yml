@@ -1,0 +1,46 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Build, publish, and release
+    runs-on: ubuntu-latest
+    environment: cd
+    permissions:
+      id-token: write    # required for OIDC trusted publisher (PyPI)
+      contents: write    # required to create the GitHub Release
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: "3.13"
+
+    - name: Set up uv
+      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78  # v7.6.0
+      with:
+        enable-cache: true
+
+    - name: Build package
+      run: uv build
+
+    - name: Publish to PyPI
+      # Docker-based action: GitHub resolves the container image by this ref, and
+      # pypa only publishes images under version tags -- not commit SHAs -- so a
+      # SHA pin fails with "manifest unknown". Pin to the release tag instead.
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228  # v3
+      with:
+        generate_release_notes: true
+        files: dist/*

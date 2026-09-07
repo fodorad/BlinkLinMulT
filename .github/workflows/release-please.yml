@@ -1,0 +1,23 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+    # The v2 rewrite lands as a `feat!:` (breaking change) commit, which
+    # release-please turns into a `chore(main): release 2.0.0` PR. Merging that
+    # PR tags v2.0.0 and triggers cd.yml.
+    - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7  # v5
+      with:
+        release-type: python
+        config-file: release-please-config.json
+        manifest-file: .release-please-manifest.json
+        token: ${{ secrets.RELEASE_PLEASE_TOKEN }}

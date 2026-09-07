@@ -1,0 +1,63 @@
+# Frame-wise eye-state training, benchmarked on every corpus that can carry the
+# benchmark.
+#
+# The model predicts one thing -- is this eye closed -- and is scored two ways:
+# directly on the corpora that annotate closure, and as blink *events* on those
+# that annotate intervals, by thresholding its per-frame signal.
+
+# Corpora with a real per-frame closure label. `StillFramesDataset` expands each
+# window into frames, keeps every closed frame, and strides the open ones.
+datasets:
+  - cew
+  - mrl
+  - rn15
+  - rn30
+
+# Test split only. These contribute nothing to training, validation, early
+# stopping, or the fitted operating point.
+#
+# talkingface ships 0 train and 0 valid windows -- it is one ~200 s recording of
+# one subject and is test-only by construction, but it *does* annotate per-frame
+# closure, so the frame-wise model is scored on the same quantity it learned.
+#
+# mpeblink annotates blink *events* and carries no per-frame closure label, so it
+# cannot train the eye-state head -- but it is scored here through
+# `train.eval_targets`, which measures the closure prediction against the blink
+# annotation without ever training on it. It is 80% of the event-level test set.
+#
+# hust_lebw is deliberately absent. Its annotation is clip-wise, so it has no
+# per-frame boundaries at all: unlike mpeblink there is nothing to reassemble
+# into a timeline, and a number reported for it here would measure the
+# closure-versus-event convention gap rather than the model. It belongs to the
+# event-level benchmark, not to this one.
+eval_datasets:
+  - talkingface
+  - mpeblink
+
+stills: true
+still_stride: 6
+still_open_to_closed: 1.0
+
+window_seconds: 1.5
+image_size: 64
+
+# sqrt-size mixing. Post-balancing the corpora span roughly 15x; temperature 2.0
+# cuts that to ~4x, keeping MRL dominant without letting it own every batch.
+strategy: temperature
+strategy_kwargs:
+  temperature: 2.0
+
+# Off by default so augmentation is a measurable arm rather than an assumption.
+# Enable with `--set 'data.augment={strength: 1.0}'`
+# (the space after the colon is required -- YAML flow mappings need it, and
+# without it the whole thing parses as one key with a null value).
+augment: null
+
+batch_size: 64
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42
