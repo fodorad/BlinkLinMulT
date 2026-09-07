@@ -124,7 +124,7 @@ export = [
 # would keep working right up until someone installs `[onnx]` alone. A
 # dependency that a package imports belongs in that package's metadata.
 compare = [
-  "scipy>=1.11",
+  "scipy>=1.18.1",
 ]
 
 # The REST service in demos/docker/serve.py. Deliberately thin: the four models are
