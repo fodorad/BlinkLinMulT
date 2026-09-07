@@ -63,7 +63,7 @@ train = [
   "linmult>=2.1",
   # The v2 encoder's backbones (convnext_femto and the rest of TIMM_WEIGHTS) are
   # timm models, so `blinklinmult.train.model` imports it directly.
-  "timm>=1.0",
+  "timm>=1.0.29",
   # >=1.1: native structured trailing shapes, so an image sequence is declared
   # as shape=(C, H, W) instead of being flattened into a wide feature axis.
   "omniloader>=1.1",
@@ -103,7 +103,7 @@ torch = [
   "torch>=2.12",
   "torchvision",
   "linmult>=2.1",
-  "timm>=1.0",
+  "timm>=1.0.29",
   "huggingface-hub",
 ]
 
@@ -225,7 +225,7 @@ exclude = ["/data"]
 [tool.uv]
 override-dependencies = [
   # exordium's unigaze pins timm==0.3.2; override it (matches exordium).
-  "timm>=1.0",
+  "timm>=1.0.29",
 ]
 
 [tool.ruff]
