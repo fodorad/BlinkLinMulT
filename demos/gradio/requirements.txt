@@ -1,10 +1,19 @@
 # Hugging Face Space dependencies, for ZeroGPU (zero-a10g).
 #
-# The package is installed from git rather than PyPI so the Space tracks the
-# repository directly, and the extras are named explicitly rather than relying
-# on a single [demo] extra: the Space needs the preprocessing stack (which the
-# library treats as optional) and the ONNX runtime (likewise), and a missing one
-# fails at the first upload rather than at build time.
+# **Pinned to a released version, not a git ref.** This previously read
+# `blinklinmult[...] @ git+https://github.com/fodorad/BlinkLinMulT`, with no ref,
+# so pip resolved it to whatever `main` happened to point at. Hugging Face
+# decides when to rebuild -- we do not -- so a rebuild silently shipped whatever
+# was on `main` at that moment. That is exactly how the Space broke: a rebuild
+# picked up a commit whose `requires-python` the builder's Python could not
+# satisfy, and the Space sat in BUILD_ERROR. A version pin makes the Space run
+# the artifact that was actually released and tested, and makes an upgrade a
+# deliberate edit to this file.
+#
+# The extras are named explicitly rather than relying on a single [demo] extra:
+# the Space needs the preprocessing stack (which the library treats as optional)
+# and the ONNX runtime (likewise), and a missing one fails at the first upload
+# rather than at build time.
 #
 # `preprocess` pulls exordium, which supplies every model the pipeline runs per
 # frame: YOLO11 face detection, 6DRepNet head pose, FaceMesh 478 landmarks and
@@ -12,7 +21,10 @@
 #
 # `onnx` supplies onnxruntime, which runs the three frozen 1.x graphs. Without
 # it only `blinkcnn` would load.
-blinklinmult[preprocess,onnx] @ git+https://github.com/fodorad/BlinkLinMulT
+#
+# The model weights are NOT pinned here: they download from the public Hub repo
+# `fodorad/blink_detection` on first use and are cached by the Space.
+blinklinmult[preprocess,onnx]==2.0.0
 gradio
 matplotlib
 
