@@ -17,6 +17,7 @@ comparison silently.
 
 from __future__ import annotations
 
+import importlib.util
 import os
 import unittest
 from pathlib import Path
@@ -46,6 +47,15 @@ EXAMPLE_TAG = Path("data/raw/TalkingFace/talking.tag")
 
 HAVE_EXAMPLE = EXAMPLE_VIDEO.is_file() and EXAMPLE_TAG.is_file()
 """Whether the corpus clip is available to read."""
+
+HAVE_EXORDIUM = importlib.util.find_spec("exordium") is not None
+"""Whether the optional extraction stack is installed.
+
+``_read_video`` decodes through ``exordium.video.core.io``, which ships in the
+``preprocess`` extra along with multi-GB model weights. CI installs a narrower
+set, so these tests are skipped there rather than pulling the weights into every
+run; a full local checkout has it and runs them.
+"""
 
 
 class TestOccludedSide(unittest.TestCase):
@@ -218,7 +228,9 @@ class TestGroundTruth(unittest.TestCase):
         self.assertIsNone(ground_truth(Path("no-such-file.tag"), 100))
 
 
-@unittest.skipUnless(HAVE_EXAMPLE, "needs data/raw/TalkingFace")
+@unittest.skipUnless(
+    HAVE_EXAMPLE and HAVE_EXORDIUM, "needs data/raw/TalkingFace and the preprocess extra"
+)
 class TestReadVideo(unittest.TestCase):
     """Turning a seconds request into a frame range."""
 
@@ -374,7 +386,10 @@ class TestRunEndToEnd(unittest.TestCase):
         self.assertIsNotNone(self.result.extraction)
 
 
-@unittest.skipUnless(Path("blinklinmult/assets/talkingface_10s.mp4").is_file(), "needs the asset")
+@unittest.skipUnless(
+    Path("blinklinmult/assets/talkingface_10s.mp4").is_file() and HAVE_EXORDIUM,
+    "needs the asset and the preprocess extra",
+)
 class TestSegmentEdges(unittest.TestCase):
     """Segments at and past the end of a video.
 

@@ -48,9 +48,16 @@ jobs:
         # default) and 2.11.0+cpu (the CPU index).
         #
         # The `preprocess` extra is deliberately NOT installed: it pulls exordium
-        # and its multi-GB model weights, and nothing under test imports it --
-        # the preprocess modules that ARE tested (annotation, windows, common,
-        # mrl) import only numpy.
+        # and its multi-GB model weights, which nothing under test needs.
+        #
+        # `opencv-python-headless` IS installed on its own, because it is the one
+        # piece of that extra the tests do need: tests/preprocess/test_stream.py
+        # and test_hust_crops.py write a real video and a real JPEG as fixtures,
+        # then exercise the decode path against them. Without cv2 those two
+        # modules fail to import and take 54 tests with them. Headless (not
+        # `opencv-python`) because CI has no display, and standalone (not the
+        # whole extra) because it costs a single CPU wheel instead of exordium's
+        # weights.
         #
         # `onnx` IS installed. Without it, `onnxruntime` is missing and the 12
         # tests guarding the three published 1.x graphs skip **silently** -- a
@@ -62,9 +69,9 @@ jobs:
           uv pip install --system \
             --extra-index-url https://download.pytorch.org/whl/cpu \
             --index-strategy unsafe-best-match \
-            -e ".[train,dev,docs,onnx,serve,compare]"
+            -e ".[train,dev,docs,onnx,serve,compare]" opencv-python-headless
         else
-          uv pip install --system -e ".[train,dev,docs,onnx,serve,compare]"
+          uv pip install --system -e ".[train,dev,docs,onnx,serve,compare]" opencv-python-headless
         fi
 
     # `serve` and `compare` are here because `make check` installs them: the
