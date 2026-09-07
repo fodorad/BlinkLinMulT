@@ -1,4 +1,4 @@
-.PHONY: docker-build docker-build-demo docker-run docker-run-demo docker-push serve app export-paper-onnx export-blinkcnn push-model push-model-card push-corpus pull-corpus push-dataset-card help install dev install-docs train preprocess fix lint type-check test test-full docs docs-serve docs-deploy check check-full clean \
+.PHONY: docker-build docker-build-demo docker-run docker-run-demo docker-push serve app export-paper-onnx export-blinkcnn push-model push-model-card push-corpus pull-corpus push-dataset-card help install dev install-docs train preprocess fix lint type-check test test-full docs docs-serve docs-deploy check check-full check-ci clean \
         export-blinkcnn-onnx compare-models compare-shipped score-models benchmark-runtime benchmark-streaming \
         webcam video-demo \
         preprocess-talkingface preprocess-rn15 preprocess-rn30 \
@@ -23,6 +23,7 @@ help:
 	@echo "Checks (read-only):  lint | type-check | test | docs | check"
 	@echo "  check   fast gate, skips the ~49s Lightning runs"
 	@echo "  check-full / test-full   everything, incl. real training runs"
+	@echo "  check-ci                 same steps in a CI-equivalent venv (run before pushing)"
 	@echo "Setup:               install | dev | install-docs | train | preprocess"
 	@echo "Docs:                docs-serve | docs-deploy"
 	@echo "Build a corpus:      preprocess-<db> | preprocess-all"
@@ -71,11 +72,14 @@ fix:
 
 # The extras the checks need, matching what CI installs. Without `train` the
 # suite errors on missing pandas/mlflow rather than failing honestly. The
-# `preprocess` extra stays out: it pulls exordium and its multi-GB weights, and
-# nothing under test imports it.
+# `preprocess` extra stays out: it pulls exordium and its multi-GB weights. The
+# one piece of it the tests do need is opencv -- tests/preprocess/test_stream.py
+# and test_hust_crops.py write a real video and JPEG as fixtures and decode them
+# back. A full dev environment gets cv2 transitively, which is exactly why
+# `check` alone cannot prove CI will pass; see `check-ci`.
 # `onnx` is included so the 1.x graph tests run rather than skip: those models
 # ship as ONNX only, so without it their entire inference path is untested.
-#  is in the gate because tests/demos/test_serve.py covers the REST
+# `serve` is in the gate because tests/demos/test_serve.py covers the REST
 # service; without it those 15 tests skip rather than fail, which is worse.
 EXTRAS := --extra dev --extra train --extra onnx --extra serve --extra compare
 
@@ -86,8 +90,7 @@ lint:
 type-check:
 	uv run $(EXTRAS) ty check blinklinmult
 
-# The fast gate. Skips `TestRunEndToEnd`, whose real Lightning runs are ~49s of
-# the ~85s suite. Nothing here touches the network: the whole suite passes under
+# The fast gate. Skips the real Lightning training runs, ~49s of the ~85s suite. Nothing here touches the network: the whole suite passes under
 # HF_HUB_OFFLINE=1, and every model test reads the local graphs in $(ONNX_DIR).
 # `python -m tests`, not `unittest discover`. Same tests, different exit path:
 # tests/__main__.py sets the discovery root to the repo (so `demos.docker.serve`
@@ -115,6 +118,71 @@ check: lint type-check test docs
 
 # The full gate: `check` plus the training runs it skips.
 check-full: lint type-check test-full docs
+
+# ── CI parity ──────────────────────────────────────────────────────────────────
+#
+# `check` runs against the developer's environment, which is a strict SUPERSET of
+# CI's: a full local install pulls opencv and exordium in transitively, so tests
+# and type-checks that depend on them pass here and fail on the runner. That gap
+# is structural -- no amount of care with `check` closes it, because the missing
+# pieces are absent only on the runner.
+#
+# `check-ci` closes it by building a throwaway virtualenv with CI's EXACT install
+# line, then running CI's exact steps against it, in CI's order. Green here means
+# green there, for everything a single machine can decide.
+#
+# What it deliberately does NOT reproduce, because one machine cannot:
+#   * the 3.12/3.13 x ubuntu/macos matrix -- this runs one interpreter, so a
+#     version- or platform-specific break still needs the runner to surface it;
+#   * the Hub fetch of the published ONNX graphs. CI downloads them into
+#     $(ONNX_DIR); this target uses whatever is already there. With the graphs
+#     absent the model tests skip, so the run is weaker than CI rather than
+#     wrong -- the summary below says so explicitly.
+#
+# Run it before pushing anything that touches dependencies, imports or CI config.
+CI_EXTRAS  := train,dev,docs,onnx,serve,compare
+CI_VENV    := .venv-ci
+CI_PY      ?= 3.13
+
+check-ci:
+	@echo "── Building CI-equivalent environment ($(CI_VENV), python $(CI_PY)) ──"
+	@rm -rf $(CI_VENV)
+	@# `--seed` installs pip: `uv venv` omits it, but pip-audit shells out to
+	@# `python -m pip` to enumerate what is installed, exactly as it does on the
+	@# runner, where setup-python provides pip.
+	@uv venv $(CI_VENV) --python $(CI_PY) --seed >/dev/null
+	@VIRTUAL_ENV=$(CI_VENV) uv pip install --quiet \
+	  -e ".[$(CI_EXTRAS)]" opencv-python-headless
+	@echo "── Audit dependencies ──"
+	@# PIPAPI_PYTHON_LOCATION so pip-audit inspects the CI venv rather than the
+	@# interpreter uvx runs itself under, which would audit the wrong tree.
+	@# Non-fatal, matching ci.yml's `continue-on-error: true`: the ML stack
+	@# regularly carries advisories with no fixed release, and failing on one
+	@# would block every push for something no upgrade can resolve. Parity means
+	@# matching CI here too -- a local gate stricter than the runner is its own
+	@# kind of false alarm.
+	@PIPAPI_PYTHON_LOCATION=$(CURDIR)/$(CI_VENV)/bin/python \
+	  VIRTUAL_ENV=$(CI_VENV) uvx pip-audit || \
+	  echo "  (advisories above are a warning, as in CI)"
+	@echo "── Ruff lint ──"
+	@VIRTUAL_ENV=$(CI_VENV) uv run --no-project ruff check .
+	@echo "── Ruff format ──"
+	@VIRTUAL_ENV=$(CI_VENV) uv run --no-project ruff format --check .
+	@echo "── Type check (ty) ──"
+	@VIRTUAL_ENV=$(CI_VENV) uv run --no-project ty check blinklinmult
+	@echo "── Tests (same env flags as CI) ──"
+	@RUN_TRAINING_TESTS=1 RUN_PACKAGING_TESTS=1 \
+	  VIRTUAL_ENV=$(CI_VENV) uv run --no-project coverage run -m tests -v 2>&1 \
+	  | tee $(CI_VENV)/test.log | tail -3
+	@VIRTUAL_ENV=$(CI_VENV) uv run --no-project coverage report
+	@echo "── Docs (warnings as errors) ──"
+	@VIRTUAL_ENV=$(CI_VENV) uv run --no-project sphinx-build -b html -W docs/ site/
+	@echo ""
+	@echo "── Skipped tests ──"
+	@grep -oE "skipped '[^']+'" $(CI_VENV)/test.log | sort | uniq -c \
+	  || echo "  none"
+	@echo ""
+	@echo "✓ CI parity check passed -- the runner should agree."
 
 # ── Docs ───────────────────────────────────────────────────────────────────────
 

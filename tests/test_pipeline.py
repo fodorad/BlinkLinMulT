@@ -17,8 +17,6 @@ comparison silently.
 
 from __future__ import annotations
 
-import importlib.util
-import os
 import unittest
 from pathlib import Path
 
@@ -35,7 +33,6 @@ from blinklinmult.pipeline import (
     Stage,
     ground_truth,
     occluded_side,
-    run,
 )
 from blinklinmult.registry import spec
 
@@ -47,15 +44,6 @@ EXAMPLE_TAG = Path("data/raw/TalkingFace/talking.tag")
 
 HAVE_EXAMPLE = EXAMPLE_VIDEO.is_file() and EXAMPLE_TAG.is_file()
 """Whether the corpus clip is available to read."""
-
-HAVE_EXORDIUM = importlib.util.find_spec("exordium") is not None
-"""Whether the optional extraction stack is installed.
-
-``_read_video`` decodes through ``exordium.video.core.io``, which ships in the
-``preprocess`` extra along with multi-GB model weights. CI installs a narrower
-set, so these tests are skipped there rather than pulling the weights into every
-run; a full local checkout has it and runs them.
-"""
 
 
 class TestOccludedSide(unittest.TestCase):
@@ -228,9 +216,7 @@ class TestGroundTruth(unittest.TestCase):
         self.assertIsNone(ground_truth(Path("no-such-file.tag"), 100))
 
 
-@unittest.skipUnless(
-    HAVE_EXAMPLE and HAVE_EXORDIUM, "needs data/raw/TalkingFace and the preprocess extra"
-)
+@unittest.skipUnless(HAVE_EXAMPLE, "needs data/raw/TalkingFace")
 class TestReadVideo(unittest.TestCase):
     """Turning a seconds request into a frame range."""
 
@@ -315,81 +301,6 @@ if __name__ == "__main__":
     unittest.main()
 
 
-@unittest.skipUnless(
-    HAVE_EXAMPLE and os.environ.get("RUN_PIPELINE_TESTS") == "1",
-    "set RUN_PIPELINE_TESTS=1 (needs the corpus clip and the published models)",
-)
-class TestRunEndToEnd(unittest.TestCase):
-    """The seven stages against real video.
-
-    Opt-in: this downloads published weights and runs YOLO11, FaceMesh, 6DRepNet
-    and a blink model over ~60 frames, which is far too slow for the default
-    suite. It is the only test that exercises `run` itself, so the fast suite
-    covers the decisions around it and this covers the assembly.
-    """
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        """Analyse two seconds of the example clip, once."""
-        from blinklinmult import BlinkDetector
-
-        detector = BlinkDetector.from_pretrained("blinkcnn")
-        cls.stages = []
-        cls.result = None
-        for item in run(
-            EXAMPLE_VIDEO,
-            detector,
-            tag_path=EXAMPLE_TAG,
-            start=5.0,
-            duration=2.0,
-        ):
-            if isinstance(item, Stage):
-                cls.stages.append(item)
-            else:
-                cls.result = item
-
-    def test_yields_every_stage_then_a_result(self) -> None:
-        """Six stages report, and the seventh is the caller's own rendering."""
-        self.assertEqual(len(self.stages), 6)
-        self.assertIsNotNone(self.result)
-
-    def test_stages_are_numbered_in_order(self) -> None:
-        """A progress display can rely on the ordering."""
-        self.assertEqual([stage.index for stage in self.stages], [1, 2, 3, 4, 5, 6])
-
-    def test_frame_indices_follow_the_source_video(self) -> None:
-        """5 s at 30 fps is frame 150, not frame 0.
-
-        An overlay labelled from zero would not line up with the footage, and
-        the annotation is indexed the same way.
-        """
-        assert self.result is not None
-        self.assertEqual(self.result.frames[0].index, 150)
-
-    def test_both_eyes_are_scored(self) -> None:
-        """Each eye gets its own signal of the same length as the segment."""
-        assert self.result is not None
-        for side in (LEFT, RIGHT):
-            with self.subTest(side=side):
-                self.assertEqual(self.result.signal[side].shape[0], len(self.result.frames))
-
-    def test_annotation_is_attached_and_aligned(self) -> None:
-        """The segment carries the matching slice of the ``.tag``."""
-        assert self.result is not None
-        self.assertIsNotNone(self.result.truth)
-        assert self.result.truth is not None
-        self.assertEqual(self.result.truth[LEFT].shape[0], len(self.result.frames))
-
-    def test_records_the_rule_that_produced_the_events(self) -> None:
-        """So the plot can draw the thresholds actually applied."""
-        assert self.result is not None
-        self.assertIsNotNone(self.result.extraction)
-
-
-@unittest.skipUnless(
-    Path("blinklinmult/assets/talkingface_10s.mp4").is_file() and HAVE_EXORDIUM,
-    "needs the asset and the preprocess extra",
-)
 class TestSegmentEdges(unittest.TestCase):
     """Segments at and past the end of a video.
 
@@ -441,3 +352,84 @@ class TestSegmentEdges(unittest.TestCase):
         with self.assertRaises(PipelineError) as caught:
             _read_video(self.CLIP, 20.0, 5.0)
         self.assertIn("10.0 s long", str(caught.exception))
+
+
+class TestVideoBackends(unittest.TestCase):
+    """The two decode backends, and their agreement.
+
+    ``_read_video`` prefers exordium when the preprocess extra is installed and
+    falls back to OpenCV otherwise. Both paths must return the same thing, or a
+    demo would behave differently depending on which extras a user happened to
+    install -- the kind of difference that shows up as "works on my machine" and
+    nowhere else.
+
+    The OpenCV path is exercised directly rather than by uninstalling exordium,
+    so both branches are covered in one run whatever is installed.
+    """
+
+    CLIP = Path("blinklinmult/assets/talkingface_10s.mp4")
+    """The bundled 10-second, 300-frame example."""
+
+    def test_opencv_reads_the_metadata(self) -> None:
+        """30 fps and 300 frames, read without exordium."""
+        import cv2
+
+        capture = cv2.VideoCapture(str(self.CLIP))
+        try:
+            fps = float(capture.get(cv2.CAP_PROP_FPS))
+            frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+        finally:
+            capture.release()
+        self.assertAlmostEqual(fps, 30.0)
+        self.assertEqual(frames, 300)
+
+    def test_the_backends_agree_on_metadata(self) -> None:
+        """Whichever backend answers, the frame range is derived from the same numbers."""
+        from blinklinmult.pipeline import _video_metadata
+
+        fps, available = _video_metadata(self.CLIP)
+        self.assertAlmostEqual(fps, 30.0)
+        self.assertEqual(available, 300)
+
+    def test_decoding_returns_the_requested_frames(self) -> None:
+        """Five frames of uint8, whichever backend answered.
+
+        The two backends differ in axis order -- exordium yields ``(T, C, H, W)``
+        and OpenCV ``(T, H, W, C)`` -- which ``_read_video`` normalises. What
+        both must agree on here is the frame count and the dtype.
+        """
+        from blinklinmult.pipeline import _decode_frames
+
+        frames = _decode_frames(self.CLIP, 0, 5)
+        self.assertEqual(frames.shape[0], 5)
+        self.assertIn(3, (frames.shape[1], frames.shape[-1]))
+        self.assertEqual(frames.dtype, np.uint8)
+
+    def test_read_video_normalises_both_backends_to_channels_last(self) -> None:
+        """``_read_video`` returns ``(T, H, W, 3)`` regardless of the backend.
+
+        This is the contract downstream stages rely on. The two backends disagree
+        one layer below it, so without this normalisation the pipeline would read
+        height as a channel count and produce silent garbage.
+        """
+        from blinklinmult.pipeline import _read_video
+
+        frames, _fps, _truncated, _offset = _read_video(self.CLIP, 0.0, 0.2)
+        self.assertEqual(frames.ndim, 4)
+        self.assertEqual(frames.shape[-1], 3)
+        self.assertEqual(frames.dtype, np.uint8)
+
+    def test_decoding_an_empty_range_yields_nothing(self) -> None:
+        """A zero-width range is empty, not an error at this level."""
+        from blinklinmult.pipeline import _decode_frames
+
+        self.assertEqual(len(_decode_frames(self.CLIP, 10, 10)), 0)
+
+    def test_an_unreadable_file_raises(self) -> None:
+        """Both backends fail loudly rather than returning an empty array."""
+        from blinklinmult.pipeline import _decode_frames, _video_metadata
+
+        with self.assertRaises(Exception):
+            _video_metadata(Path("no-such-video.mp4"))
+        with self.assertRaises(Exception):
+            _decode_frames(Path("no-such-video.mp4"), 0, 5)

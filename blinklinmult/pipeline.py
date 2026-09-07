@@ -300,6 +300,94 @@ def occluded_side(yaw: float, limit: float = YAW_LIMIT) -> str | None:
     return None
 
 
+def _video_metadata(path: str | Path) -> tuple[float, int]:
+    """Read a video's frame rate and frame count.
+
+    Prefers exordium's probe when the extraction stack is installed, and falls
+    back to OpenCV otherwise. Both report the same values for the formats this
+    pipeline handles; the fallback exists so decoding a video does not require
+    the optional preprocess extra, which pulls multi-GB model weights for
+    capabilities this function never uses.
+
+    Args:
+        path (str | Path): The video to probe.
+
+    Returns:
+        tuple[float, int]: Frames per second, and the frame count (0 if unknown).
+
+    Raises:
+        Exception: Any probe failure, translated by the caller.
+    """
+    try:
+        from exordium.video.core.io import (  # ty: ignore[unresolved-import]
+            get_video_metadata,
+        )
+    except ImportError:
+        pass
+    else:
+        meta = get_video_metadata(path)
+        return float(meta.get("fps") or 25.0), int(meta.get("num_frames") or 0)
+
+    import cv2  # ty: ignore[unresolved-import]
+
+    capture = cv2.VideoCapture(str(path))
+    if not capture.isOpened():
+        capture.release()
+        raise OSError(f"cannot open {path}")
+    try:
+        return (
+            float(capture.get(cv2.CAP_PROP_FPS) or 25.0),
+            int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0),
+        )
+    finally:
+        capture.release()
+
+
+def _decode_frames(path: str | Path, first: int, stop: int) -> np.ndarray:
+    """Decode a half-open frame range as RGB.
+
+    The exordium and OpenCV paths agree on the returned array: ``(T, H, W, 3)``
+    uint8 in RGB order, with ``stop`` exclusive. OpenCV decodes BGR, so its
+    frames are reversed on the last axis to match.
+
+    Args:
+        path (str | Path): The video to read.
+        first (int): First frame index, inclusive.
+        stop (int): Last frame index, exclusive.
+
+    Returns:
+        np.ndarray: ``(T, H, W, 3)`` uint8 RGB frames.
+
+    Raises:
+        Exception: Any decode failure, translated by the caller.
+    """
+    try:
+        from exordium.video.core.io import load_video  # ty: ignore[unresolved-import]
+    except ImportError:
+        pass
+    else:
+        frames, _ = load_video(path, start_frame=first, end_frame=stop)
+        return frames.cpu().numpy() if hasattr(frames, "cpu") else np.asarray(frames)
+
+    import cv2  # ty: ignore[unresolved-import]
+
+    capture = cv2.VideoCapture(str(path))
+    if not capture.isOpened():
+        capture.release()
+        raise OSError(f"cannot open {path}")
+    try:
+        capture.set(cv2.CAP_PROP_POS_FRAMES, first)
+        decoded = []
+        for _ in range(max(stop - first, 0)):
+            ok, frame = capture.read()
+            if not ok:
+                break
+            decoded.append(frame[:, :, ::-1])
+        return np.asarray(decoded, dtype=np.uint8)
+    finally:
+        capture.release()
+
+
 def _read_video(
     path: str | Path,
     start: float = 0.0,
@@ -323,20 +411,16 @@ def _read_video(
         PipelineError: If the file cannot be read, the start lies past its end,
             or the segment holds no frames.
     """
-    from exordium.video.core.io import (  # ty: ignore[unresolved-import]
-        get_video_metadata,
-        load_video,
-    )
-
+    # Validate before importing. The arguments are wrong or right regardless of
+    # how the file is decoded, so a bad timestamp should be rejected without
+    # requiring the optional extraction stack to be installed.
     if start < 0:
         raise PipelineError(f"Start timestamp must be at or after 0 s; got {start}.")
     if duration <= 0:
         raise PipelineError(f"Duration must be positive; got {duration}.")
 
     try:
-        meta = get_video_metadata(path)
-        fps = float(meta.get("fps") or 25.0)
-        available = int(meta.get("num_frames") or 0)
+        fps, available = _video_metadata(path)
     except Exception as error:  # noqa: BLE001 - any probe failure reads alike
         raise PipelineError(f"Could not read {Path(path).name}: {error}") from error
 
@@ -361,11 +445,11 @@ def _read_video(
         stop = min(stop, available)
 
     try:
-        frames, _ = load_video(path, start_frame=first, end_frame=stop)
+        frames = _decode_frames(path, first, stop)
     except Exception as error:  # noqa: BLE001 - any decode failure reads alike
         raise PipelineError(f"Could not read {Path(path).name}: {error}") from error
 
-    array = frames.cpu().numpy() if hasattr(frames, "cpu") else np.asarray(frames)
+    array = frames
     if array.ndim != 4 or array.shape[0] == 0:
         raise PipelineError(
             f"{Path(path).name} holds no frames between {start:g} s and {start + duration:g} s."

@@ -132,6 +132,13 @@ jobs:
       # fits together, so they must run somewhere -- here.
       env:
         RUN_TRAINING_TESTS: "1"
+        # The wheel-contents tests guard against shipping data/raw or
+        # data/processed -- gigabytes of corpora -- and against dropping
+        # blinklinmult/data from the wheel, which broke every schema import once.
+        # They build a real wheel, which takes seconds, and were previously
+        # skipped everywhere: locally for speed and here because nothing set the
+        # flag. A guard that never runs is not a guard.
+        RUN_PACKAGING_TESTS: "1"
       run: |
         coverage run -m tests -v
         coverage report

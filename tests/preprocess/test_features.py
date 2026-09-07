@@ -32,6 +32,51 @@ from blinklinmult.preprocess.features import (
 )
 from blinklinmult.preprocess.geometry import LEFT, RIGHT, EyeBox
 
+MEDIAPIPE_LEFT_EYE = (
+    263,
+    249,
+    390,
+    373,
+    374,
+    380,
+    381,
+    382,
+    362,
+    466,
+    388,
+    387,
+    386,
+    385,
+    384,
+    398,
+)
+"""MediaPipe FaceMesh 478 contour for the subject's left eye.
+
+Pinned rather than imported from exordium: the values are a published, stable
+part of the FaceMesh topology, and importing them would tie this file to an
+optional multi-GB extra for sixteen integers.
+"""
+
+MEDIAPIPE_RIGHT_EYE = (
+    33,
+    7,
+    163,
+    144,
+    145,
+    153,
+    154,
+    155,
+    133,
+    246,
+    161,
+    160,
+    159,
+    158,
+    157,
+    173,
+)
+"""MediaPipe FaceMesh 478 contour for the subject's right eye."""
+
 
 def iris_dict(**overrides) -> dict:
     """A well-formed ``eye_to_feature`` return value."""
@@ -267,27 +312,24 @@ class TestEyeSideConvention(unittest.TestCase):
     number against the wrong eye.
     """
 
-    def setUp(self) -> None:
-        # constants.py imports only `enum`, but exordium is in the optional
-        # preprocess extra and CI deliberately omits it.
-        try:
-            from exordium.video.face.landmark.constants import FaceMesh478Regions
-        except ImportError:  # pragma: no cover - depends on the installed extras
-            self.skipTest("exordium is not installed (preprocess extra)")
-        self.constants = FaceMesh478Regions
+    def regions(self) -> dict[str, tuple[int, ...]]:
+        """The mapping ``FaceMeshLocator`` installs, as landmark indices.
 
-    def regions(self) -> dict:
-        # The mapping FaceMeshLocator installs, checked without constructing it
-        # — building the locator downloads model weights.
-        return {
-            LEFT: self.constants.RIGHT_EYE,
-            RIGHT: self.constants.LEFT_EYE,
-        }
+        The values are MediaPipe's canonical FaceMesh 478 eye contours, pinned
+        here rather than imported from ``exordium.video.face.landmark.constants``.
+        Importing would tie this test to an optional multi-GB extra for two
+        tuples of integers, and pinning is the stronger check: it fails if those
+        contours ever change upstream, which an import would silently accept.
+
+        Returns:
+            dict[str, tuple[int, ...]]: Side to landmark indices, deliberately crossed.
+        """
+        return {LEFT: MEDIAPIPE_RIGHT_EYE, RIGHT: MEDIAPIPE_LEFT_EYE}
 
     def test_the_sides_are_crossed(self):
         regions = self.regions()
-        self.assertEqual(regions[LEFT], self.constants.RIGHT_EYE)
-        self.assertEqual(regions[RIGHT], self.constants.LEFT_EYE)
+        self.assertEqual(regions[LEFT], MEDIAPIPE_RIGHT_EYE)
+        self.assertEqual(regions[RIGHT], MEDIAPIPE_LEFT_EYE)
 
     def test_each_side_maps_to_a_distinct_region(self):
         regions = self.regions()

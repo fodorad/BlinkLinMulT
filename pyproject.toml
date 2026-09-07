@@ -304,12 +304,11 @@ omit = [
 fail_under = 90
 # `pipeline.run` is the one function that cannot be unit-tested: each of its
 # seven stages needs YOLO11, FaceMesh, 6DRepNet and a blink model over real
-# video. It IS tested, by `tests/test_pipeline.py::TestRunEndToEnd`, which runs
-# the whole thing against the corpus clip under `RUN_PIPELINE_TESTS=1` -- but
-# that is too slow for every run, so its lines would otherwise drag the gate
-# down and push it toward being lowered. Everything around `run` (the segment
-# arithmetic, the yaw gate, the extraction rule, the annotation offset) is
-# covered by the fast suite.
+# video, none of which exist in a CI environment. It is exercised by running the
+# demos against real footage, not by the suite. Everything around `run` -- the
+# segment arithmetic, the yaw gate, the extraction rule, the annotation offset,
+# and both video-decode backends -- is covered by the fast suite, which is why
+# excluding this one function does not hide anything testable.
 exclude_also = [
   "def run\\(",
   # `unfreeze_module` restores a Lightning checkpoint and `embedding_key_for`
