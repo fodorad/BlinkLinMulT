@@ -1,0 +1,58 @@
+name: CodeQL
+
+# Advanced CodeQL setup (replaces GitHub's UI "default setup").
+#
+# Owning the workflow in git lets us pin the query suite, ignore generated/test
+# paths, and control triggers -- none of which default setup allows. Before this
+# workflow can run, default setup must be disabled in the repo's code-security
+# settings, otherwise the two configurations conflict.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly deep scan (Mondays 06:17 UTC) catches newly published queries
+    # against code that has not changed recently. The odd minute avoids the
+    # top-of-hour scheduling congestion on GitHub-hosted runners.
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write  # required to upload CodeQL results
+      contents: read          # required for checkout
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # "actions" scans the workflow files themselves; "python" scans the library.
+        language: [actions, python]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        # security-extended adds more security queries than the default suite,
+        # trading a few more false positives for broader coverage -- worth it for
+        # a public library.
+        queries: security-extended
+        config: |
+          paths-ignore:
+            - tests
+            - docs
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ matrix.language }}"

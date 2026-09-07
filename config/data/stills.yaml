@@ -1,0 +1,46 @@
+# The frame-wise training set: every corpus that can label a single eye crop.
+#
+# BlinkCNN classifies one crop at a time, so it is not restricted to the
+# natively-still corpora. `stills: true` reduces the video corpora to their
+# individual annotated frames at load time, from the same HDF5 files the
+# sequence models read -- there is no second build.
+#
+# Sampled as they fall, video frames are overwhelmingly open-eyed. Every
+# closed-eye frame is kept and the open-eye frames are strided and then
+# subsampled to still_open_to_closed, applied to the training split only:
+# validation and test are scored on the real class distribution.
+#
+# HUST-LEBW is absent: it annotates blink events per clip with no per-frame
+# closure marking, so it has no frame-wise label to train on.
+#
+# The sequence models must NOT use this config -- see config/data/all.yaml.
+datasets:
+  - cew
+  - mrl
+  - rn15
+  - rn30
+  - talkingface
+
+stills: true
+still_stride: 6
+still_open_to_closed: 1.0
+
+window_seconds: 1.5
+image_size: 64
+
+# CEW is ~2.4k images against MRL's ~85k, so temperature mixing matters here
+# even before the video frames are added.
+strategy: temperature
+strategy_kwargs: {temperature: 2.0}
+
+batch_size: 64
+# In-process: the HDF5 reader's handle cannot cross a process boundary, so a
+# positive count is clamped to 0 (see datamodule.MAX_WORKERS) and would only
+# mislead here.
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42

@@ -1,0 +1,44 @@
+# BlinkCNN: the per-frame eye-state model.
+#
+# An image backbone fine-tuned on open/closed eye crops, with no sequence model
+# at all. Trained on the still-image corpora plus the video corpora subsampled
+# as stills, so it learns appearance and nothing about eye movement. It cannot
+# predict blink presence over a window, and ExperimentConfig rejects that
+# combination rather than letting it train on a task the architecture cannot
+# express.
+#
+# The name is deliberately backbone-agnostic. 1.x called this BlinkDenseNet121
+# and hard-coded a 1024-d DenseNet embedding; the backbone is a config choice
+# here, so naming the model after one of them would date immediately. Set
+# `backbone: densenet121` to reproduce the published 1.x model.
+name: BlinkCNN
+family: cnn
+
+# ConvNeXt-Femto (2022), chosen on measured CEW eye-state accuracy rather than
+# on inference cost. Over three seeds it reaches 96.6% against densenet121's
+# 94.4%, with 4.8M parameters to densenet's 7.0M and about 4x the throughput.
+#
+# The decisive metric is precision -- 98.1% against 83-95% for every other
+# backbone tried. The small mobile-oriented networks (mobilenetv4_conv_small,
+# shufflenet_v2) matched densenet's *recall* but over-predicted "closed", which
+# for blink detection is the expensive direction: a false closure becomes a
+# phantom blink.
+#
+# `backbone_wide_stem` halves the stem's downsampling so a 64px crop keeps more
+# than the 2x2 map every ImageNet backbone collapses it to. ConvNeXt lands on
+# 3x3 rather than 4x4 -- its stem is a stride-4 patchify -- so it is not winning
+# on spatial resolution; the modern pretraining recipe transfers better to a
+# 3.5k-image fine-tune. The backbone is fine-tuned, not frozen: see
+# `_widen_stem` for why a widened stem shifts the pretrained features.
+#
+# Set `backbone: densenet121` to reproduce the published 1.x model.
+backbone: convnext_femto
+backbone_pretrained: true
+backbone_freeze: false
+backbone_wide_stem: true
+backbone_output_dim: 256
+
+dropout_input: 0.0
+head_dropout: 0.2
+head_hidden_dim: 256
+head_norm: bn

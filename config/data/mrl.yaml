@@ -1,0 +1,19 @@
+# MRL Eye: ~85k infrared eye crops from 37 subjects, split by subject.
+#
+# The largest corpus in the benchmark by an order of magnitude, which is why the
+# default mixing strategy is temperature rather than proportional -- see
+# config/data/all.yaml.
+#
+# has_eye_side is false: MRL ships one eye per image without saying which, so
+# its samples are recorded as 'unknown' rather than guessed.
+#
+# A still corpus: a blink here is a closed eye, not a motion event, so the
+# eye-state label answers both questions and blink presence -- a window-level
+# target with no window to score -- is masked out. Trains the frame-wise model.
+name: mrl
+fps: null
+window_seconds: null
+image_size: 64
+has_blink_presence: false
+has_eye_state: true
+has_eye_side: false

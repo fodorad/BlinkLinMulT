@@ -1,52 +1,336 @@
 [build-system]
-requires = ["hatchling", "hatch-requirements-txt"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "blinklinmult"
+# Managed by release-please (release-type "python" updates this line itself) --
+# do not edit by hand. The v2 rewrite lands as a `feat!:` commit, which
+# release-please turns into a `chore(main): release 2.0.0` PR; merging that PR
+# tags v2.0.0 and CD publishes to PyPI.
 version = "1.0.4"
-description = "BlinkLinMulT: Transformer-based Eye Blink Detection."
-keywords = ["blink", "eye state recognition", "blink presence detection", "multimodal", "transformer", "linear-complexity attention"]
+description = "BlinkLinMulT: Transformer-based eye blink detection and eye state recognition."
+keywords = [
+  "blink",
+  "eye state recognition",
+  "blink presence detection",
+  "multimodal",
+  "transformer",
+  "linear-complexity attention",
+]
 authors = [
-  { name = "fodorad", email = "foauaai@inf.elte.hu" },
+  { name = "fodorad", email = "fodorad201@gmail.com" },
 ]
-readme = {"file" = "README.md", "content-type" = "text/markdown"}
-requires-python = ">=3.11"
+readme = { "file" = "README.md", "content-type" = "text/markdown" }
+# Floor 3.12: exordium, linmult and omniloader all require it, and Hugging Face
+# Spaces builds on 3.12 (a Space requesting 3.13 silently falls back to 3.10,
+# which then fails to resolve those three). Ceiling <3.14 matches
+# PersonalityLinMulT: 3.14 segfaults in the ML dependency stack.
+requires-python = ">=3.12, <3.14"
 license = "MIT"
-dependencies = [
-  "torch",
-  "torchvision",
-  "linmult==1.1.0",
-]
+license-files = ["LICENSE"]
 classifiers = [
-  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
+# **Deliberately tiny.** The package's inference path is numpy plus, optionally,
+# onnxruntime -- so `pip install blinklinmult[onnx]` is ~100 MB rather than the
+# ~600 MB the training stack costs. torch alone is 469 MB, and a project that
+# wants `blinkcnn` scoring eye crops has no use for Lightning or MLflow.
+#
+# `blinklinmult.detector` is torch-free on the ONNX path and imports torch lazily
+# inside the one branch that runs a checkpoint; `tests/test_packaging.py` fails if
+# that regresses.
+dependencies = [
+  "numpy",
+  "pyyaml",
+]
+
+[project.optional-dependencies]
+# Training the models: the Lightning loop, MLflow tracking, the h5 builder, and
+# the plots. Everything needed to *produce* a model.
+train = [
+  # >=2.12, not >=2.13. ZeroGPU Spaces build against an image pinning
+  # torch<=2.11 for their own runtime, and a floor above the versions a target
+  # environment can supply makes the package uninstallable there rather than
+  # merely untested.
+  "torch>=2.12",
+  "torchvision",
+  "lightning",
+  "torchmetrics",
+  "linmult>=2.1",
+  # The v2 encoder's backbones (convnext_femto and the rest of TIMM_WEIGHTS) are
+  # timm models, so `blinklinmult.train.model` imports it directly.
+  "timm>=1.0",
+  # >=1.1: native structured trailing shapes, so an image sequence is declared
+  # as shape=(C, H, W) instead of being flattened into a wide feature axis.
+  "omniloader>=1.1",
+  "h5py",
+  "mlflow",
+  # DVC is intentionally absent: it cannot push to a Hugging Face remote and its
+  # payoff is a paid cloud remote we do not use. Each corpus's h5 is versioned by
+  # publishing it to a public HF dataset repo (`make push-<name>`), rebuilt by
+  # `make pipeline-<name>`, and traced by the git SHA + builder config embedded
+  # in its attrs.
+  "huggingface-hub",
+  "matplotlib",
+  "pandas",
+  "tqdm",
+]
+
+# Reading and writing the HDF5 corpora without the Lightning loop -- the schema
+# layer, the builder and the dataloader glue. Split out of `train` so a script
+# that only inspects an artifact does not pull torch.
+data = [
+  "h5py",
+  "omniloader>=1.1",
+  "tqdm",
+]
+
+
+# Running the published models. The legacy 1.x networks ship as frozen ONNX
+# graphs -- no torch, no linmult -- so this is all their inference path needs.
+onnx = [
+  "onnxruntime",
+  "huggingface-hub",
+]
+
+# Running the v2 *checkpoint* rather than its frozen graph -- for fine-tuning, or
+# to compare the two runtimes. `blinkcnn-onnx` needs none of this.
+torch = [
+  "torch>=2.12",
+  "torchvision",
+  "linmult>=2.1",
+  "timm>=1.0",
+  "huggingface-hub",
+]
+
+# Producing those graphs. Export is a one-off that runs against the 1.x weights;
+# `onnx` and `torch` are needed to *make* a graph, never to run one, so they stay
+# out of the `onnx` extra above.
+export = [
+  "onnx",
+  "onnxruntime",
+  "huggingface-hub",
+]
+
+# Statistical comparison of the shipped models. The bootstrap is plain numpy;
+# scipy supplies only the exact binomial behind the McNemar test.
+#
+# **Declared rather than inherited.** scipy already arrives transitively through
+# exordium and mlflow, so `import scipy` works today in a full dev install and
+# would keep working right up until someone installs `[onnx]` alone. A
+# dependency that a package imports belongs in that package's metadata.
+compare = [
+  "scipy>=1.11",
+]
+
+# The REST service in demos/docker/serve.py. Deliberately thin: the four models are
+# reachable through `onnx` alone, so a crops-in/scores-out service needs no
+# torch. Video endpoints additionally need `preprocess`, which is why the two
+# Docker images differ.
+serve = [
+  "fastapi",
+  "uvicorn[standard]",
+  "python-multipart",
+]
+
+# The Gradio demo. `preprocess` supplies the face/eye/pose extraction the app
+# runs on raw video; `onnx` supplies the runtime for the three 1.x models.
+demo = [
+  "gradio",
+  "matplotlib",
+]
+
+# Turning raw corpora into data/processed/<name>. Image decoding and, for the
+# handcrafted eye-feature stream, the exordium extraction stack. Only needed to
+# rebuild the processed trees from data/raw.
+preprocess = [
+  "opencv-python",
+  "tqdm",
+  # exordium supplies the iris/EAR eye descriptors that form the second LinMulT
+  # modality. The image-only families (cnn, lint) train without ever calling it.
+  # >=2.11.1 removed exordium's own dependency on blinklinmult (its 1.x
+  # DenseNet121 wrapper). Below that, importing exordium.video.face raises
+  # ModuleNotFoundError against a v2 checkout, which has no blinklinmult.models.
+  "exordium[video]>=2.11.1",
+  # **Pinned below 1.0.** mediapipe 1.0.x aborts the process inside
+  # `TensorsToDetectionsCalculator::Open` -- "Check failed: service_ Service is
+  # unavailable" -- on macOS arm64 / Python 3.13, for any input including a
+  # blank image, and with either the CPU or GPU delegate. It is an abort(), not
+  # an exception, so it cannot be caught and degraded. 0.10.35 initialises its
+  # GL context and detects normally. exordium declares `mediapipe` unpinned, so
+  # without this a fresh install silently gets the broken one.
+  "mediapipe<1.0",
+]
+
+dev = [
+  "ruff",
+  "ty",
+  "coverage",
+  "pre-commit",
+]
+
+# Interactive corpus inspection: the per-dataset notebooks under `notebooks/`.
+# Separate from `train` because nothing in a training run needs a widget, and a
+# headless build host should not pull Jupyter.
+notebooks = [
+  "ipywidgets",
+  "jupyter",
+]
+
+docs = [
+  "sphinx>=8.0",
+  "furo",
+  "sphinx-autoapi",
+  "sphinx-autobuild",
+  "myst-parser",
+]
 
 [project.urls]
-Documentation = "https://github.com/fodorad/blinklinmult#readme"
-Issues = "https://github.com/fodorad/blinklinmult/issues"
-Source = "https://github.com/fodorad/blinklinmult"
+Documentation = "https://fodorad.github.io/BlinkLinMulT/"
+Issues = "https://github.com/fodorad/BlinkLinMulT/issues"
+Source = "https://github.com/fodorad/BlinkLinMulT"
 
+# **The whole package ships.** An earlier build excluded
+# `blinklinmult/preprocess`, on the reasoning that it is standalone research
+# CLIs needing opencv and exordium. That was wrong twice over:
+#
+#   * `blinklinmult/pipeline.py` imports `preprocess.common`, `.geometry`,
+#     `.annotation` and `.extractors`, so an installed wheel raised ImportError
+#     the moment anyone ran the video pipeline;
+#   * every module under `preprocess` imports cv2/exordium/tqdm/h5py *lazily*,
+#     inside the functions that need them, so shipping the package costs a
+#     `pip install` nothing. The heavy dependencies stay optional extras.
+#
+# `/data` is anchored with a leading slash on purpose. Written as `data/`,
+# hatchling matches the segment anywhere in a path and silently dropped
+# `blinklinmult/data/` from the wheel as well -- which broke every import of the
+# schema layer. Verified by building the wheel and importing it from a clean
+# environment; `tests/test_packaging.py` now guards it.
 [tool.hatch.build.targets.wheel]
 packages = ["blinklinmult"]
-exclude = ["blinklinmult/test", "blinklinmult/train", "data/"]
+exclude = ["/data"]
+# The demo clip is data, so hatchling would skip it without this: a wheel ships
+# .py files by default. 1.6 MB buys a `pip install` that can immediately
+# demonstrate the pipeline instead of asking for a corpus first.
+artifacts = ["blinklinmult/assets/*.mp4", "blinklinmult/assets/*.tag"]
 
 [tool.hatch.build.targets.sdist]
 packages = ["blinklinmult"]
-exclude = ["blinklinmult/test", "blinklinmult/train", "data/"]
+exclude = ["/data"]
 
-[project.optional-dependencies]
-dev = [
-  "matplotlib",
-  "opencv-python",
-  "scipy",
-  "tqdm",
-  "pytorch_lightning==1.8.4",
-  "torchsampler",
-  "moviepy",
-  "clip",
-  "exordium[tddfa]",
-  "bbox_visualizer"
+[tool.uv]
+override-dependencies = [
+  # exordium's unigaze pins timm==0.3.2; override it (matches exordium).
+  "timm>=1.0",
 ]
+
+[tool.ruff]
+line-length = 100
+# Matches requires-python, so ruff rejects any 3.13-only syntax before a Space
+# build discovers it.
+target-version = "py312"
+
+# Vendored third-party code (linmult 1.1.0), kept byte-for-byte as published so
+# the 1.x checkpoints keep loading. Reformatting it would be a silent fork of
+# someone else's release -- see blinklinmult/paper/_linmult/NOTICE.
+extend-exclude = ["blinklinmult/paper/_linmult"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "TCH", "ARG", "PIE", "D"]
+ignore = ["D107", "D203", "D213"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["D104"]
+"tests/**/*.py" = ["D", "S", "ARG"]
+"docs/conf.py" = ["D", "ARG"]
+# Lightning fixes its hook signatures (trainer, pl_module, batch_idx, ...); a
+# hook that ignores one still has to accept it.
+"blinklinmult/train/callbacks.py" = ["ARG002"]
+"blinklinmult/train/module.py" = ["ARG002"]
+
+[tool.coverage.run]
+source = ["blinklinmult"]
+omit = [
+  "*/tests/*",
+  "*/__init__.py",
+  # Standalone extraction CLIs: driven by multi-GB raw corpora and image
+  # decoding, so they are exercised by running the pipeline rather than by unit
+  # tests. Their pure logic -- annotation parsing, window cutting, split
+  # assignment, filename decoding -- lives in modules that ARE tested.
+  "blinklinmult/preprocess/eyeblink8.py",
+  "blinklinmult/preprocess/talkingface.py",
+  "blinklinmult/preprocess/rn.py",
+  "blinklinmult/preprocess/cew.py",
+  "blinklinmult/preprocess/hust_lebw.py",
+  "blinklinmult/preprocess/video_corpus.py",
+  # mrl.py's filename decoding is pure and lives in mrl_names.py, which IS
+  # tested; what remains here is the cv2-bound image loop.
+  "blinklinmult/preprocess/mrl.py",
+  # mpeblink.py's builder needs the 42 GB raw corpus and the extraction stack,
+  # exactly like its six siblings above. Its pure logic -- tracklet parsing,
+  # rasterisation, window sweeping, eye-box geometry -- IS tested, in
+  # tests/preprocess/test_mpeblink.py; what is omitted is the corpus loop.
+  "blinklinmult/preprocess/mpeblink.py",
+  # extractors.py binds exordium's iris landmarker, face detector, and head-pose
+  # estimator: constructing any of them downloads model weights. The logic they
+  # depend on -- the feature layout, flattening, and masking rules -- lives in
+  # features.py, which IS tested, including through its FakeExtractor.
+  "blinklinmult/preprocess/extractors.py",
+  # Vendored linmult 1.1.0 -- third-party code kept verbatim so the 1.x weights
+  # keep loading. It is covered where it matters, by the weight-load and forward
+  # tests in tests/paper/, not by unit-testing someone else's release.
+  "blinklinmult/paper/_linmult/*",
+  # The LR range test: a Lightning `Tuner` sweep over a real datamodule, plus an
+  # argparse entry point. Heavier than the end-to-end training tests that are
+  # already opt-in behind RUN_TRAINING_TESTS=1, and it produces a plot rather
+  # than a value anything asserts on. Its one piece of pure logic -- the
+  # suggestion guard -- IS tested in tests/train/test_lr_find.py.
+  "blinklinmult/train/lr_find.py",
+]
+
+[tool.coverage.report]
+fail_under = 90
+# `pipeline.run` is the one function that cannot be unit-tested: each of its
+# seven stages needs YOLO11, FaceMesh, 6DRepNet and a blink model over real
+# video. It IS tested, by `tests/test_pipeline.py::TestRunEndToEnd`, which runs
+# the whole thing against the corpus clip under `RUN_PIPELINE_TESTS=1` -- but
+# that is too slow for every run, so its lines would otherwise drag the gate
+# down and push it toward being lowered. Everything around `run` (the segment
+# arithmetic, the yaw gate, the extraction rule, the annotation offset) is
+# covered by the fast suite.
+exclude_also = [
+  "def run\\(",
+  # `unfreeze_module` restores a Lightning checkpoint and `embedding_key_for`
+  # constructs an EyeEncoder, which downloads backbone weights -- both need a
+  # real trained artifact, so they are exercised by the end-to-end runs behind
+  # RUN_TRAINING_TESTS=1 rather than by unit tests. The same reasoning as the
+  # corpus builders omitted above; the pure logic around them (callback
+  # selection, threshold reuse, config validation) IS unit-tested.
+  "def unfreeze_module\\(",
+  "def embedding_key_for\\(",
+]
+show_missing = true
+skip_covered = false
+
+[tool.coverage.html]
+directory = "coverage_html"
+
+[tool.ty.environment]
+python-version = "3.13"
+
+[tool.ty.src]
+# The preprocess scripts import the heavy optional extraction stack; they are
+# not part of the published library API.
+exclude = ["blinklinmult/preprocess", "blinklinmult/paper/_linmult"]

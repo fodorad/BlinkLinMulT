@@ -1,0 +1,10 @@
+---
+license: mit
+pipeline_tag: video-classification
+library_name: blinklinmult
+tags:
+  - blink-detection
+  - eye-state-recognition
+  - eye-tracking
+  - onnx
+---

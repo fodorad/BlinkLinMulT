@@ -1,0 +1,43 @@
+# Cross-corpus generalisation: train on three corpora, test on five.
+#
+# `datasets` are trained and validated on; `eval_datasets` join the **test
+# split only**, so their scores measure transfer to data the model never saw.
+# PerDatasetReport breaks the test row down per corpus, which is where the
+# per-corpus numbers come from.
+#
+# TalkingFace is test-only by construction -- it is one ~200 s recording of one
+# subject, so a train/test split within it would measure memorisation.
+#
+# HUST-LEBW is test-only for a different reason: it annotates one label per
+# *clip* rather than per frame (measured: the per-clip positive fraction is
+# 1.00 or 0.00, never partial). Frame-wise and event-wise scores are therefore
+# not meaningful on it, but the window-level BPD protocol -- "did this window
+# contain a blink" -- is exactly what its annotation supports. Read
+# `test/bpd_f1` and the per-dataset window rows for it, not its event metrics.
+datasets:
+  - rn15
+  - rn30
+  - mpeblink
+
+eval_datasets:
+  - talkingface
+  - hust_lebw
+
+window_seconds: 1.5
+image_size: 64
+
+# sqrt-size mixing: MPEblink has 63 758 training windows against RN15's 2 198,
+# a 29x gap. Proportional sampling would make a batch almost entirely MPEblink
+# and the RN corpora would contribute nothing to the gradient.
+strategy: temperature
+strategy_kwargs:
+  temperature: 2.0
+
+batch_size: 32
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42

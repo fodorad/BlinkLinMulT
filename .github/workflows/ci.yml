@@ -1,0 +1,152 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Minimal token scope: the job only needs to read the repository (checkout).
+# Coverage upload uses CODECOV_TOKEN, not GITHUB_TOKEN, so no write scope is
+# required.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (py${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # Both ends of the supported range, on both platforms the project is
+      # actually used on. The floor matters most: 3.12 is what Hugging Face
+      # Spaces builds on, so a 3.13-only regression would otherwise reach a
+      # Space rather than a pull request. macOS is where development happens and
+      # where the MPS paths differ.
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up uv
+      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78  # v7.6.0
+      with:
+        enable-cache: true
+
+    - name: Install dependencies
+      run: |
+        # On Linux CI, use CPU-only PyTorch wheels to avoid CUDA runtime
+        # dependencies that are absent on the runner. PEP 440 ignores local
+        # version segments, so torch==2.11.0 matches both 2.11.0+cu130 (the PyPI
+        # default) and 2.11.0+cpu (the CPU index).
+        #
+        # The `preprocess` extra is deliberately NOT installed: it pulls exordium
+        # and its multi-GB model weights, and nothing under test imports it --
+        # the preprocess modules that ARE tested (annotation, windows, common,
+        # mrl) import only numpy.
+        #
+        # `onnx` IS installed. Without it, `onnxruntime` is missing and the 12
+        # tests guarding the three published 1.x graphs skip **silently** -- a
+        # green CI run that never exercised them. onnxruntime is a small
+        # CPU-only wheel, so this costs seconds.
+        # The CPU wheel index is Linux-only: macOS torch wheels have no CUDA
+        # build to avoid, and pointing at that index there resolves nothing.
+        if [ "${{ runner.os }}" = "Linux" ]; then
+          uv pip install --system \
+            --extra-index-url https://download.pytorch.org/whl/cpu \
+            --index-strategy unsafe-best-match \
+            -e ".[train,dev,docs,onnx,serve,compare]"
+        else
+          uv pip install --system -e ".[train,dev,docs,onnx,serve,compare]"
+        fi
+
+    # `serve` and `compare` are here because `make check` installs them: the
+    # REST tests and the statistical layer skip rather than fail without their
+    # imports, so a drift between the two lists is invisible until something is
+    # silently untested. Keep this in step with EXTRAS in the Makefile.
+
+    - name: Cache backbone weights
+      uses: actions/cache@v4
+      with:
+        # The model tests construct real torchvision backbones; without this the
+        # ImageNet checkpoints are re-downloaded on every run.
+        path: |
+          ~/.cache/torch
+        key: weights-v1-${{ runner.os }}
+        restore-keys: |
+          weights-v1-
+          weights-
+
+    - name: Fetch published ONNX graphs
+      # The graphs are build artifacts, not source, so they are not committed --
+      # `blinkcnn.onnx` is included so the ONNX-vs-checkpoint parity test has
+      # something to compare; without it that test skips and the 4.9x speed
+      # claim is unverified in CI.
+      # but the tests that check them skip silently without them, which is worse
+      # than a failure. They are public and ~90 MB total, and the cache above
+      # keeps repeat runs cheap. `continue-on-error` so a Hub outage degrades to
+      # skipped tests rather than a red build on an unrelated PR.
+      continue-on-error: true
+      run: |
+        python -c "
+        from pathlib import Path
+        from huggingface_hub import hf_hub_download
+        out = Path('artifacts/onnx'); out.mkdir(parents=True, exist_ok=True)
+        for name in ('densenet121-union', 'blinklint-union', 'blinklinmult-union', 'blinkcnn'):
+            for suffix in ('.onnx', '.onnx.json'):
+                src = hf_hub_download('fodorad/blink_detection', name + suffix)
+                (out / (name + suffix)).write_bytes(Path(src).read_bytes())
+        print('fetched', len(list(out.glob('*.onnx'))), 'graphs')
+        "
+
+    - name: Audit dependencies for vulnerabilities
+      run: uvx pip-audit
+      continue-on-error: true  # torch may carry known CVEs; treat as a warning
+
+    - name: Ruff Lint
+      run: ruff check .
+
+    - name: Ruff Format
+      run: ruff format --check .
+
+    - name: Type check (ty)
+      run: ty check blinklinmult
+
+    - name: Test & Coverage
+      # RUN_TRAINING_TESTS=1 so CI runs the real Lightning runs that `make check`
+      # skips for speed. They are the only test proving the whole training chain
+      # fits together, so they must run somewhere -- here.
+      env:
+        RUN_TRAINING_TESTS: "1"
+      run: |
+        coverage run -m tests -v
+        coverage report
+        coverage html
+        coverage xml -o coverage.xml
+
+    - name: Upload coverage reports to Codecov
+      # Once per run, not once per matrix cell: four uploads of the same
+      # coverage would be four times the noise for no extra signal.
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: coverage.xml
+        fail_ci_if_error: true
+
+    - name: Upload coverage HTML
+      uses: actions/upload-artifact@v7
+      with:
+        name: coverage-report
+        path: coverage_html/
+      if: always()
+
+    - name: Build docs
+      run: sphinx-build -b html -W docs/ site/

@@ -1,0 +1,43 @@
+# Eye state recognition alone: is this eye closed?
+#
+# Pair with config/data/stills.yaml for the still-image corpora, or with
+# config/data/all.yaml to train the same head on the video corpora too.
+task: eye_state
+targets:
+  - eye_state
+
+# Plain BCE: unlike blink presence, eye state is roughly balanced in CEW and
+# MRL, so the focal loss's down-weighting of easy negatives buys nothing.
+loss: bce
+loss_kwargs: {}
+
+max_epochs: 30
+
+accelerator: auto
+devices: auto
+precision: 16-mixed
+seed: 42
+deterministic: false
+output_dir: results
+
+optimizer:
+  name: adamw
+  lr: 0.001
+  backbone_lr: 0.0001
+  weight_decay: 0.01
+  scheduler: onecycle
+  warmup_ratio: 0.1
+  gradient_clip_val: 1.0
+
+early_stopping:
+  enabled: true
+  monitor: valid/mean_f1
+  mode: max
+  patience: 10
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: blink-eye-state
+  run_name: null
+  log_model: true

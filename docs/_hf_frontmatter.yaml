@@ -1,0 +1,19 @@
+---
+license: other
+license_name: per-source-corpus
+license_link: https://github.com/fodorad/BlinkLinMulT#data
+pretty_name: BlinkLinMulT v2 blink detection datasets
+task_categories:
+  - video-classification
+  - image-classification
+tags:
+  - blink-detection
+  - eye-state-recognition
+  - eye-tracking
+size_categories:
+  - 100K<n<1M
+---
+
+<!-- This file is generated: docs/dataset.md is the single source of truth.
+     Regenerate and publish with `make push-hf-card`. -->
+

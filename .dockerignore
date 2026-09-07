@@ -1,0 +1,26 @@
+# Keep the build context small: without this, `docker build .` uploads the
+# corpora, the results tree and every virtualenv before the first instruction
+# runs -- tens of gigabytes for an image that needs a few hundred files.
+.git
+.venv
+data/raw
+data/processed
+results
+mlruns
+mlflow.db
+site
+coverage_html
+artifacts
+cache
+logs
+demos/notebooks
+# The research surfaces: neither image runs them, and shipping them would put
+# the corpus report scripts and every ablation driver into a serving container.
+experiments
+tools
+tmp
+tests
+__pycache__
+*.pyc
+.ruff_cache
+.pytest_cache

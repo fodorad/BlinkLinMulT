@@ -1,0 +1,68 @@
+# Joint training: both tasks at once, over the union of the video corpora.
+#
+# This is the case the v2 rewrite exists for. A corpus that annotates only one
+# task contributes an all-False mask for the other, and both the loss and the
+# metrics skip those positions -- so HUST-LEBW teaches blink presence alone and
+# RN/TalkingFace teach both, in one run.
+#
+# Both targets read a single sequence head: eye state frame by frame, blink
+# presence as the max over the window. One tensor, so the two can never
+# disagree. The still corpora train the frame-wise model instead; see
+# config/data/stills.yaml.
+task: joint
+targets:
+  - blink_presence
+  - eye_state
+
+# Focal rather than plain BCE: sampled continuously, the overwhelming majority
+# of frames are easy negatives whose aggregate gradient drowns out the few
+# frames where the eye is actually closing.
+loss: focal
+loss_kwargs:
+  gamma: 2.0
+  alpha: 0.25
+
+# Equal weight by default. Raise blink_presence if the eye-state corpora, which
+# are far larger, are seen to dominate the shared representation.
+task_weights:
+  blink_presence: 1.0
+  eye_state: 1.0
+
+max_epochs: 30
+
+accelerator: auto
+devices: auto
+precision: 16-mixed
+seed: 42
+deterministic: false
+output_dir: results
+
+optimizer:
+  name: adamw
+  lr: 0.001
+  # An ImageNet-pretrained backbone fine-tunes at a fraction of the rate the
+  # randomly-initialised transformer needs; one shared rate destroys the
+  # pretrained features in the first few hundred steps.
+  backbone_lr: 0.0001
+  weight_decay: 0.01
+  scheduler: onecycle
+  warmup_ratio: 0.1
+  gradient_clip_val: 1.0
+
+# Model selection tracks the mean FRAME-level F1 across supervised targets:
+# training is eye-wise, but the benchmark reports one decision per frame, so the
+# monitored number is the reported one. Accuracy is deliberately not the
+# monitor -- predicting "no blink" everywhere scores above 95% on a
+# continuously-sampled recording.
+early_stopping:
+  enabled: true
+  monitor: valid/mean_f1
+  mode: max
+  patience: 10
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: blink-joint
+  run_name: null
+  log_model: true

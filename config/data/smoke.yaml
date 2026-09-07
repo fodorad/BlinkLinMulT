@@ -1,0 +1,19 @@
+# A tiny two-corpus configuration for smoke tests and CI.
+#
+# Two video corpora at different rates (30 and 15 fps), so a smoke run still
+# exercises corpus mixing and the padding of the shorter window. A still corpus
+# cannot appear here: smoke.yaml is paired with a sequence model.
+datasets:
+  - rn15
+
+window_seconds: 1.5
+image_size: 64
+
+strategy: round_robin
+strategy_kwargs: {}
+
+batch_size: 2
+num_workers: 8
+pin_memory: false
+persistent_workers: false
+seed: 42

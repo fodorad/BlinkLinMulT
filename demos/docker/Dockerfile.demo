@@ -1,0 +1,72 @@
+# The full pipeline: raw video in, blink events and an annotated video out.
+#
+# This is the heavy image. It carries the extraction stack -- YOLO11 face
+# detection, FaceMesh landmarks, 6DRepNet head pose, the iris descriptors -- plus
+# opencv and torch, because `/detect` and the Gradio demo genuinely run all of
+# them per frame. Measured at ~1 GB resident once loaded, flat thereafter: the
+# cost is the models, not the footage, so a ten-minute video needs no more memory
+# than a ten-second one.
+#
+# For comparison, `PersonalityLinMulT` documents its multimodal pipeline OOM-ing
+# a 4 GiB Cloud Run instance and then an 8 GiB one, which is why only its
+# audio-only champion is deployed there. At ~1 GB this one fits a 2 GiB instance
+# with headroom -- the whole pipeline is deployable, not just the cheap half.
+#
+# Use `demos/docker/Dockerfile` instead if you only need to score eye crops.
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# ffmpeg: video decoding, a subprocess dependency rather than a Python one.
+# libgl1 / libglib2.0-0: opencv's runtime shared libraries, absent from -slim.
+# git: hatch-vcs reads VCS metadata at build time.
+RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends \
+        git ffmpeg libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+COPY pyproject.toml README.md demos/docker/overrides.txt ./
+COPY blinklinmult ./blinklinmult
+
+RUN git init -q && git config user.email a@a.a && git config user.name a \
+    && git add -A && git commit -q -m init && git tag v0.0.0
+
+# The override matters most here: exordium's transitive unigaze pins
+# timm==0.3.2, which imports the long-removed `torch._six`. Without
+# overrides.txt the face-detection import chain fails at *request* time, not
+# build time -- the worst place to discover it.
+RUN uv pip install --system --no-cache --override overrides.txt \
+        ".[serve,onnx,preprocess,demo]"
+
+ENV HF_HOME=/app/.cache/huggingface
+
+# Blink model weights, baked in so `--network none` works.
+RUN python -c "\
+from pathlib import Path; \
+from huggingface_hub import hf_hub_download; \
+from blinklinmult import WEIGHTS_DIR; \
+from blinklinmult.registry import MODELS; \
+WEIGHTS_DIR.mkdir(parents=True, exist_ok=True); \
+[Path(WEIGHTS_DIR, s.filename).write_bytes(Path(hf_hub_download('fodorad/blink_detection', s.filename)).read_bytes()) for s in MODELS.values()]; \
+print('baked', len(MODELS), 'models')"
+
+# The extraction models download on first construction, so they are fetched here
+# too. Without this the first request pays a multi-minute download and looks
+# like a hang -- and an air-gapped run would fail outright.
+RUN python -c "\
+from blinklinmult.preprocess.extractors import FaceMeshLocator, ExordiumExtractor; \
+FaceMeshLocator(); ExordiumExtractor(); \
+print('extraction stack warmed')" || \
+    echo 'WARNING: extraction weights not pre-fetched; first request will download them'
+
+COPY demos/docker/serve.py ./demos/docker/serve.py
+COPY demos/gradio ./demos/gradio
+
+ENV PORT=8080
+ENV MODEL_ID=blinkcnn
+EXPOSE 8080
+
+# The REST service by default. For the Gradio demo instead:
+#   docker run -p 7860:7860 <image> python demos/gradio/app.py
+CMD ["sh", "-c", "uvicorn demos.docker.serve:app --host 0.0.0.0 --port ${PORT}"]

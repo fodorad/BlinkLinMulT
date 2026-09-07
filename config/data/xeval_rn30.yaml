@@ -1,0 +1,35 @@
+# Train on rn30 alone; evaluate on every video corpus.
+#
+# The per-dataset arm of the benchmark, with the test split widened so one run
+# answers two questions: how well does rn30 train a model, and how far does that
+# model transfer to corpora it never saw.
+#
+# `eval_datasets` join the **test split only** -- they contribute nothing to
+# training, validation, early stopping, or the fitted operating point.
+datasets:
+  - rn30
+
+# Every other video corpus. A corpus already in `datasets` is not duplicated;
+# it simply contributes its own test split as usual.
+eval_datasets:
+  - rn15
+  - rn30
+  - mpeblink
+  - talkingface
+  - hust_lebw
+
+window_seconds: 1.5
+image_size: 64
+
+strategy: proportional
+strategy_kwargs: {}
+
+batch_size: 32
+# In-process: the HDF5 reader's handle cannot cross a process boundary.
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+cache_size: 0
+preload: false
+seed: 42

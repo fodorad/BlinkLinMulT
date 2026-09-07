@@ -1,0 +1,59 @@
+# BlinkLinMulT: the published cross-modal model.
+#
+# Two streams over the same analysis window: (T, 3, H, W) eye patches with their
+# (T,) mask, and (T, 160) handcrafted descriptors with *their own* (T,) mask.
+# The two masks are independent by design -- a usable eye crop can still defeat
+# the iris landmarker on a blurred or half-occluded frame, so a frame can be
+# valid for the image branch and invalid for the feature branch.
+#
+# Keys track linmult 2.x. The 1.x names the published code used
+# (input_modality_channels, projected_modality_dim, number_of_layers,
+# add_projection_fusion, aggregation) no longer exist upstream and are rejected
+# with a rename hint. input_feature_dim is absent by design: it is derived from
+# the backbone's width and the dataset's feature width, so the model cannot
+# disagree with its data.
+name: BlinkLinMulT
+family: linmult
+
+# ConvNeXt-Femto, chosen on measured CEW eye-state accuracy: 96.6% over three
+# seeds against densenet121's 94.4%, at 4.8M parameters and ~4x the throughput.
+# See docs/training.md for the full backbone comparison.
+backbone: convnext_femto
+backbone_pretrained: true
+# Not frozen: the backbone and the sequence model are one nn.Module trained end
+# to end, with optimizer.backbone_lr fine-tuning it at a tenth the head's rate.
+backbone_freeze: false
+# A 64px crop collapses to a 2x2 feature map on every ImageNet backbone; this
+# drops one stride-2 reduction to keep more of it.
+backbone_wide_stem: true
+backbone_output_dim: 256
+
+d_model: 32
+num_heads: 8
+cmt_num_layers: 5
+branch_sat_num_layers: 5
+
+attention_type: flash
+
+dropout_input: 0.0
+dropout_output: 0.2
+dropout_pe: 0.1
+dropout_ffn: 0.2
+# Raised from 0.0 following the HPO search in PersonalityLinMulT (30 trials,
+# TPE+Hyperband on fi_lint_wavlm): `dropout_attention` was by far the most
+# influential parameter searched (importance 0.35, against 0.06-0.22 for the
+# rest), every completed trial preferred ~0.11-0.25 over 0.0, and the
+# un-regularised 0.0 baseline showed the clearest train/valid divergence late
+# in training.
+#
+# That search ran on a different task and on precomputed features rather than a
+# CNN encoder, so this is a well-motivated starting point carried across, not a
+# result validated here. `make ablation-dropout` measures it on this data.
+dropout_attention: 0.2
+
+add_module_tcn: false
+add_module_ffn_fusion: true
+
+head_dropout: 0.2
+head_hidden_dim: 256
+head_norm: bn

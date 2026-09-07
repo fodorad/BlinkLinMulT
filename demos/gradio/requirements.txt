@@ -1,0 +1,28 @@
+# Hugging Face Space dependencies, for ZeroGPU (zero-a10g).
+#
+# The package is installed from git rather than PyPI so the Space tracks the
+# repository directly, and the extras are named explicitly rather than relying
+# on a single [demo] extra: the Space needs the preprocessing stack (which the
+# library treats as optional) and the ONNX runtime (likewise), and a missing one
+# fails at the first upload rather than at build time.
+#
+# `preprocess` pulls exordium, which supplies every model the pipeline runs per
+# frame: YOLO11 face detection, 6DRepNet head pose, FaceMesh 478 landmarks and
+# the IrisWrapper descriptors the two-stream model reads.
+#
+# `onnx` supplies onnxruntime, which runs the three frozen 1.x graphs. Without
+# it only `blinkcnn` would load.
+blinklinmult[preprocess,onnx] @ git+https://github.com/fodorad/BlinkLinMulT
+gradio
+matplotlib
+
+# **Pinned below 1.0.** mediapipe 1.0.x aborts the process inside
+# `TensorsToDetectionsCalculator::Open` -- "Check failed: service_ Service is
+# unavailable" -- for any input including a blank image, with either delegate.
+# It is an abort(), not an exception, so it cannot be caught and degraded.
+# exordium declares mediapipe unpinned, so without this line a fresh Space build
+# silently installs the broken one and every upload fails at stage 3.
+mediapipe<1.0
+
+# ZeroGPU's scheduler. Absent locally, where app.py falls back to a no-op shim.
+spaces

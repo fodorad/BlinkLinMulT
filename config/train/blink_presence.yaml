@@ -1,0 +1,47 @@
+# Blink presence detection alone: the paper's windowed detection task.
+#
+# Pair with config/data/all.yaml, the video corpora. A blink is a multi-frame
+# event here, so the still corpora have no window to score and belong to the
+# frame-wise model instead -- see config/data/stills.yaml.
+task: blink_presence
+targets:
+  - blink_presence
+
+# Focal rather than plain BCE: sampled continuously, the overwhelming majority
+# of frames are easy negatives whose aggregate gradient drowns out the few
+# frames where the eye is actually closing.
+loss: focal
+loss_kwargs:
+  gamma: 2.0
+  alpha: 0.25
+
+max_epochs: 30
+
+accelerator: auto
+devices: auto
+precision: 16-mixed
+seed: 42
+deterministic: false
+output_dir: results
+
+optimizer:
+  name: adamw
+  lr: 0.001
+  backbone_lr: 0.0001
+  weight_decay: 0.01
+  scheduler: onecycle
+  warmup_ratio: 0.1
+  gradient_clip_val: 1.0
+
+early_stopping:
+  enabled: true
+  monitor: valid/mean_f1
+  mode: max
+  patience: 10
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: blink-presence
+  run_name: null
+  log_model: true

@@ -1,0 +1,78 @@
+# Stage 2 of the two-stage recipe: end-to-end at a low learning rate.
+#
+# Stage 1 trains the transformer against a *frozen* encoder -- 7.7x cheaper
+# (0.74 s/batch against 5.70), and it cannot damage the pretrained features.
+# Stage 2 starts from that checkpoint with everything trainable.
+#
+# Run it as:
+#
+#   make video-lint-unfreeze
+#
+# which passes `--unfreeze-from results/blink-video/vid-lint-frozen/checkpoints/best.ckpt`.
+# That loads the **whole** model -- encoder, transformer and heads -- unlike
+# `model.encoder_weights`, which keeps only the encoder and would discard
+# everything stage 1 learned.
+#
+# Identical to `video.yaml` apart from the learning rates and the run length;
+# everything else is repeated here rather than inherited so a stage-2 run is
+# readable on its own.
+task: joint
+targets:
+  - eye_state
+  - blink_presence
+
+loss: focal
+loss_kwargs:
+  gamma: 2.0
+  alpha: 0.5
+
+occlusion_yaw: 45.0
+
+# **Short, because it starts from a working model.** If a tenth of the learning
+# rate has not improved on stage 1 within a few epochs, it will not. Stage 2 is
+# also the expensive stage -- the encoder takes gradients again -- so a long
+# budget here costs what stage 1 was designed to avoid.
+max_epochs: 10
+
+accelerator: auto
+devices: auto
+precision: 32-true
+seed: 42
+deterministic: false
+output_dir: results
+
+# **Two orders of magnitude below stage 1**, split again between the head and
+# the encoder.
+#
+# The head is already trained, so it needs refinement rather than learning:
+# 0.0001 against stage 1's 0.001. The encoder is the part most at risk -- it
+# carries the frame-wise benchmark's 0.87-1.00 event precision, which took a
+# full training run to reach -- so it moves ten times slower again.
+#
+# **These are conventional starting points, not measured.** Stage 2 is short, so
+# they are cheap to sweep once the mechanism is known to work.
+optimizer:
+  name: adamw
+  lr: 0.0001
+  backbone_lr: 0.00001
+  weight_decay: 0.05
+  scheduler: plateau
+  scheduler_patience: 2
+  scheduler_factor: 0.5
+  warmup_ratio: 0.1
+  gradient_clip_val: 1.0
+
+# patience 5, against stage 1's 10: a shorter run needs a shorter fuse, and
+# stage 2 either improves quickly or not at all.
+early_stopping:
+  enabled: true
+  monitor: valid/mean_f1
+  mode: max
+  patience: 5
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: blink-video
+  run_name: null
+  log_model: true

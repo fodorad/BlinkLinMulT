@@ -1,0 +1,22 @@
+# TalkingFace: one ~200-second recording of one subject, .tag annotated.
+# Held out entirely as a test set (see preprocess/talkingface.py): a train/test
+# split within one subject's continuous footage measures memorisation.
+#
+# 25 fps, not the 30 the .avi container advertises. The corpus README is
+# explicit -- "5000 frames ... about 200 seconds" -- and the .tag timestamps
+# agree, running at 0.04s intervals. Declaring 30 would cut 15-frame windows
+# spanning 0.6s of real time, misaligning this corpus against every other one
+# in a joint run.
+name: talkingface
+fps: 25.0
+window_seconds: 1.5
+image_size: 64
+
+# The 160-d handcrafted stream: 157 iris/eyelid dims from exordium's landmarker
+# plus 3 of head pose. Written by `make preprocess-talkingface`; drop this line
+# (or rebuild with --no-features) for an image-only corpus that BlinkLinT can
+# still read but BlinkLinMulT cannot.
+feature_dim: 160
+
+has_blink_presence: true
+has_eye_state: true

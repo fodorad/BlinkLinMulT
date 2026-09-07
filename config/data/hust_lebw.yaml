@@ -1,0 +1,25 @@
+# HUST-LEBW: short clips from commercial films; unconstrained pose,
+# illumination, scale, and occlusion.
+#
+# The label is a per-clip event annotation with no per-frame closure marking, so
+# only blink presence is supervised.
+name: hust_lebw
+fps: 30.0
+
+# 13 frames, the length the literature reports for this corpus -- not the 0.5s
+# every other corpus uses, which at 30 fps would be 15. The clips are fixed
+# length as shipped, so the window is what a clip *is* rather than a duration
+# chosen here. Clips shorter than 13 frames pad and mask.
+window_seconds: 0.4333333333333333
+
+image_size: 64
+
+# The 160-d handcrafted stream: 157 iris/eyelid dims from exordium's landmarker
+# plus 3 of head pose. Available because the corpus ships full 1920x800 film
+# frames -- a face is present, so pose is computable. A frame where the detector
+# finds no face carries a masked placeholder; its eye patches still come from
+# the authors' annotation.
+feature_dim: 160
+
+has_blink_presence: true
+has_eye_state: false

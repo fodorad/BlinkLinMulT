@@ -1,137 +1,211 @@
-import os
-import pickle
-from pathlib import Path
-from tqdm import tqdm
-from exordium.video.iris import IrisWrapper
-from exordium.utils.decorator import timer
-from exordium.video.tddfa_v2 import TDDFA_V2
-from blinklinmult.preprocess.reader import Tag
+"""Preprocess the Researcher's Night (RN) corpus.
+
+RN is recorded at two frame rates — ``rn15`` and ``rn30`` — and ships its own
+train/val/test division as directories::
+
+    data/raw/RN/
+        train/rn30/<id>/<id>.avi, .tag, .txt
+        val/rn30/...
+        test/rn15/...
+
+**The two rates are separate corpora.** They are reported separately in the
+benchmark, and they cannot share a declaration because the analysis window is
+declared in seconds and each rate derives a different frame count from it — 8
+frames at 15 fps against 15 at 30 fps for the same half-second.
+``config/data/rn.yaml`` lists both for the aggregate run.
+
+**The corpus's own splits are honoured** rather than re-derived. They divide by
+participant, which is the property that matters, and re-splitting would make
+published RN numbers incomparable with this project's.
+
+Example:
+    ``uv run python -m blinklinmult.preprocess.rn --rate 30``
+"""
+
+from __future__ import annotations
+
+import argparse
+import logging
+from functools import partial
+from typing import TYPE_CHECKING
+
+from blinklinmult import PROJECT_ROOT
+from blinklinmult.data.schema import DEFAULT_WINDOW_SECONDS
+from blinklinmult.preprocess.common import PreprocessError
+from blinklinmult.preprocess.video_corpus import (
+    VideoCorpusLayout,
+    add_cli_arguments,
+    process,
+)
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+logger = logging.getLogger(__name__)
+"""Module-level logger."""
+
+RATES: dict[int, str] = {15: "rn15", 30: "rn30"}
+"""Maps a recording rate to this project's corpus name for it."""
+
+SPLIT_DIRS: dict[str, str] = {"train": "train", "val": "valid", "test": "test"}
+"""Maps the corpus's split directory names onto this project's split names."""
+
+NOT_A_RECORDING = frozenset({"18trainvalLeftRight_MergedDoubleBlinks_eval.txt"})
+"""Files that sit alongside the recording directories but are not recordings.
+
+The corpus ships an evaluation list in ``test/rn30``; globbing for ``.tag``
+files skips it naturally, but it is named here so its presence is documented
+rather than rediscovered.
+"""
 
 
-DB_DIR_RN15_test = Path('data/db/RN/test/rn15')
-DB_DIR_OUT_RN15_test = Path('data/db_processed/rn15_test')
-DB_DIR_RN15_train = Path('data/db/RN/train/rn15')
-DB_DIR_OUT_RN15_train = Path('data/db_processed/rn15_train')
-DB_DIR_RN15_val = Path('data/db/RN/val/rn15')
-DB_DIR_OUT_RN15_val = Path('data/db_processed/rn15_val')
+def layout(rate: int, root: Path = PROJECT_ROOT, **overrides) -> VideoCorpusLayout:
+    """Build the layout for one of RN's two rates.
 
-DB_DIR_RN30_test = Path('data/db/RN/test/rn30')
-DB_DIR_OUT_RN30_test = Path('data/db_processed/rn30_test')
-DB_DIR_RN30_train = Path('data/db/RN/train/rn30')
-DB_DIR_OUT_RN30_train = Path('data/db_processed/rn30_train')
-DB_DIR_RN30_val = Path('data/db/RN/val/rn30')
-DB_DIR_OUT_RN30_val = Path('data/db_processed/rn30_val')
+    Args:
+        rate (int): ``15`` or ``30``.
+        root (Path): Repository root.
+        **overrides: Fields to override on the layout.
 
+    Returns:
+        VideoCorpusLayout: The layout, whose ``tag_glob`` spans every split of
+        this rate only.
 
-def save_samples(db_dir, db_dir_out, fps):
-    tag_paths = list(Path(db_dir).glob('*/*.tag'))
-    samples = []
+    Raises:
+        PreprocessError: If the rate is not one RN was recorded at.
+    """
+    if rate not in RATES:
+        raise PreprocessError(f"RN has no {rate} fps recordings; expected {sorted(RATES)}.")
 
-    for tag_path in tqdm(tag_paths, desc='Save mp4'):
-        id = tag_path.parent.name
-        frames_dir = db_dir / id / 'frames'
-        output_dir = db_dir_out / 'visualize'
-        tag = Tag(tag_path=tag_path, frames_dir=frames_dir)
-        samples += tag.generate_positive_samples(output_dir=output_dir, fps=fps)
-
-    return samples
-
-
-def save_face_crops(db_dir, db_dir_out):
-    tag_paths = list(Path(db_dir).glob('*/*.tag'))
-    for tag_path in tqdm(tag_paths, desc='Save faces'):
-        id = tag_path.parent.name
-        faces_dir = db_dir_out / 'faces' / id
-        tag = Tag(tag_path=tag_path)
-        tag.save_annotated_face_crops(faces_dir)
+    name = RATES[rate]
+    defaults = {
+        "name": name,
+        "raw_dir": root / "data" / "raw" / "RN",
+        "processed_dir": root / "data" / "processed" / name,
+        "fps": float(rate),
+        # Every split of this rate, and no other rate's.
+        "tag_glob": f"*/{name}/*/*.tag",
+        "window_seconds": DEFAULT_WINDOW_SECONDS,
+        # A continuous sweep at half the window, so evaluation sees the
+        # recording as deployed rather than as a balanced sample.
+        "eval_stride": max(1, round(rate * DEFAULT_WINDOW_SECONDS / 2)),
+    }
+    return VideoCorpusLayout(**{**defaults, **overrides})
 
 
-def save_eye_crops(db_dir, db_dir_out):
-    tag_paths = list(Path(db_dir).glob('*/*.tag'))
-    for tag_path in tqdm(tag_paths, desc='Save eyes'):
-        id = tag_path.parent.name
-        eyes_dir = db_dir_out / 'eyes' / id
-        tag = Tag(tag_path=tag_path)
-        tag.save_annotated_eye_crops(eyes_dir)
+def split_of_path(tag_path: Path, raw_dir: Path) -> str:
+    """Read a recording's split off its path.
+
+    Args:
+        tag_path (Path): The recording's ``.tag`` file.
+        raw_dir (Path): The corpus root.
+
+    Returns:
+        str: This project's split name.
+
+    Raises:
+        PreprocessError: If the path does not have the expected
+            ``<split>/<rate>/<id>/`` shape.
+    """
+    try:
+        relative = tag_path.relative_to(raw_dir).parts
+    except ValueError as error:
+        raise PreprocessError(f"{tag_path} is not inside {raw_dir}.") from error
+
+    if len(relative) < 3:
+        raise PreprocessError(
+            f"{tag_path}: expected <split>/<rate>/<id>/<file>.tag under {raw_dir}."
+        )
+
+    split_dir = relative[0]
+    if split_dir not in SPLIT_DIRS:
+        raise PreprocessError(
+            f"{tag_path}: unknown split directory {split_dir!r}; expected one of "
+            f"{sorted(SPLIT_DIRS)}."
+        )
+    return SPLIT_DIRS[split_dir]
 
 
-@timer
-def extract_features(tag_path: str | Path,
-                     face_dir: str | Path,
-                     left_eye_dir: str | Path,
-                     right_eye_dir: str | Path,
-                     output_path: str | Path):
+def recording_name(tag_path: Path, raw_dir: Path) -> str:
+    """Name one RN recording, uniquely across the whole corpus.
 
-    face_paths = [str(Path(face_dir) / elem) for elem in sorted(os.listdir(face_dir))]
-    left_eye_paths = [str(Path(left_eye_dir) / elem) for elem in sorted(os.listdir(left_eye_dir))]
-    right_eye_paths = [str(Path(right_eye_dir) / elem) for elem in sorted(os.listdir(right_eye_dir))]
+    RN restarts its numbering inside every split directory, so ``train/rn15/1``,
+    ``val/rn15/1``, and ``test/rn15/1`` are three different recordings that all
+    sit in a directory called ``1``. Naming them by that directory alone gives
+    all three the same id, and their sample keys then collide inside the HDF5 --
+    which is what the writer refuses to do.
 
-    face_model = TDDFA_V2()
-    eye_model = IrisWrapper()
+    Args:
+        tag_path (Path): The recording's ``.tag`` file.
+        raw_dir (Path): The corpus root.
 
-    headposes = []
-    for face_path in tqdm(face_paths, desc='Extract headpose feature'):
-        headposes.append({'id': int(Path(face_path).stem), 'headpose': face_model.inference(face_path)['headpose']})
-
-    eyes = []
-    for left_eye_path, right_eye_path in tqdm(zip(left_eye_paths, right_eye_paths), total=len(left_eye_paths), desc='Extract eye features'):
-        eyes.append({'id': int(Path(left_eye_path).stem),
-                     'left_eye': eye_model.eye_to_features(left_eye_path),
-                     'right_eye': eye_model.eye_to_features(right_eye_path)})
-
-    tag = Tag(tag_path=tag_path)
-    ids = sorted([elem['id'] for elem in headposes])
-
-    features = []
-    for id in tqdm(ids, total=len(ids), desc='Merge headpose and eye features, then save to pickle'):
-        label = tag.blink_label(id)
-        headpose = next((elem for elem in headposes if elem['id'] == id))
-        eye = next((elem for elem in eyes if elem['id'] == id))
-        features.append({'label': label} | headpose | eye)
-
-    with open(output_path, 'wb') as f:
-        pickle.dump(features, f)
-
-    print(f'TalkingFace feature extraction is done: {output_path}')
+    Returns:
+        str: ``<split>_<number>``, e.g. ``train_1``.
+    """
+    return f"{split_of_path(tag_path, raw_dir)}_{tag_path.parent.name}"
 
 
-if __name__ == '__main__':
+def process_rn(
+    corpus: VideoCorpusLayout,
+    limit: int | None = None,
+    device_id: int | None = None,
+) -> Path:
+    """Build one RN rate, honouring the corpus's own splits.
 
-    save_samples(DB_DIR_RN15_test, DB_DIR_OUT_RN15_test, 15)
-    save_samples(DB_DIR_RN15_train, DB_DIR_OUT_RN15_train, 15)
-    save_samples(DB_DIR_RN15_val, DB_DIR_OUT_RN15_val, 15)
-    save_samples(DB_DIR_RN30_test, DB_DIR_OUT_RN30_test, 30)
-    save_samples(DB_DIR_RN30_train, DB_DIR_OUT_RN30_train, 30)
-    save_samples(DB_DIR_RN30_val, DB_DIR_OUT_RN30_val, 30)
-    save_face_crops(DB_DIR_RN15_train, DB_DIR_OUT_RN15_train)
-    save_face_crops(DB_DIR_RN15_val, DB_DIR_OUT_RN15_val)
-    save_face_crops(DB_DIR_RN15_test, DB_DIR_OUT_RN15_test)
-    save_face_crops(DB_DIR_RN30_train, DB_DIR_OUT_RN30_train)
-    save_face_crops(DB_DIR_RN30_val, DB_DIR_OUT_RN30_val)
-    save_face_crops(DB_DIR_RN30_test, DB_DIR_OUT_RN30_test)
-    save_eye_crops(DB_DIR_RN15_train, DB_DIR_OUT_RN15_train)
-    save_eye_crops(DB_DIR_RN15_val, DB_DIR_OUT_RN15_val)
-    save_eye_crops(DB_DIR_RN15_test, DB_DIR_OUT_RN15_test)
-    save_eye_crops(DB_DIR_RN30_train, DB_DIR_OUT_RN30_train)
-    save_eye_crops(DB_DIR_RN30_val, DB_DIR_OUT_RN30_val)
-    save_eye_crops(DB_DIR_RN30_test, DB_DIR_OUT_RN30_test)
+    The only thing RN does differently is where its splits come from: they are
+    given as directories rather than derived, and re-deriving them would make
+    published RN numbers incomparable with this project's. Everything else is
+    the shared pipeline.
 
-    for fps in [15, 30]:
-        for subset in ['train', 'val', 'test']:
+    Args:
+        corpus (VideoCorpusLayout): The corpus layout.
+        limit (int | None): Process only the first N recordings.
+        device_id (int | None): GPU index for the extractors; ``None`` is CPU.
 
-            ids = os.listdir(f'data/db/RN/{subset}/rn{fps}')
-            item = '18trainvalLeftRight_MergedDoubleBlinks_eval.txt'
-            if item in ids:
-                ids.remove('18trainvalLeftRight_MergedDoubleBlinks_eval.txt') # only exception in test/rn30
+    Returns:
+        Path: The written HDF5 file.
 
-            tag_paths = list(Path(f'data/db/RN/{subset}/rn{fps}').glob('*/*.tag'))
+    Raises:
+        PreprocessError: If the corpus cannot be processed.
+    """
+    return process(
+        corpus,
+        limit=limit,
+        device_id=device_id,
+        split_of=partial(split_of_path, raw_dir=corpus.raw_dir),
+        name_of=partial(recording_name, raw_dir=corpus.raw_dir),
+    )
 
-            for id in ids:
-                print(f'Started rn{fps}_{subset}: {id}')
-                tag_path = next((elem for elem in tag_paths if elem.parent.name == id))
-                db_dir_out = Path(f'data/db_processed/rn{fps}_{subset}')
-                extract_features(tag_path=tag_path,
-                                 face_dir=db_dir_out / 'faces' / id,
-                                 left_eye_dir=db_dir_out / 'eyes'/ id / 'left',
-                                 right_eye_dir=db_dir_out / 'eyes'/ id / 'right',
-                                 output_path=db_dir_out / f'{id}_data.pkl')
+
+def main() -> None:
+    """CLI entry point."""
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    add_cli_arguments(parser)
+    parser.add_argument(
+        "--rate",
+        type=int,
+        choices=sorted(RATES),
+        default=None,
+        help="Process only this rate; both are processed when omitted.",
+    )
+    args = parser.parse_args()
+
+    logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
+
+    for rate in [args.rate] if args.rate else sorted(RATES):
+        process_rn(
+            layout(
+                rate,
+                args.root,
+                image_size=args.image_size,
+                window_seconds=args.window_seconds,
+                eval_stride=args.stride,
+                with_features=not args.no_features,
+            ),
+            limit=args.limit,
+            device_id=args.device,
+        )
+
+
+if __name__ == "__main__":
+    main()
