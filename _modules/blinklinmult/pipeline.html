@@ -368,6 +368,47 @@
 <span class="sd">and left to time out.</span>
 <span class="sd">"""</span>
 
+<span class="n">LOCALISATION_FAST</span> <span class="o">=</span> <span class="s2">"fast"</span>
+<span class="sd">"""Locate eyes from the face detector's own keypoints.</span>
+
+<span class="sd">YOLO11 returns both eye centres in the *same forward pass* as the box, so the</span>
+<span class="sd">478-point FaceMesh pass afterwards recomputes what is already in hand. Dropping</span>
+<span class="sd">it, and shrinking the detector's input to</span>
+<span class="sd">:data:`~blinklinmult.preprocess.extractors.POSE_IMAGE_SIZE`, is what takes the</span>
+<span class="sd">streaming demos from 0.53x realtime to over 40 fps on CPU.</span>
+<span class="sd">"""</span>
+
+<span class="n">LOCALISATION_PRECISE</span> <span class="o">=</span> <span class="s2">"precise"</span>
+<span class="sd">"""Locate eyes from FaceMesh landmarks, and extract the iris descriptor.</span>
+
+<span class="sd">Slower, and the only route that can feed a model with</span>
+<span class="sd">:attr:`~blinklinmult.registry.ModelSpec.needs_features`: the 160-d stream comes</span>
+<span class="sd">from the iris landmarker, which the fast path never runs. Also what every</span>
+<span class="sd">published corpus was built with.</span>
+<span class="sd">"""</span>
+
+<span class="n">LOCALISATIONS</span> <span class="o">=</span> <span class="p">(</span><span class="n">LOCALISATION_FAST</span><span class="p">,</span> <span class="n">LOCALISATION_PRECISE</span><span class="p">)</span>
+<span class="sd">"""Valid ``localisation`` arguments to :func:`run`."""</span>
+
+<span class="n">POSE_GEOMETRIC</span> <span class="o">=</span> <span class="s2">"geometric"</span>
+<span class="sd">"""Estimate head rotation from the detector's five keypoints.</span>
+
+<span class="sd">**0.05 ms against 26.7 ms** for 6DRepNet, because the keypoints are already</span>
+<span class="sd">computed -- there is no second forward pass. See</span>
+<span class="sd">:func:`~blinklinmult.preprocess.geometry.pose_from_keypoints` for the accuracy</span>
+<span class="sd">this trades away: roll and pitch correlate at 0.94, yaw is unvalidated.</span>
+<span class="sd">"""</span>
+
+<span class="n">POSE_6DREPNET</span> <span class="o">=</span> <span class="s2">"6drepnet"</span>
+<span class="sd">"""Estimate head rotation with a dedicated pose network.</span>
+
+<span class="sd">A full forward pass per frame. What the corpora were built with, and what the</span>
+<span class="sd">two-stream model's descriptor encodes.</span>
+<span class="sd">"""</span>
+
+<span class="n">HEAD_POSES</span> <span class="o">=</span> <span class="p">(</span><span class="n">POSE_GEOMETRIC</span><span class="p">,</span> <span class="n">POSE_6DREPNET</span><span class="p">)</span>
+<span class="sd">"""Valid ``head_pose`` arguments to :func:`run`."""</span>
+
 <span class="n">YAW_LIMIT</span> <span class="o">=</span> <span class="mf">45.0</span>
 <span class="sd">"""Degrees of yaw past which one eye is treated as occluded.</span>
 
@@ -735,6 +776,49 @@
         <span class="n">capture</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_pipeline</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">localisation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">head_pose</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Decide which localisation and pose routes a model may actually use.</span>
+
+<span class="sd">    The caller states a preference; the model has the final say. A model with</span>
+<span class="sd">    :attr:`~blinklinmult.registry.ModelSpec.needs_features` consumes the 160-d</span>
+<span class="sd">    iris descriptor, which only the precise route produces, and that descriptor</span>
+<span class="sd">    encodes 6DRepNet's angles -- so asking for the fast route with such a model</span>
+<span class="sd">    is not a cheaper answer, it is a different and wrong one. Both are forced,</span>
+<span class="sd">    and the override is logged rather than performed silently.</span>
+
+<span class="sd">    Split out from :func:`run` so it can be tested without constructing a</span>
+<span class="sd">    locator or downloading weights.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spec (ModelSpec): The chosen model's registry entry.</span>
+<span class="sd">        localisation (str): One of :data:`LOCALISATIONS`.</span>
+<span class="sd">        head_pose (str): One of :data:`HEAD_POSES`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str]: The effective ``(localisation, head_pose)``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        PipelineError: If either argument is not a recognised value.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">localisation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">LOCALISATIONS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"localisation must be one of </span><span class="si">{</span><span class="n">LOCALISATIONS</span><span class="si">}</span><span class="s2">; got </span><span class="si">{</span><span class="n">localisation</span><span class="si">!r}</span><span class="s2">."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">head_pose</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HEAD_POSES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"head_pose must be one of </span><span class="si">{</span><span class="n">HEAD_POSES</span><span class="si">}</span><span class="s2">; got </span><span class="si">{</span><span class="n">head_pose</span><span class="si">!r}</span><span class="s2">."</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">needs_features</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">localisation</span><span class="p">,</span> <span class="n">head_pose</span>
+
+    <span class="k">if</span> <span class="n">localisation</span> <span class="o">!=</span> <span class="n">LOCALISATION_PRECISE</span> <span class="ow">or</span> <span class="n">head_pose</span> <span class="o">!=</span> <span class="n">POSE_6DREPNET</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">"</span><span class="si">%s</span><span class="s2"> consumes the iris descriptor, so it runs the precise route with 6DRepNet; "</span>
+            <span class="s2">"ignoring localisation=</span><span class="si">%r</span><span class="s2">, head_pose=</span><span class="si">%r</span><span class="s2">."</span><span class="p">,</span>
+            <span class="n">spec</span><span class="o">.</span><span class="n">model_id</span><span class="p">,</span>
+            <span class="n">localisation</span><span class="p">,</span>
+            <span class="n">head_pose</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">LOCALISATION_PRECISE</span><span class="p">,</span> <span class="n">POSE_6DREPNET</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_read_video</span><span class="p">(</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -834,6 +918,8 @@
     <span class="n">extraction</span><span class="p">:</span> <span class="n">Extraction</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">MAX_SECONDS</span><span class="p">,</span>
+    <span class="n">localisation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">LOCALISATION_FAST</span><span class="p">,</span>
+    <span class="n">head_pose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">POSE_GEOMETRIC</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Stage</span> <span class="o">|</span> <span class="n">Result</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Analyse a video, yielding each stage as it completes.</span>
 
@@ -852,16 +938,26 @@
 <span class="sd">            events. Defaults to the model's registered operating point.</span>
 <span class="sd">        start (float): Where in the video to begin, in seconds.</span>
 <span class="sd">        duration (float): How much of it to analyse, in seconds.</span>
+<span class="sd">        localisation (str): :data:`LOCALISATION_FAST` (default) reads the eye</span>
+<span class="sd">            centres from the face detector's keypoints;</span>
+<span class="sd">            :data:`LOCALISATION_PRECISE` runs FaceMesh and the iris landmarker.</span>
+<span class="sd">            A model needing the descriptor forces the precise route -- see</span>
+<span class="sd">            :func:`_resolve_pipeline`.</span>
+<span class="sd">        head_pose (str): :data:`POSE_GEOMETRIC` (default) derives the angles</span>
+<span class="sd">            from those same keypoints; :data:`POSE_6DREPNET` runs the pose</span>
+<span class="sd">            network. Forced to 6DRepNet alongside the precise route.</span>
 
 <span class="sd">    Yields:</span>
 <span class="sd">        Stage | Result: One per completed stage, then the result.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        PipelineError: If the video cannot be read, or the two-stream model was</span>
-<span class="sd">            given no feature statistics.</span>
+<span class="sd">        PipelineError: If the video cannot be read, the two-stream model was</span>
+<span class="sd">            given no feature statistics, or ``localisation``/``head_pose`` is</span>
+<span class="sd">            not a recognised value.</span>
 <span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalise_image</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExordiumExtractor</span><span class="p">,</span> <span class="n">FaceMeshLocator</span>
+
+    <span class="n">localisation</span><span class="p">,</span> <span class="n">head_pose</span> <span class="o">=</span> <span class="n">_resolve_pipeline</span><span class="p">(</span><span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="p">,</span> <span class="n">localisation</span><span class="p">,</span> <span class="n">head_pose</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">needs_features</span> <span class="ow">and</span> <span class="n">stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span>
@@ -875,8 +971,19 @@
     <span class="n">frames</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">_read_video</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
     <span class="n">count</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">locator</span> <span class="o">=</span> <span class="n">FaceMeshLocator</span><span class="p">()</span>
-    <span class="n">extractor</span> <span class="o">=</span> <span class="n">ExordiumExtractor</span><span class="p">()</span>
+    <span class="c1"># Constructed per route: building `ExordiumExtractor` loads FaceMesh and</span>
+    <span class="c1"># 6DRepNet weights, which is most of the precise route's startup cost, and</span>
+    <span class="c1"># the fast route never calls it.</span>
+    <span class="k">if</span> <span class="n">localisation</span> <span class="o">==</span> <span class="n">LOCALISATION_PRECISE</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExordiumExtractor</span><span class="p">,</span> <span class="n">FaceMeshLocator</span>
+
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">FaceMeshLocator</span><span class="p">()</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="n">ExordiumExtractor</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">blinklinmult.preprocess.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoseEyeLocator</span>
+
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">PoseEyeLocator</span><span class="p">()</span>
+        <span class="n">extractor</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># Indices are the *source* video's, not the segment's: an overlay reading</span>
     <span class="c1"># `Frame: 0` for a segment starting at 30 s would not match the footage, and</span>
     <span class="c1"># the annotation is indexed the same way.</span>
@@ -913,19 +1020,37 @@
         <span class="p">)</span>
 
     <span class="c1"># -- 2. head pose --------------------------------------------------------</span>
+    <span class="c1"># The geometric route reads the detection already made in stage 1; 6DRepNet</span>
+    <span class="c1"># runs its own forward pass over the frame. Measured on CPU: 0.05 ms against</span>
+    <span class="c1"># 26.7 ms per frame.</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="n">pose_failed</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">kept</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
             <span class="k">continue</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">head_pose</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">detection</span> <span class="o">=</span> <span class="n">detections</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">head_pose</span> <span class="o">==</span> <span class="n">POSE_GEOMETRIC</span><span class="p">:</span>
+            <span class="c1"># `_resolve_pipeline` pairs the geometric route with the fast</span>
+            <span class="c1"># locator, whose `head_pose` reads the keypoints already detected.</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">locator</span><span class="o">.</span><span class="n">head_pose</span><span class="p">(</span><span class="n">detection</span><span class="p">)</span>  <span class="c1"># ty: ignore[unresolved-attribute]</span>
+                <span class="k">if</span> <span class="n">detection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Likewise, 6DRepNet only runs on the precise route, where the</span>
+            <span class="c1"># extractor is built.</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">head_pose</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>  <span class="c1"># ty: ignore[unresolved-attribute]</span>
         <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">pose</span> <span class="o">=</span> <span class="n">angles</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
             <span class="n">pose_failed</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">yield</span> <span class="n">Stage</span><span class="p">(</span>
         <span class="mi">2</span><span class="p">,</span>
         <span class="n">total_stages</span><span class="p">,</span>
-        <span class="s2">"Head pose (6DRepNet)"</span><span class="p">,</span>
+        <span class="c1"># Naming the route that actually ran, not the one that used to: these</span>
+        <span class="c1"># stage lines are the demo's timing readout, and a mislabel would make</span>
+        <span class="c1"># the speed claim unverifiable.</span>
+        <span class="sa">f</span><span class="s2">"Head pose (</span><span class="si">{</span><span class="s1">'geometric'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">head_pose</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">POSE_GEOMETRIC</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'6DRepNet'</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">found_n</span><span class="si">}</span><span class="s2"> frames, </span><span class="si">{</span><span class="n">pose_failed</span><span class="si">}</span><span class="s2"> failed"</span><span class="p">,</span>
         <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span>
     <span class="p">)</span>
@@ -973,7 +1098,16 @@
     <span class="c1"># once for the pair -- calling it per side would run 6DRepNet twice per</span>
     <span class="c1"># frame for the same head.</span>
     <span class="n">descriptors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">side</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">}</span>
+    <span class="c1"># `_resolve_pipeline` forces the precise route for a model needing features,</span>
+    <span class="c1"># so `extractor` is built whenever this branch runs. Asserted rather than</span>
+    <span class="c1"># assumed: if that rule is ever loosened, this fails here with a clear name</span>
+    <span class="c1"># instead of an AttributeError on None.</span>
     <span class="k">if</span> <span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">needs_features</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover - guarded by _resolve_pipeline</span>
+            <span class="k">raise</span> <span class="n">PipelineError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">detector</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">model_id</span><span class="si">!r}</span><span class="s2"> needs the iris descriptor, "</span>
+                <span class="sa">f</span><span class="s2">"which requires localisation=</span><span class="si">{</span><span class="n">LOCALISATION_PRECISE</span><span class="si">!r}</span><span class="s2">."</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">used</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="n">SIDES</span><span class="p">):</span>
                 <span class="k">continue</span>

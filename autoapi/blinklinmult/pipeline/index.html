@@ -383,6 +383,24 @@ can show progress without the pipeline knowing anything about a UI.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.pipeline.MAX_SECONDS" title="blinklinmult.pipeline.MAX_SECONDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_SECONDS</span></code></a></p></td>
 <td><p>Longest video processed, in seconds.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.LOCALISATION_FAST" title="blinklinmult.pipeline.LOCALISATION_FAST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOCALISATION_FAST</span></code></a></p></td>
+<td><p>Locate eyes from the face detector's own keypoints.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.pipeline.LOCALISATION_PRECISE" title="blinklinmult.pipeline.LOCALISATION_PRECISE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOCALISATION_PRECISE</span></code></a></p></td>
+<td><p>Locate eyes from FaceMesh landmarks, and extract the iris descriptor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.LOCALISATIONS" title="blinklinmult.pipeline.LOCALISATIONS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOCALISATIONS</span></code></a></p></td>
+<td><p>Valid <code class="docutils literal notranslate"><span class="pre">localisation</span></code> arguments to <a class="reference internal" href="#blinklinmult.pipeline.run" title="blinklinmult.pipeline.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.pipeline.POSE_GEOMETRIC" title="blinklinmult.pipeline.POSE_GEOMETRIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">POSE_GEOMETRIC</span></code></a></p></td>
+<td><p>Estimate head rotation from the detector's five keypoints.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.POSE_6DREPNET" title="blinklinmult.pipeline.POSE_6DREPNET"><code class="xref py py-obj docutils literal notranslate"><span class="pre">POSE_6DREPNET</span></code></a></p></td>
+<td><p>Estimate head rotation with a dedicated pose network.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.pipeline.HEAD_POSES" title="blinklinmult.pipeline.HEAD_POSES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HEAD_POSES</span></code></a></p></td>
+<td><p>Valid <code class="docutils literal notranslate"><span class="pre">head_pose</span></code> arguments to <a class="reference internal" href="#blinklinmult.pipeline.run" title="blinklinmult.pipeline.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a>.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.YAW_LIMIT" title="blinklinmult.pipeline.YAW_LIMIT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">YAW_LIMIT</span></code></a></p></td>
 <td><p>Degrees of yaw past which one eye is treated as occluded.</p></td>
 </tr>
@@ -465,6 +483,57 @@ can show progress without the pipeline knowing anything about a UI.</p>
 <p>Seven stages over several models per frame is minutes of CPU for seconds of
 video. Longer input is truncated with a warning rather than silently accepted
 and left to time out.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.pipeline.LOCALISATION_FAST">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">LOCALISATION_FAST</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'fast'</span></span><a class="headerlink" href="#blinklinmult.pipeline.LOCALISATION_FAST" title="Link to this definition">¶</a></dt>
+<dd><p>Locate eyes from the face detector’s own keypoints.</p>
+<p>YOLO11 returns both eye centres in the <em>same forward pass</em> as the box, so the
+478-point FaceMesh pass afterwards recomputes what is already in hand. Dropping
+it, and shrinking the detector’s input to
+<code class="xref py py-data docutils literal notranslate"><span class="pre">POSE_IMAGE_SIZE</span></code>, is what takes the
+streaming demos from 0.53x realtime to over 40 fps on CPU.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.pipeline.LOCALISATION_PRECISE">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">LOCALISATION_PRECISE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'precise'</span></span><a class="headerlink" href="#blinklinmult.pipeline.LOCALISATION_PRECISE" title="Link to this definition">¶</a></dt>
+<dd><p>Locate eyes from FaceMesh landmarks, and extract the iris descriptor.</p>
+<p>Slower, and the only route that can feed a model with
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">needs_features</span></code>: the 160-d stream comes
+from the iris landmarker, which the fast path never runs. Also what every
+published corpus was built with.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.pipeline.LOCALISATIONS">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">LOCALISATIONS</span></span><a class="headerlink" href="#blinklinmult.pipeline.LOCALISATIONS" title="Link to this definition">¶</a></dt>
+<dd><p>Valid <code class="docutils literal notranslate"><span class="pre">localisation</span></code> arguments to <a class="reference internal" href="#blinklinmult.pipeline.run" title="blinklinmult.pipeline.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.pipeline.POSE_GEOMETRIC">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">POSE_GEOMETRIC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'geometric'</span></span><a class="headerlink" href="#blinklinmult.pipeline.POSE_GEOMETRIC" title="Link to this definition">¶</a></dt>
+<dd><p>Estimate head rotation from the detector’s five keypoints.</p>
+<p><strong>0.05 ms against 26.7 ms</strong> for 6DRepNet, because the keypoints are already
+computed – there is no second forward pass. See
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pose_from_keypoints()</span></code> for the accuracy
+this trades away: roll and pitch correlate at 0.94, yaw is unvalidated.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.pipeline.POSE_6DREPNET">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">POSE_6DREPNET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'6drepnet'</span></span><a class="headerlink" href="#blinklinmult.pipeline.POSE_6DREPNET" title="Link to this definition">¶</a></dt>
+<dd><p>Estimate head rotation with a dedicated pose network.</p>
+<p>A full forward pass per frame. What the corpora were built with, and what the
+two-stream model’s descriptor encodes.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="blinklinmult.pipeline.HEAD_POSES">
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">HEAD_POSES</span></span><a class="headerlink" href="#blinklinmult.pipeline.HEAD_POSES" title="Link to this definition">¶</a></dt>
+<dd><p>Valid <code class="docutils literal notranslate"><span class="pre">head_pose</span></code> arguments to <a class="reference internal" href="#blinklinmult.pipeline.run" title="blinklinmult.pipeline.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -707,7 +776,7 @@ enough for both.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="blinklinmult.pipeline.run">
-<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../detector/index.html#blinklinmult.detector.BlinkDetector" title="blinklinmult.detector.BlinkDetector"><span class="pre">blinklinmult.detector.BlinkDetector</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blinklinmult.pipeline.Extraction" title="blinklinmult.pipeline.Extraction"><span class="pre">Extraction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MAX_SECONDS</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blinklinmult.pipeline.Stage" title="blinklinmult.pipeline.Stage"><span class="pre">Stage</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blinklinmult.pipeline.Result" title="blinklinmult.pipeline.Result"><span class="pre">Result</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/blinklinmult/pipeline.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.pipeline.run" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">blinklinmult.pipeline.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../detector/index.html#blinklinmult.detector.BlinkDetector" title="blinklinmult.detector.BlinkDetector"><span class="pre">blinklinmult.detector.BlinkDetector</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blinklinmult.pipeline.Extraction" title="blinklinmult.pipeline.Extraction"><span class="pre">Extraction</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MAX_SECONDS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localisation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">LOCALISATION_FAST</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">POSE_GEOMETRIC</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blinklinmult.pipeline.Stage" title="blinklinmult.pipeline.Stage"><span class="pre">Stage</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blinklinmult.pipeline.Result" title="blinklinmult.pipeline.Result"><span class="pre">Result</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/blinklinmult/pipeline.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blinklinmult.pipeline.run" title="Link to this definition">¶</a></dt>
 <dd><p>Analyse a video, yielding each stage as it completes.</p>
 <p>Yields six <a class="reference internal" href="#blinklinmult.pipeline.Stage" title="blinklinmult.pipeline.Stage"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stage</span></code></a> objects and then a final <a class="reference internal" href="#blinklinmult.pipeline.Result" title="blinklinmult.pipeline.Result"><code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></a>. The
 caller decides what to do with the stages – a UI prints them, a test
@@ -725,14 +794,23 @@ the prediction. Only the corpus clips have one.</p></li>
 events. Defaults to the model’s registered operating point.</p></li>
 <li><p><strong>start</strong> (<em>float</em>) – Where in the video to begin, in seconds.</p></li>
 <li><p><strong>duration</strong> (<em>float</em>) – How much of it to analyse, in seconds.</p></li>
+<li><p><strong>localisation</strong> (<em>str</em>) – <a class="reference internal" href="#blinklinmult.pipeline.LOCALISATION_FAST" title="blinklinmult.pipeline.LOCALISATION_FAST"><code class="xref py py-data docutils literal notranslate"><span class="pre">LOCALISATION_FAST</span></code></a> (default) reads the eye
+centres from the face detector’s keypoints;
+<a class="reference internal" href="#blinklinmult.pipeline.LOCALISATION_PRECISE" title="blinklinmult.pipeline.LOCALISATION_PRECISE"><code class="xref py py-data docutils literal notranslate"><span class="pre">LOCALISATION_PRECISE</span></code></a> runs FaceMesh and the iris landmarker.
+A model needing the descriptor forces the precise route – see
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_resolve_pipeline()</span></code>.</p></li>
+<li><p><strong>head_pose</strong> (<em>str</em>) – <a class="reference internal" href="#blinklinmult.pipeline.POSE_GEOMETRIC" title="blinklinmult.pipeline.POSE_GEOMETRIC"><code class="xref py py-data docutils literal notranslate"><span class="pre">POSE_GEOMETRIC</span></code></a> (default) derives the angles
+from those same keypoints; <a class="reference internal" href="#blinklinmult.pipeline.POSE_6DREPNET" title="blinklinmult.pipeline.POSE_6DREPNET"><code class="xref py py-data docutils literal notranslate"><span class="pre">POSE_6DREPNET</span></code></a> runs the pose
+network. Forced to 6DRepNet alongside the precise route.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>Stage | Result</em> – One per completed stage, then the result.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#blinklinmult.pipeline.PipelineError" title="blinklinmult.pipeline.PipelineError"><strong>PipelineError</strong></a> – If the video cannot be read, or the two-stream model was
-given no feature statistics.</p>
+<dd class="field-odd"><p><a class="reference internal" href="#blinklinmult.pipeline.PipelineError" title="blinklinmult.pipeline.PipelineError"><strong>PipelineError</strong></a> – If the video cannot be read, the two-stream model was
+given no feature statistics, or <code class="docutils literal notranslate"><span class="pre">localisation</span></code>/<code class="docutils literal notranslate"><span class="pre">head_pose</span></code> is
+not a recognised value.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -803,6 +881,12 @@ given no feature statistics.</p>
 <li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
 <li><a class="reference internal" href="#blinklinmult.pipeline.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li><a class="reference internal" href="#blinklinmult.pipeline.MAX_SECONDS"><code class="docutils literal notranslate"><span class="pre">MAX_SECONDS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.pipeline.LOCALISATION_FAST"><code class="docutils literal notranslate"><span class="pre">LOCALISATION_FAST</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.pipeline.LOCALISATION_PRECISE"><code class="docutils literal notranslate"><span class="pre">LOCALISATION_PRECISE</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.pipeline.LOCALISATIONS"><code class="docutils literal notranslate"><span class="pre">LOCALISATIONS</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.pipeline.POSE_GEOMETRIC"><code class="docutils literal notranslate"><span class="pre">POSE_GEOMETRIC</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.pipeline.POSE_6DREPNET"><code class="docutils literal notranslate"><span class="pre">POSE_6DREPNET</span></code></a></li>
+<li><a class="reference internal" href="#blinklinmult.pipeline.HEAD_POSES"><code class="docutils literal notranslate"><span class="pre">HEAD_POSES</span></code></a></li>
 <li><a class="reference internal" href="#blinklinmult.pipeline.YAW_LIMIT"><code class="docutils literal notranslate"><span class="pre">YAW_LIMIT</span></code></a></li>
 <li><a class="reference internal" href="#blinklinmult.pipeline.PROGRESS_EVERY"><code class="docutils literal notranslate"><span class="pre">PROGRESS_EVERY</span></code></a></li>
 <li><a class="reference internal" href="#blinklinmult.pipeline.SIDES"><code class="docutils literal notranslate"><span class="pre">SIDES</span></code></a></li>

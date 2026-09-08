@@ -41,6 +41,12 @@ Attributes
 
    blinklinmult.pipeline.logger
    blinklinmult.pipeline.MAX_SECONDS
+   blinklinmult.pipeline.LOCALISATION_FAST
+   blinklinmult.pipeline.LOCALISATION_PRECISE
+   blinklinmult.pipeline.LOCALISATIONS
+   blinklinmult.pipeline.POSE_GEOMETRIC
+   blinklinmult.pipeline.POSE_6DREPNET
+   blinklinmult.pipeline.HEAD_POSES
    blinklinmult.pipeline.YAW_LIMIT
    blinklinmult.pipeline.PROGRESS_EVERY
    blinklinmult.pipeline.SIDES
@@ -92,6 +98,57 @@ Module Contents
    Seven stages over several models per frame is minutes of CPU for seconds of
    video. Longer input is truncated with a warning rather than silently accepted
    and left to time out.
+
+.. py:data:: LOCALISATION_FAST
+   :value: 'fast'
+
+
+   Locate eyes from the face detector's own keypoints.
+
+   YOLO11 returns both eye centres in the *same forward pass* as the box, so the
+   478-point FaceMesh pass afterwards recomputes what is already in hand. Dropping
+   it, and shrinking the detector's input to
+   :data:`~blinklinmult.preprocess.extractors.POSE_IMAGE_SIZE`, is what takes the
+   streaming demos from 0.53x realtime to over 40 fps on CPU.
+
+.. py:data:: LOCALISATION_PRECISE
+   :value: 'precise'
+
+
+   Locate eyes from FaceMesh landmarks, and extract the iris descriptor.
+
+   Slower, and the only route that can feed a model with
+   :attr:`~blinklinmult.registry.ModelSpec.needs_features`: the 160-d stream comes
+   from the iris landmarker, which the fast path never runs. Also what every
+   published corpus was built with.
+
+.. py:data:: LOCALISATIONS
+
+   Valid ``localisation`` arguments to :func:`run`.
+
+.. py:data:: POSE_GEOMETRIC
+   :value: 'geometric'
+
+
+   Estimate head rotation from the detector's five keypoints.
+
+   **0.05 ms against 26.7 ms** for 6DRepNet, because the keypoints are already
+   computed -- there is no second forward pass. See
+   :func:`~blinklinmult.preprocess.geometry.pose_from_keypoints` for the accuracy
+   this trades away: roll and pitch correlate at 0.94, yaw is unvalidated.
+
+.. py:data:: POSE_6DREPNET
+   :value: '6drepnet'
+
+
+   Estimate head rotation with a dedicated pose network.
+
+   A full forward pass per frame. What the corpora were built with, and what the
+   two-stream model's descriptor encodes.
+
+.. py:data:: HEAD_POSES
+
+   Valid ``head_pose`` arguments to :func:`run`.
 
 .. py:data:: YAW_LIMIT
    :value: 45.0
@@ -308,7 +365,7 @@ Module Contents
    :rtype: str | None
 
 
-.. py:function:: run(video_path: str | pathlib.Path, detector: blinklinmult.detector.BlinkDetector, stats: dict[str, list[float]] | None = None, tag_path: str | pathlib.Path | None = None, extraction: Extraction | None = None, start: float = 0.0, duration: float = MAX_SECONDS) -> collections.abc.Iterator[Stage | Result]
+.. py:function:: run(video_path: str | pathlib.Path, detector: blinklinmult.detector.BlinkDetector, stats: dict[str, list[float]] | None = None, tag_path: str | pathlib.Path | None = None, extraction: Extraction | None = None, start: float = 0.0, duration: float = MAX_SECONDS, localisation: str = LOCALISATION_FAST, head_pose: str = POSE_GEOMETRIC) -> collections.abc.Iterator[Stage | Result]
 
    Analyse a video, yielding each stage as it completes.
 
@@ -333,10 +390,21 @@ Module Contents
    :type start: float
    :param duration: How much of it to analyse, in seconds.
    :type duration: float
+   :param localisation: :data:`LOCALISATION_FAST` (default) reads the eye
+                        centres from the face detector's keypoints;
+                        :data:`LOCALISATION_PRECISE` runs FaceMesh and the iris landmarker.
+                        A model needing the descriptor forces the precise route -- see
+                        :func:`_resolve_pipeline`.
+   :type localisation: str
+   :param head_pose: :data:`POSE_GEOMETRIC` (default) derives the angles
+                     from those same keypoints; :data:`POSE_6DREPNET` runs the pose
+                     network. Forced to 6DRepNet alongside the precise route.
+   :type head_pose: str
 
    :Yields: *Stage | Result* -- One per completed stage, then the result.
 
-   :raises PipelineError: If the video cannot be read, or the two-stream model was
-       given no feature statistics.
+   :raises PipelineError: If the video cannot be read, the two-stream model was
+       given no feature statistics, or ``localisation``/``head_pose`` is
+       not a recognised value.
 
 
