@@ -24,7 +24,22 @@
 #
 # The model weights are NOT pinned here: they download from the public Hub repo
 # `fodorad/blink_detection` on first use and are cached by the Space.
-blinklinmult[preprocess,onnx]==2.0.0
+#
+# This pin names the release that carries the exordium fix below it. Deploying
+# the Space before that release is on PyPI will fail to build -- push it after
+# the release lands, not before.
+blinklinmult[preprocess,onnx]==2.0.2
+
+# **The PyTorch path needs `linmult`.** `blinkcnn` ships as a .pt checkpoint, and
+# rebuilding it into a module goes through `blinklinmult.train.model`, which
+# imports linmult at module scope. That lives in the `train` extra, which this
+# Space does not install -- pulling Lightning, MLflow and the rest of the
+# training stack for one import is a poor trade. Naming linmult directly is the
+# smaller ask. Without it, selecting `blinkcnn` fails with
+# `ModuleNotFoundError: No module named 'linmult'` while the three ONNX models
+# still work, so the Space looks half-broken rather than broken.
+linmult>=2.1
+
 gradio
 matplotlib
 
