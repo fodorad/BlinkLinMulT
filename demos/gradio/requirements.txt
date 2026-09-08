@@ -31,7 +31,7 @@
 #
 # This pin names a released version, so deploying the Space before that release
 # is on PyPI fails to build -- push after the release lands, not before.
-blinklinmult[preprocess,onnx]==2.0.3
+blinklinmult[preprocess,onnx]==2.1.0
 
 gradio
 matplotlib
