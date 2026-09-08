@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/fodorad/BlinkLinMulT/compare/v2.1.0...v2.1.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* **demo:** pin the Space to the released version ([00de781](https://github.com/fodorad/BlinkLinMulT/commit/00de781a75809223515141c2ecb6097420280ce9))
+
 ## [2.1.0](https://github.com/fodorad/BlinkLinMulT/compare/v2.0.2...v2.1.0) (2026-09-08)
 
 
