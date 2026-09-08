@@ -25,7 +25,7 @@ from pathlib import Path
 try:
     __version__ = version("blinklinmult")
 except PackageNotFoundError:  # pragma: no cover - only when running uninstalled
-    __version__ = "2.0.2"
+    __version__ = "2.1.0"
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 """Repository root. Every path in a config is resolved relative to this."""

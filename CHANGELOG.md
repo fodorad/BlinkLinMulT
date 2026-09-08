@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/fodorad/BlinkLinMulT/compare/v2.0.2...v2.1.0) (2026-09-08)
+
+
+### Features
+
+* **demo:** add a fast pipeline route and a head-pose choice ([#21](https://github.com/fodorad/BlinkLinMulT/issues/21)) ([fd53bf2](https://github.com/fodorad/BlinkLinMulT/commit/fd53bf2f622908ace31fcea866a0da037084c62a))
+
 ## [2.0.2](https://github.com/fodorad/BlinkLinMulT/compare/v2.0.1...v2.0.2) (2026-09-08)
 
 

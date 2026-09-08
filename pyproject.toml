@@ -8,7 +8,7 @@ name = "blinklinmult"
 # do not edit by hand. The v2 rewrite lands as a `feat!:` commit, which
 # release-please turns into a `chore(main): release 2.0.0` PR; merging that PR
 # tags v2.0.0 and CD publishes to PyPI.
-version = "2.0.2"
+version = "2.1.0"
 description = "BlinkLinMulT: Transformer-based eye blink detection and eye state recognition."
 keywords = [
   "blink",
