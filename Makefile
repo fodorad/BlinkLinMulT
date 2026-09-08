@@ -142,6 +142,10 @@ check-full: lint type-check test-full docs
 #     wrong -- the summary below says so explicitly.
 #
 # Run it before pushing anything that touches dependencies, imports or CI config.
+# bash, not /bin/sh: `check-ci` needs `set -o pipefail` so a failing test suite
+# is not masked by the `tee | tail` that trims its output.
+SHELL := /bin/bash
+
 CI_EXTRAS  := train,dev,docs,onnx,serve,compare
 CI_VENV    := .venv-ci
 CI_PY      ?= 3.13
@@ -173,7 +177,10 @@ check-ci:
 	@echo "── Type check (ty) ──"
 	@VIRTUAL_ENV=$(CI_VENV) uv run --no-project ty check blinklinmult
 	@echo "── Tests (same env flags as CI) ──"
-	@RUN_TRAINING_TESTS=1 RUN_PACKAGING_TESTS=1 \
+	@# `set -o pipefail` because the exit status of a pipeline is its LAST
+	@# command's -- without it `| tee | tail` reports success for a failed suite,
+	@# and this target printed its green banner over three errors.
+	@set -o pipefail; RUN_TRAINING_TESTS=1 RUN_PACKAGING_TESTS=1 \
 	  VIRTUAL_ENV=$(CI_VENV) uv run --no-project coverage run -m tests -v 2>&1 \
 	  | tee $(CI_VENV)/test.log | tail -3
 	@VIRTUAL_ENV=$(CI_VENV) uv run --no-project coverage report

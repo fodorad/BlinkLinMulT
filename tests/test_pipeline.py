@@ -24,13 +24,18 @@ import numpy as np
 
 from blinklinmult.data.schema import LEFT, RIGHT
 from blinklinmult.pipeline import (
+    LOCALISATION_FAST,
+    LOCALISATION_PRECISE,
     MAX_SECONDS,
+    POSE_6DREPNET,
+    POSE_GEOMETRIC,
     YAW_LIMIT,
     Extraction,
     FrameResult,
     PipelineError,
     Result,
     Stage,
+    _resolve_pipeline,
     ground_truth,
     occluded_side,
 )
@@ -433,3 +438,64 @@ class TestVideoBackends(unittest.TestCase):
             _video_metadata(Path("no-such-video.mp4"))
         with self.assertRaises(Exception):
             _decode_frames(Path("no-such-video.mp4"), 0, 5)
+
+
+class TestResolvePipeline(unittest.TestCase):
+    """Which localisation and pose routes a model is allowed to use.
+
+    The caller states a preference and the model overrules it. That rule decides
+    whether the pipeline is fast or correct, and getting it backwards is silent:
+    the two-stream model fed keypoint-derived pose would still produce a curve,
+    just one its descriptor was never trained against.
+
+    Tested against the registry rather than a stub, and without constructing a
+    locator, so it runs in CI with no weights.
+    """
+
+    def test_a_plain_model_gets_what_it_asked_for(self) -> None:
+        """Nothing overrides a model that reads only crops."""
+        for model_id in ("blinkcnn-onnx", "densenet121-union", "blinklint-union"):
+            with self.subTest(model=model_id):
+                self.assertEqual(
+                    _resolve_pipeline(spec(model_id), LOCALISATION_FAST, POSE_GEOMETRIC),
+                    (LOCALISATION_FAST, POSE_GEOMETRIC),
+                )
+
+    def test_a_plain_model_can_still_choose_the_precise_route(self) -> None:
+        """The fast route is the default, not a restriction."""
+        self.assertEqual(
+            _resolve_pipeline(spec("blinkcnn-onnx"), LOCALISATION_PRECISE, POSE_6DREPNET),
+            (LOCALISATION_PRECISE, POSE_6DREPNET),
+        )
+
+    def test_the_descriptor_model_forces_both_routes(self) -> None:
+        """Asking for speed on the two-stream model is a different answer, not a cheaper one.
+
+        Its 160-d stream comes from the iris landmarker the fast route never
+        runs, and encodes 6DRepNet's angles.
+        """
+        self.assertEqual(
+            _resolve_pipeline(spec("blinklinmult-union"), LOCALISATION_FAST, POSE_GEOMETRIC),
+            (LOCALISATION_PRECISE, POSE_6DREPNET),
+        )
+
+    def test_an_unknown_localisation_names_the_valid_options(self) -> None:
+        """A typo must not fall through to a default and run the wrong route."""
+        with self.assertRaises(PipelineError) as caught:
+            _resolve_pipeline(spec("blinkcnn-onnx"), "quick", POSE_GEOMETRIC)
+        self.assertIn(LOCALISATION_FAST, str(caught.exception))
+
+    def test_an_unknown_head_pose_names_the_valid_options(self) -> None:
+        """Likewise for the pose route."""
+        with self.assertRaises(PipelineError) as caught:
+            _resolve_pipeline(spec("blinkcnn-onnx"), LOCALISATION_FAST, "sixdrepnet")
+        self.assertIn(POSE_GEOMETRIC, str(caught.exception))
+
+    def test_validation_runs_before_the_override(self) -> None:
+        """A bad value is rejected even for a model that would override it.
+
+        Otherwise the typo would be silently swallowed for one model and raise
+        for every other -- the kind of inconsistency that gets debugged twice.
+        """
+        with self.assertRaises(PipelineError):
+            _resolve_pipeline(spec("blinklinmult-union"), "quick", POSE_GEOMETRIC)
