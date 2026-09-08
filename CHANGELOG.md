@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/fodorad/BlinkLinMulT/compare/v2.0.1...v2.0.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* **deps:** drop exordium[video] so pip resolves a working timm ([#19](https://github.com/fodorad/BlinkLinMulT/issues/19)) ([b137652](https://github.com/fodorad/BlinkLinMulT/commit/b13765275571433bbcb2fd847080c19ceb04f317))
+
 ## [2.0.1](https://github.com/fodorad/BlinkLinMulT/compare/v2.0.0...v2.0.1) (2026-09-07)
 
 
