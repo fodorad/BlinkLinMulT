@@ -57,6 +57,47 @@ video. Longer input is truncated with a warning rather than silently accepted
 and left to time out.
 """
 
+LOCALISATION_FAST = "fast"
+"""Locate eyes from the face detector's own keypoints.
+
+YOLO11 returns both eye centres in the *same forward pass* as the box, so the
+478-point FaceMesh pass afterwards recomputes what is already in hand. Dropping
+it, and shrinking the detector's input to
+:data:`~blinklinmult.preprocess.extractors.POSE_IMAGE_SIZE`, is what takes the
+streaming demos from 0.53x realtime to over 40 fps on CPU.
+"""
+
+LOCALISATION_PRECISE = "precise"
+"""Locate eyes from FaceMesh landmarks, and extract the iris descriptor.
+
+Slower, and the only route that can feed a model with
+:attr:`~blinklinmult.registry.ModelSpec.needs_features`: the 160-d stream comes
+from the iris landmarker, which the fast path never runs. Also what every
+published corpus was built with.
+"""
+
+LOCALISATIONS = (LOCALISATION_FAST, LOCALISATION_PRECISE)
+"""Valid ``localisation`` arguments to :func:`run`."""
+
+POSE_GEOMETRIC = "geometric"
+"""Estimate head rotation from the detector's five keypoints.
+
+**0.05 ms against 26.7 ms** for 6DRepNet, because the keypoints are already
+computed -- there is no second forward pass. See
+:func:`~blinklinmult.preprocess.geometry.pose_from_keypoints` for the accuracy
+this trades away: roll and pitch correlate at 0.94, yaw is unvalidated.
+"""
+
+POSE_6DREPNET = "6drepnet"
+"""Estimate head rotation with a dedicated pose network.
+
+A full forward pass per frame. What the corpora were built with, and what the
+two-stream model's descriptor encodes.
+"""
+
+HEAD_POSES = (POSE_GEOMETRIC, POSE_6DREPNET)
+"""Valid ``head_pose`` arguments to :func:`run`."""
+
 YAW_LIMIT = 45.0
 """Degrees of yaw past which one eye is treated as occluded.
 
@@ -388,6 +429,49 @@ def _decode_frames(path: str | Path, first: int, stop: int) -> np.ndarray:
         capture.release()
 
 
+def _resolve_pipeline(spec, localisation: str, head_pose: str) -> tuple[str, str]:
+    """Decide which localisation and pose routes a model may actually use.
+
+    The caller states a preference; the model has the final say. A model with
+    :attr:`~blinklinmult.registry.ModelSpec.needs_features` consumes the 160-d
+    iris descriptor, which only the precise route produces, and that descriptor
+    encodes 6DRepNet's angles -- so asking for the fast route with such a model
+    is not a cheaper answer, it is a different and wrong one. Both are forced,
+    and the override is logged rather than performed silently.
+
+    Split out from :func:`run` so it can be tested without constructing a
+    locator or downloading weights.
+
+    Args:
+        spec (ModelSpec): The chosen model's registry entry.
+        localisation (str): One of :data:`LOCALISATIONS`.
+        head_pose (str): One of :data:`HEAD_POSES`.
+
+    Returns:
+        tuple[str, str]: The effective ``(localisation, head_pose)``.
+
+    Raises:
+        PipelineError: If either argument is not a recognised value.
+    """
+    if localisation not in LOCALISATIONS:
+        raise PipelineError(f"localisation must be one of {LOCALISATIONS}; got {localisation!r}.")
+    if head_pose not in HEAD_POSES:
+        raise PipelineError(f"head_pose must be one of {HEAD_POSES}; got {head_pose!r}.")
+
+    if not spec.needs_features:
+        return localisation, head_pose
+
+    if localisation != LOCALISATION_PRECISE or head_pose != POSE_6DREPNET:
+        logger.info(
+            "%s consumes the iris descriptor, so it runs the precise route with 6DRepNet; "
+            "ignoring localisation=%r, head_pose=%r.",
+            spec.model_id,
+            localisation,
+            head_pose,
+        )
+    return LOCALISATION_PRECISE, POSE_6DREPNET
+
+
 def _read_video(
     path: str | Path,
     start: float = 0.0,
@@ -485,6 +569,8 @@ def run(
     extraction: Extraction | None = None,
     start: float = 0.0,
     duration: float = MAX_SECONDS,
+    localisation: str = LOCALISATION_FAST,
+    head_pose: str = POSE_GEOMETRIC,
 ) -> Iterator[Stage | Result]:
     """Analyse a video, yielding each stage as it completes.
 
@@ -503,16 +589,26 @@ def run(
             events. Defaults to the model's registered operating point.
         start (float): Where in the video to begin, in seconds.
         duration (float): How much of it to analyse, in seconds.
+        localisation (str): :data:`LOCALISATION_FAST` (default) reads the eye
+            centres from the face detector's keypoints;
+            :data:`LOCALISATION_PRECISE` runs FaceMesh and the iris landmarker.
+            A model needing the descriptor forces the precise route -- see
+            :func:`_resolve_pipeline`.
+        head_pose (str): :data:`POSE_GEOMETRIC` (default) derives the angles
+            from those same keypoints; :data:`POSE_6DREPNET` runs the pose
+            network. Forced to 6DRepNet alongside the precise route.
 
     Yields:
         Stage | Result: One per completed stage, then the result.
 
     Raises:
-        PipelineError: If the video cannot be read, or the two-stream model was
-            given no feature statistics.
+        PipelineError: If the video cannot be read, the two-stream model was
+            given no feature statistics, or ``localisation``/``head_pose`` is
+            not a recognised value.
     """
     from blinklinmult.preprocess.common import normalise_image
-    from blinklinmult.preprocess.extractors import ExordiumExtractor, FaceMeshLocator
+
+    localisation, head_pose = _resolve_pipeline(detector.spec, localisation, head_pose)
 
     if detector.spec.needs_features and stats is None:
         raise PipelineError(
@@ -526,8 +622,19 @@ def run(
     frames, fps, truncated, offset = _read_video(video_path, start, duration)
     count = frames.shape[0]
 
-    locator = FaceMeshLocator()
-    extractor = ExordiumExtractor()
+    # Constructed per route: building `ExordiumExtractor` loads FaceMesh and
+    # 6DRepNet weights, which is most of the precise route's startup cost, and
+    # the fast route never calls it.
+    if localisation == LOCALISATION_PRECISE:
+        from blinklinmult.preprocess.extractors import ExordiumExtractor, FaceMeshLocator
+
+        locator = FaceMeshLocator()
+        extractor = ExordiumExtractor()
+    else:
+        from blinklinmult.preprocess.extractors import PoseEyeLocator
+
+        locator = PoseEyeLocator()
+        extractor = None
     # Indices are the *source* video's, not the segment's: an overlay reading
     # `Frame: 0` for a segment starting at 30 s would not match the footage, and
     # the annotation is indexed the same way.
@@ -564,19 +671,37 @@ def run(
         )
 
     # -- 2. head pose --------------------------------------------------------
+    # The geometric route reads the detection already made in stage 1; 6DRepNet
+    # runs its own forward pass over the frame. Measured on CPU: 0.05 ms against
+    # 26.7 ms per frame.
     start = time.perf_counter()
     pose_failed = 0
     for index, frame in enumerate(frames):
         if not kept[index]:
             continue
-        angles = extractor.head_pose(frame)
+        detection = detections[index]
+        if head_pose == POSE_GEOMETRIC:
+            # `_resolve_pipeline` pairs the geometric route with the fast
+            # locator, whose `head_pose` reads the keypoints already detected.
+            angles = (
+                locator.head_pose(detection)  # ty: ignore[unresolved-attribute]
+                if detection is not None
+                else np.zeros(3, np.float32)
+            )
+        else:
+            # Likewise, 6DRepNet only runs on the precise route, where the
+            # extractor is built.
+            angles = extractor.head_pose(frame)  # ty: ignore[unresolved-attribute]
         results[index].pose = angles
         if not np.any(angles):
             pose_failed += 1
     yield Stage(
         2,
         total_stages,
-        "Head pose (6DRepNet)",
+        # Naming the route that actually ran, not the one that used to: these
+        # stage lines are the demo's timing readout, and a mislabel would make
+        # the speed claim unverifiable.
+        f"Head pose ({'geometric' if head_pose == POSE_GEOMETRIC else '6DRepNet'})",
         f"{found_n} frames, {pose_failed} failed",
         time.perf_counter() - start,
     )
@@ -624,7 +749,16 @@ def run(
     # once for the pair -- calling it per side would run 6DRepNet twice per
     # frame for the same head.
     descriptors: dict[str, dict[int, np.ndarray]] = {side: {} for side in SIDES}
+    # `_resolve_pipeline` forces the precise route for a model needing features,
+    # so `extractor` is built whenever this branch runs. Asserted rather than
+    # assumed: if that rule is ever loosened, this fails here with a clear name
+    # instead of an AttributeError on None.
     if detector.spec.needs_features:
+        if extractor is None:  # pragma: no cover - guarded by _resolve_pipeline
+            raise PipelineError(
+                f"{detector.spec.model_id!r} needs the iris descriptor, "
+                f"which requires localisation={LOCALISATION_PRECISE!r}."
+            )
         for index, result in enumerate(results):
             if not any(result.used.get(side, False) for side in SIDES):
                 continue

@@ -46,6 +46,7 @@ except ImportError:
             return decorator
 
 
+import json
 import logging
 import tempfile
 import time
@@ -53,19 +54,33 @@ from pathlib import Path
 
 import gradio as gr
 
-from blinklinmult import assets
+from blinklinmult import assets, pipeline
 from blinklinmult.pipeline import MAX_SECONDS
 
 logger = logging.getLogger(__name__)
 """Module-level logger."""
 
-MODEL_IDS = (
-    "blinkcnn",
-    "densenet121-union",
-    "blinklint-union",
-    "blinklinmult-union",
-)
-"""Selectable models, current one first."""
+MODEL_LABELS = {
+    "BlinkCNN": "blinkcnn-onnx",
+    "BlinkDenseNet121": "densenet121-union",
+    "BlinkLinT": "blinklint-union",
+    "BlinkLinMulT": "blinklinmult-union",
+}
+"""Display name to registry id, current model first.
+
+The dropdown shows the names the models are published under; the registry needs
+the ids, which carry deployment detail (``-union``, ``-onnx``) that means nothing
+to a reader. Mapping rather than prettifying ids with string surgery, because
+``blinkcnn-onnx`` is simply called BlinkCNN -- the suffix is how it is stored.
+
+**Every id here is an ONNX graph.** The PyTorch checkpoint path rebuilds the
+module through ``blinklinmult.train.model``, which reaches linmult, omniloader
+and the rest of the training stack; on a Space that surfaced as three separate
+ModuleNotFoundError builds. The graphs need onnxruntime and nothing else.
+"""
+
+MODEL_IDS = tuple(MODEL_LABELS.values())
+"""The registry ids behind :data:`MODEL_LABELS`, in the same order."""
 
 EXAMPLE_VIDEO = assets.EXAMPLE_VIDEO
 """Built-in example, shipped inside the package.
@@ -81,12 +96,51 @@ EXAMPLE_TAG = assets.EXAMPLE_TAG
 Only the corpus clips ship one; an uploaded video is scored without a reference.
 """
 
-STATS_PATH = Path(__file__).resolve().parents[1] / "artifacts/onnx/rn30_feature_stats.json"
+STATS_FILENAME = "rn30_feature_stats.json"
 """Corpus feature statistics, needed only by ``blinklinmult-union``.
 
 Its 160-d descriptor stream was trained standardised; fed raw values the model
 never fires. See :meth:`~blinklinmult.detector.BlinkDetector.prepare_features`.
 """
+
+STATS_PATH = Path(__file__).resolve().parents[2] / "artifacts/onnx" / STATS_FILENAME
+"""Where a repository checkout keeps the statistics.
+
+``parents[2]`` because this file lives at ``demos/gradio/app.py``. A Space has
+no repository above it, so this path will not exist there and
+:func:`_feature_stats` falls back to the Hub.
+"""
+
+
+def _feature_stats() -> dict:
+    """Load the descriptor statistics, from the checkout or the Hub.
+
+    A repository checkout has them under ``artifacts/onnx``; a Space has only
+    the three files that were uploaded to it, so they come from the same public
+    model repo the weights do. Six kilobytes, cached after the first call.
+
+    Returns:
+        dict: ``{"mean": [...], "std": [...]}``.
+
+    Raises:
+        gr.Error: If neither source has them, naming both places looked.
+    """
+    if STATS_PATH.is_file():
+        return json.loads(STATS_PATH.read_text())
+
+    from blinklinmult.registry import HF_MODEL_REPO
+
+    try:
+        from huggingface_hub import hf_hub_download
+
+        downloaded = hf_hub_download(repo_id=HF_MODEL_REPO, filename=STATS_FILENAME)
+    except Exception as error:  # noqa: BLE001 - network, auth, or a missing file
+        raise gr.Error(
+            f"{STATS_FILENAME} is needed for this model but was not found at "
+            f"{STATS_PATH} and could not be downloaded from {HF_MODEL_REPO} ({error})."
+        ) from error
+    return json.loads(Path(downloaded).read_text())
+
 
 SOURCE_CUSTOM = "Custom video..."
 """Dropdown label for a user-supplied clip. The default."""
@@ -105,6 +159,37 @@ METHOD_CUSTOM = "Custom range"
 
 METHODS = (METHOD_FITTED, METHOD_THRESHOLD, METHOD_CUSTOM)
 """Ways of turning the eye-state curve into blink events."""
+
+POSE_LABEL_GEOMETRIC = "Geometric (fast)"
+"""Read the angles from the face detector's keypoints. The default."""
+
+POSE_LABEL_6DREPNET = "6DRepNet (precise)"
+"""Run the dedicated pose network: a forward pass per frame."""
+
+POSE_LABELS = {
+    POSE_LABEL_GEOMETRIC: pipeline.POSE_GEOMETRIC,
+    POSE_LABEL_6DREPNET: pipeline.POSE_6DREPNET,
+}
+"""Display name to the ``head_pose`` argument :func:`~blinklinmult.pipeline.run` takes."""
+
+
+def _forces_precise(model_id: str) -> bool:
+    """Whether this model overrides the pose choice.
+
+    A model consuming the 160-d iris descriptor can only run the precise route,
+    and that descriptor encodes 6DRepNet's angles -- so the pose dropdown has no
+    effect on it. Read from the registry rather than listed here, so adding such
+    a model to :data:`MODEL_LABELS` does not silently leave the control enabled.
+
+    Args:
+        model_id (str): A registry id.
+
+    Returns:
+        bool: True if the pipeline will override the requested pose route.
+    """
+    from blinklinmult.registry import spec
+
+    return bool(spec(model_id).needs_features)
 
 
 _models: dict[str, object] = {}
@@ -129,6 +214,7 @@ def _analyse_video(
     rule,  # noqa: ANN001 - Extraction, imported lazily
     start: float,
     duration: float,
+    head_pose: str = pipeline.POSE_GEOMETRIC,
 ) -> tuple[list[str], object]:
     """Run the whole pipeline inside one GPU allocation.
 
@@ -150,6 +236,9 @@ def _analyse_video(
         rule (Extraction | None): How to turn eye state into events.
         start (float): Segment start, in seconds.
         duration (float): Segment length, in seconds.
+        head_pose (str): Which pose route to run, from
+            :data:`~blinklinmult.pipeline.HEAD_POSES`. The pipeline overrides it
+            for a model that consumes the iris descriptor.
 
     Returns:
         tuple[list[str], object]: The stage lines, and the pipeline ``Result``.
@@ -167,6 +256,7 @@ def _analyse_video(
         extraction=rule,
         start=start,
         duration=duration,
+        head_pose=head_pose,
     ):
         if isinstance(item, Stage):
             lines.append(item.line())
@@ -193,7 +283,7 @@ def _load(model_id: str):  # noqa: ANN202 - BlinkDetector, imported lazily
 
 
 def analyse(  # noqa: PLR0913 - one argument per UI control
-    model_id: str,
+    model_label: str,
     video_path: str | None,
     source: str = SOURCE_CUSTOM,
     method: str = METHOD_FITTED,
@@ -202,11 +292,13 @@ def analyse(  # noqa: PLR0913 - one argument per UI control
     high: float = 0.53,
     start: float = 0.0,
     duration: float = 10.0,
+    pose_label: str = POSE_LABEL_GEOMETRIC,
 ):
     """Run the pipeline, yielding the log as each stage completes.
 
     Args:
-        model_id (str): Which model to run.
+        model_label (str): A key of :data:`MODEL_LABELS` -- the display name the
+            dropdown shows, not the registry id.
         video_path (str | None): The uploaded clip.
         source (str): Which dropdown entry produced it. The annotation is keyed
             off this rather than the path, because Gradio hands the handler a
@@ -218,6 +310,8 @@ def analyse(  # noqa: PLR0913 - one argument per UI control
         high (float): High threshold, for a custom range.
         start (float): Where in the video to begin, in seconds.
         duration (float): How much of it to analyse, in seconds.
+        pose_label (str): A key of :data:`POSE_LABELS`. Ignored for a model that
+            consumes the iris descriptor -- see :func:`_forces_precise`.
 
     Yields:
         tuple: ``(plot, annotated video, log)``. The heavy outputs stay ``None``
@@ -226,12 +320,15 @@ def analyse(  # noqa: PLR0913 - one argument per UI control
     Raises:
         gr.Error: If the input is unusable, or no face is found.
     """
-    import json
-
     import matplotlib.pyplot as plt
 
     from blinklinmult import overlay
     from blinklinmult.pipeline import NoFaceError, PipelineError
+
+    if model_label not in MODEL_LABELS:
+        raise gr.Error(f"Unknown model {model_label!r}; expected one of {list(MODEL_LABELS)}.")
+    model_id = MODEL_LABELS[model_label]
+    head_pose = POSE_LABELS.get(pose_label, pipeline.POSE_GEOMETRIC)
 
     _validate(model_id, video_path, method, threshold, low, high, start, duration)
 
@@ -242,17 +339,27 @@ def analyse(  # noqa: PLR0913 - one argument per UI control
         logger.info(message)
         return "\n".join(lines)
 
-    yield None, None, log(f"Model: {model_id}")
+    # The label, not the id: the id's `-onnx`/`-union` suffix is storage detail.
+    # Model and head pose get a line each: they are two independent choices, and
+    # putting the route in parentheses after the model read as if it were part
+    # of the model's name.
+    yield None, None, log(f"Model: {model_label}")
+    # A user who chose geometric and got 6DRepNet deserves to see why, on the
+    # line that reports what actually ran.
+    if _forces_precise(model_id):
+        yield (
+            None,
+            None,
+            log(f"Head pose: {POSE_LABEL_6DREPNET} — this model takes these angles as input"),
+        )
+    else:
+        yield None, None, log(f"Head pose: {pose_label}")
     yield None, None, log("Loading model (cached after first use)...")
 
     detector = _load(model_id)
     stats = None
     if detector.spec.needs_features:  # type: ignore[attr-defined]
-        if not STATS_PATH.is_file():
-            raise gr.Error(
-                f"{model_id!r} needs feature statistics, but {STATS_PATH.name} is missing."
-            )
-        stats = json.loads(STATS_PATH.read_text())
+        stats = _feature_stats()
 
     # The window belongs to the model; the extraction rule does not. Printing
     # `spec.threshold` beside it claimed the model's registered value was in
@@ -278,7 +385,7 @@ def analyse(  # noqa: PLR0913 - one argument per UI control
             yield None, None, log(f"Ground truth: {tag.name}")
 
         stage_lines, result = _analyse_video(
-            video_path, model_id, stats, tag, rule, start, duration
+            video_path, model_id, stats, tag, rule, start, duration, head_pose
         )
         for line in stage_lines:
             yield None, None, log(line)
@@ -393,7 +500,7 @@ def _validate(
     and the pipeline is far too slow to discover a bad threshold at stage 6.
 
     Args:
-        model_id (str): The chosen model.
+        model_id (str): The chosen model's registry id.
         video_path (str | None): The uploaded clip.
         method (str): The extraction method.
         threshold (float): Single cut, when that method is chosen.
@@ -460,7 +567,7 @@ def _validate(
 
 
 def _reveal(
-    model_id: str,
+    model_label: str,
     video_path: str | None,
     method: str,
     threshold: float,
@@ -476,7 +583,8 @@ def _reveal(
     the page as it was rather than showing three empty panels beside an error.
 
     Args:
-        model_id (str): The chosen model.
+        model_label (str): The chosen model's display name, as the dropdown
+            shows it -- resolved to a registry id before validating.
         video_path (str | None): The uploaded clip.
         method (str): The extraction method.
         threshold (float): Single cut, when that method is chosen.
@@ -491,8 +599,46 @@ def _reveal(
     Raises:
         gr.Error: If anything is missing or out of range.
     """
-    _validate(model_id, video_path, method, threshold, low, high, start, duration)
+    _validate(
+        MODEL_LABELS.get(model_label, model_label),
+        video_path,
+        method,
+        threshold,
+        low,
+        high,
+        start,
+        duration,
+    )
     return gr.update(visible=True), gr.update(visible=True), gr.update(visible=True)
+
+
+def _on_model_change(model_label: str):
+    """Enable or disable the pose dropdown for the chosen model.
+
+    A model consuming the iris descriptor runs 6DRepNet whatever the dropdown
+    says, so leaving the control live would let a user pick "Geometric (fast)"
+    and receive neither speed nor an explanation.
+
+    Args:
+        model_label (str): The newly chosen display name.
+
+    Returns:
+        dict: A Gradio update for the pose dropdown.
+    """
+    model_id = MODEL_LABELS.get(model_label)
+    if model_id is not None and _forces_precise(model_id):
+        return gr.update(
+            value=POSE_LABEL_6DREPNET,
+            interactive=False,
+            info="Fixed: this model takes 6DRepNet's angles as part of its input.",
+        )
+    return gr.update(
+        interactive=True,
+        info=(
+            "Geometric reads the angles from the detector's keypoints -- no extra "
+            "forward pass, and roughly 6x faster end to end."
+        ),
+    )
 
 
 def _on_source_change(source: str):
@@ -530,11 +676,24 @@ def build_demo() -> gr.Blocks:
         with gr.Row():
             with gr.Column(scale=1):
                 model_in = gr.Dropdown(
-                    choices=list(MODEL_IDS),
-                    value=MODEL_IDS[0],
+                    choices=list(MODEL_LABELS),
+                    value=next(iter(MODEL_LABELS)),
                     label="Model",
                     info=(
-                        "blinkcnn is the current model; the *-union models are from the 1.x paper."
+                        "BlinkCNN is the current model; the other three are from the 2023 paper. "
+                        "All four run as ONNX graphs."
+                    ),
+                )
+                pose_in = gr.Dropdown(
+                    choices=list(POSE_LABELS),
+                    value=POSE_LABEL_GEOMETRIC,
+                    label="Head pose",
+                    info=(
+                        "Geometric reads the angles from the detector's keypoints -- no extra "
+                        "forward pass, and roughly 6x faster end to end. Roll and pitch track "
+                        "6DRepNet closely (r=0.94); yaw is an approximation, and yaw is what "
+                        "the occlusion gate uses. BlinkLinMulT takes 6DRepNet's angles as model "
+                        "input, so it always runs them."
                     ),
                 )
                 source_in = gr.Dropdown(
@@ -644,9 +803,15 @@ def build_demo() -> gr.Blocks:
                 high_in,
                 start_in,
                 duration_in,
+                pose_in,
             ],
             [plot_out, video_out, log_out],
         )
+
+        # A control that silently does nothing is worse than one that explains
+        # itself: BlinkLinMulT's iris descriptor encodes 6DRepNet's angles, so
+        # the pipeline overrides this choice. Say so, and grey it out.
+        model_in.change(_on_model_change, [model_in], [pose_in])
     return demo
 
 

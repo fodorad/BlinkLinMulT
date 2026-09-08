@@ -21,14 +21,17 @@ rule you choose.
 
 ## The models
 
-| id | what it is | runtime |
+| name | what it is | runtime |
 |---|---|---|
-| `blinkcnn` | current frame-wise model, ConvNeXt-Femto | PyTorch |
-| `densenet121-union` | 1.x frame-wise, DenseNet121 | ONNX |
-| `blinklint-union` | 1.x sequence, DenseNet121 + LinT | ONNX |
-| `blinklinmult-union` | 1.x two-stream, crops + 160-d iris descriptors | ONNX |
+| **BlinkCNN** | current frame-wise model, ConvNeXt-Femto | ONNX |
+| **BlinkDenseNet121** | 1.x frame-wise, DenseNet121 | ONNX |
+| **BlinkLinT** | 1.x sequence, DenseNet121 + LinT | ONNX |
+| **BlinkLinMulT** | 1.x two-stream, crops + 160-d iris descriptors | ONNX |
 
-The three `*-union` models are from
+All four run as ONNX graphs, so the Space needs `onnxruntime` and no training
+stack at all.
+
+BlinkDenseNet121, BlinkLinT and BlinkLinMulT are from
 [*BlinkLinMulT: Transformer-Based Eye Blink Detection*](https://www.mdpi.com/2313-433X/9/10/196)
 (J. Imaging, 2023), frozen as ONNX graphs. They were trained on **15-frame
 windows**, so a longer clip is scored by sliding that window and averaging the
@@ -39,9 +42,13 @@ overlap.
 Each stage completes before the next and reports its own wall-clock time, so a
 slow run is attributable rather than an opaque wait.
 
-1. **Face detection and tracking** — the largest face, kept consistent across frames
-2. **Head pose** — 6DRepNet, one face per frame
-3. **Landmarks and eye localisation** — FaceMesh 478 points, two eye boxes
+1. **Face detection and tracking** — YOLO11 at 256px, the largest face kept
+   consistent across frames
+2. **Head pose** — geometric by default, read from the detector's own keypoints;
+   6DRepNet is selectable, and forced for BlinkLinMulT
+3. **Landmarks and eye localisation** — the detector's keypoints give both eye
+   centres in the same forward pass; FaceMesh's 478 points are run only for
+   BlinkLinMulT, which needs the iris descriptor
 4. **Eye selection** — left, right, both or neither
 5. **Inference** — per-frame eye state, each eye scored independently
 6. **Labelling** — the eye-state curve becomes blink events
