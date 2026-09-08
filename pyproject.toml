@@ -155,17 +155,12 @@ preprocess = [
   # >=2.11.1 removed exordium's own dependency on blinklinmult (its 1.x
   # DenseNet121 wrapper). Below that, importing exordium.video.face raises
   # ModuleNotFoundError against a v2 checkout, which has no blinklinmult.models.
-  # **Not `exordium[video]`.** That extra pulls `unigaze`, which hard-pins
-  # `timm==0.3.2` -- a 2021 release importing `torch._six`, removed in torch 2.x.
-  # Locally `[tool.uv] override-dependencies` forces timm>=1.0 and hides this,
-  # but pip ignores that section, so a pip install (a Hugging Face Space, a
-  # Dockerfile) silently gets the broken timm and every exordium import fails
-  # with `No module named 'torch._six'`. Nothing here uses unigaze, so the four
-  # `[video]` packages that ARE used are named directly instead.
-  "exordium>=2.11.1",
-  "einops",
-  "timm>=1.0",
-  "ultralytics",
+  # >=2.11.4 dropped `unigaze`, which hard-pinned `timm==0.3.2` -- a 2021 release
+  # importing `torch._six`, removed in torch 2.x. Below that, a pip install (a
+  # Hugging Face Space, a Dockerfile) resolved the broken timm and every exordium
+  # import failed with `No module named 'torch._six'`; uv hid it behind an
+  # override that pip does not read.
+  "exordium[video]>=2.11.4",
   # **Pinned below 1.0.** mediapipe 1.0.x aborts the process inside
   # `TensorsToDetectionsCalculator::Open` -- "Check failed: service_ Service is
   # unavailable" -- on macOS arm64 / Python 3.13, for any input including a
@@ -231,12 +226,6 @@ artifacts = ["blinklinmult/assets/*.mp4", "blinklinmult/assets/*.tag"]
 [tool.hatch.build.targets.sdist]
 packages = ["blinklinmult"]
 exclude = ["/data"]
-
-[tool.uv]
-override-dependencies = [
-  # exordium's unigaze pins timm==0.3.2; override it (matches exordium).
-  "timm>=1.0",
-]
 
 [tool.ruff]
 line-length = 100
