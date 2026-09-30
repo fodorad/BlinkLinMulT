@@ -168,7 +168,7 @@ preprocess = [
   # an exception, so it cannot be caught and degraded. 0.10.35 initialises its
   # GL context and detects normally. exordium declares `mediapipe` unpinned, so
   # without this a fresh install silently gets the broken one.
-  "mediapipe<1.0",
+  "mediapipe<2.0",
 ]
 
 dev = [
