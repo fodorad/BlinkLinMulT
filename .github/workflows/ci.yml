@@ -80,7 +80,7 @@ jobs:
     # silently untested. Keep this in step with EXTRAS in the Makefile.
 
     - name: Cache backbone weights
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         # The model tests construct real torchvision backbones; without this the
         # ImageNet checkpoints are re-downloaded on every run.
