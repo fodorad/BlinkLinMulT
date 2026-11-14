@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/metrics/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.metrics - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -409,22 +409,22 @@ reducing once at epoch end keeps the gathered state exact.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.average_precision" title="blinklinmult.train.metrics.average_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_precision</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.average_precision" title="blinklinmult.train.metrics.average_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_precision</span></code></a>(probability, target, mask) → torch.Tensor</p></td>
 <td><p>Area under the precision-recall curve over valid positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.binary_metrics" title="blinklinmult.train.metrics.binary_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binary_metrics</span></code></a>(→ dict[str, torch.Tensor])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.binary_metrics" title="blinklinmult.train.metrics.binary_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binary_metrics</span></code></a>(probability, target, mask[, threshold]) → dict[str, torch.Tensor]</p></td>
 <td><p>Every per-target metric, over valid positions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.frame_group_ids" title="blinklinmult.train.metrics.frame_group_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_group_ids</span></code></a>(→ torch.Tensor | None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.frame_group_ids" title="blinklinmult.train.metrics.frame_group_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_group_ids</span></code></a>(sample_ids) → torch.Tensor | None</p></td>
 <td><p>Map each sample to an integer id shared by the eyes of the same frames.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.aggregate_by_group" title="blinklinmult.train.metrics.aggregate_by_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_by_group</span></code></a>(→ tuple[torch.Tensor, torch.Tensor])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.aggregate_by_group" title="blinklinmult.train.metrics.aggregate_by_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_by_group</span></code></a>(values, groups, reducer) → tuple[torch.Tensor, torch.Tensor]</p></td>
 <td><p>Reduce per-position values to one value per frame group.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.frame_level_metrics" title="blinklinmult.train.metrics.frame_level_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_level_metrics</span></code></a>(→ dict[str, torch.Tensor])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.frame_level_metrics" title="blinklinmult.train.metrics.frame_level_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_level_metrics</span></code></a>(metric) → dict[str, torch.Tensor]</p></td>
 <td><p>Score one target at frame level, aggregating the eyes of each frame.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.window_level_metrics" title="blinklinmult.train.metrics.window_level_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">window_level_metrics</span></code></a>(→ dict[str, torch.Tensor])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.metrics.window_level_metrics" title="blinklinmult.train.metrics.window_level_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">window_level_metrics</span></code></a>(metric) → dict[str, torch.Tensor]</p></td>
 <td><p>Score one target at window level: did this window contain a blink?</p></td>
 </tr>
 </tbody>

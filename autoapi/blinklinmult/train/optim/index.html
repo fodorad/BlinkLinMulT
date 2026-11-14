@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/optim/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.optim - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -367,13 +367,13 @@ into two groups whenever <code class="docutils literal notranslate"><span class=
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.optim.parameter_groups" title="blinklinmult.train.optim.parameter_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameter_groups</span></code></a>(→ list[dict[str, Any]])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.optim.parameter_groups" title="blinklinmult.train.optim.parameter_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameter_groups</span></code></a>(model, config) → list[dict[str, Any]]</p></td>
 <td><p>Split a model's parameters into backbone and head groups.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.optim.build_optimizer" title="blinklinmult.train.optim.build_optimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_optimizer</span></code></a>(→ torch.optim.Optimizer)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.optim.build_optimizer" title="blinklinmult.train.optim.build_optimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_optimizer</span></code></a>(config, model) → torch.optim.Optimizer</p></td>
 <td><p>Construct the configured optimizer over the model's parameter groups.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.optim.build_scheduler" title="blinklinmult.train.optim.build_scheduler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_scheduler</span></code></a>(→ dict[str, Any] | None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.optim.build_scheduler" title="blinklinmult.train.optim.build_scheduler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_scheduler</span></code></a>(config, optimizer, steps_per_epoch, ...) → dict[str, Any] | None</p></td>
 <td><p>Construct the configured LR schedule, in Lightning's config format.</p></td>
 </tr>
 </tbody>

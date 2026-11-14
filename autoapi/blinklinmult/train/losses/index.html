@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/losses/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.losses - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -384,25 +384,25 @@ lose the numerically-stable fused implementation for no benefit.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_bce" title="blinklinmult.train.losses.masked_bce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_bce</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_bce" title="blinklinmult.train.losses.masked_bce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_bce</span></code></a>(logits, target, mask) → torch.Tensor</p></td>
 <td><p>Binary cross-entropy over valid positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_focal" title="blinklinmult.train.losses.masked_focal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_focal</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_focal" title="blinklinmult.train.losses.masked_focal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_focal</span></code></a>(logits, target, mask[, gamma, alpha]) → torch.Tensor</p></td>
 <td><p>Focal loss over valid positions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_dice" title="blinklinmult.train.losses.masked_dice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_dice</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_dice" title="blinklinmult.train.losses.masked_dice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_dice</span></code></a>(logits, target, mask) → torch.Tensor</p></td>
 <td><p>Soft Dice loss over valid positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_dice_bce" title="blinklinmult.train.losses.masked_dice_bce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_dice_bce</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.losses.masked_dice_bce" title="blinklinmult.train.losses.masked_dice_bce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked_dice_bce</span></code></a>(logits, target, mask[, dice_weight]) → torch.Tensor</p></td>
 <td><p>Sum of <a class="reference internal" href="#blinklinmult.train.losses.masked_bce" title="blinklinmult.train.losses.masked_bce"><code class="xref py py-func docutils literal notranslate"><span class="pre">masked_bce()</span></code></a> and a weighted <a class="reference internal" href="#blinklinmult.train.losses.masked_dice" title="blinklinmult.train.losses.masked_dice"><code class="xref py py-func docutils literal notranslate"><span class="pre">masked_dice()</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.build_loss" title="blinklinmult.train.losses.build_loss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_loss</span></code></a>(→ MaskedLoss)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.build_loss" title="blinklinmult.train.losses.build_loss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_loss</span></code></a>(name, **kwargs) → MaskedLoss</p></td>
 <td><p>Construct a loss by config name.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.losses.temporal_smoothness" title="blinklinmult.train.losses.temporal_smoothness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temporal_smoothness</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.losses.temporal_smoothness" title="blinklinmult.train.losses.temporal_smoothness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temporal_smoothness</span></code></a>(logits, mask[, margin]) → torch.Tensor</p></td>
 <td><p>Penalise frame-to-frame jumps in the predicted eye-state signal.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.duration_prior" title="blinklinmult.train.losses.duration_prior"><code class="xref py py-obj docutils literal notranslate"><span class="pre">duration_prior</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.losses.duration_prior" title="blinklinmult.train.losses.duration_prior"><code class="xref py py-obj docutils literal notranslate"><span class="pre">duration_prior</span></code></a>(logits, mask[, threshold, min_frames, ...]) → torch.Tensor</p></td>
 <td><p>Penalise predicted closures far outside a plausible blink duration.</p></td>
 </tr>
 </tbody>

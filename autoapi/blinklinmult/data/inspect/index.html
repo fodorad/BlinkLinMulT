@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/data/inspect/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.data.inspect - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -343,22 +343,22 @@ module. <code class="xref py py-mod docutils literal notranslate"><span class="p
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.populated_splits" title="blinklinmult.data.inspect.populated_splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">populated_splits</span></code></a>(→ list[str])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.populated_splits" title="blinklinmult.data.inspect.populated_splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">populated_splits</span></code></a>(handle) → list[str]</p></td>
 <td><p>Splits that hold at least one sample, in conventional order.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.sample_keys" title="blinklinmult.data.inspect.sample_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_keys</span></code></a>(→ list[str])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.sample_keys" title="blinklinmult.data.inspect.sample_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_keys</span></code></a>(handle, split, count[, offset]) → list[str]</p></td>
 <td><p>Keys spread evenly across a split, starting at an offset.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.read_field" title="blinklinmult.data.inspect.read_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_field</span></code></a>(→ numpy.ndarray | None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.read_field" title="blinklinmult.data.inspect.read_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_field</span></code></a>(handle, split, key, name) → numpy.ndarray | None</p></td>
 <td><p>One field of one sample, float16 upcast to float32.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.gather_field" title="blinklinmult.data.inspect.gather_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gather_field</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.gather_field" title="blinklinmult.data.inspect.gather_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gather_field</span></code></a>(handle, split, name[, limit]) → numpy.ndarray</p></td>
 <td><p>Every frame's value of one field across a split.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.occlusion_share" title="blinklinmult.data.inspect.occlusion_share"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occlusion_share</span></code></a>(→ float)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.occlusion_share" title="blinklinmult.data.inspect.occlusion_share"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occlusion_share</span></code></a>(yaw_degrees, threshold) → float</p></td>
 <td><p>Fraction of frames a yaw threshold would mask as self-occluded.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.count_events" title="blinklinmult.data.inspect.count_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_events</span></code></a>(→ int)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.inspect.count_events" title="blinklinmult.data.inspect.count_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_events</span></code></a>(handle, split[, limit]) → int</p></td>
 <td><p>Distinct annotated blink events in a split.</p></td>
 </tr>
 </tbody>

@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/cli/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.cli - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -368,31 +368,31 @@ a dataloader knob, so this needs no rebuild:</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.run_output_dir" title="blinklinmult.train.cli.run_output_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_output_dir</span></code></a>(→ pathlib.Path)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.run_output_dir" title="blinklinmult.train.cli.run_output_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_output_dir</span></code></a>(config) → pathlib.Path</p></td>
 <td><p>Directory this run writes its outputs into.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.report_fps" title="blinklinmult.train.cli.report_fps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">report_fps</span></code></a>(→ float)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.report_fps" title="blinklinmult.train.cli.report_fps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">report_fps</span></code></a>(specs) → float</p></td>
 <td><p>Frame rate for turning frame counts into minutes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.build_callbacks" title="blinklinmult.train.cli.build_callbacks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_callbacks</span></code></a>(→ list[lightning.Callback])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.build_callbacks" title="blinklinmult.train.cli.build_callbacks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_callbacks</span></code></a>(config, output_dir[, specs, ...]) → list[lightning.Callback]</p></td>
 <td><p>Assemble a run's callbacks.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.check_max_epochs" title="blinklinmult.train.cli.check_max_epochs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_max_epochs</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.check_max_epochs" title="blinklinmult.train.cli.check_max_epochs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_max_epochs</span></code></a>(output_dir, max_epochs, resume) → None</p></td>
 <td><p>Reject a resume that changes the length of the LR schedule.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.resume_from" title="blinklinmult.train.cli.resume_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resume_from</span></code></a>(→ str | None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.resume_from" title="blinklinmult.train.cli.resume_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resume_from</span></code></a>(resume, output_dir) → str | None</p></td>
 <td><p>The checkpoint a run should continue from.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.unfreeze_module" title="blinklinmult.train.cli.unfreeze_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfreeze_module</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.unfreeze_module" title="blinklinmult.train.cli.unfreeze_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfreeze_module</span></code></a>(checkpoint, config, image_size, ...) → blinklinmult.train.module.BlinkLightningModule</p></td>
 <td><p>Load a frozen-stage run and continue it with the encoder trainable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.embedding_key_for" title="blinklinmult.train.cli.embedding_key_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embedding_key_for</span></code></a>(→ blinklinmult.data.embeddings.CacheKey)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.embedding_key_for" title="blinklinmult.train.cli.embedding_key_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embedding_key_for</span></code></a>(config) → blinklinmult.data.embeddings.CacheKey</p></td>
 <td><p>Identity of the embedding cache this run may read.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.run" title="blinklinmult.train.cli.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(→ dict[str, Any])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.cli.run" title="blinklinmult.train.cli.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(config[, root, config_dir, fast_dev_run, resume, ...]) → dict[str, Any]</p></td>
 <td><p>Train, then test, one configured experiment.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.main" title="blinklinmult.train.cli.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.cli.main" title="blinklinmult.train.cli.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>() → None</p></td>
 <td><p>CLI entry point.</p></td>
 </tr>
 </tbody>

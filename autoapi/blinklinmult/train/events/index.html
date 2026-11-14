@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/events/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.events - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -423,49 +423,49 @@ curve is what the comparison rests on.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.average_overlapping" title="blinklinmult.train.events.average_overlapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_overlapping</span></code></a>(→ tuple[numpy.ndarray, numpy.ndarray])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.average_overlapping" title="blinklinmult.train.events.average_overlapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_overlapping</span></code></a>(probabilities, frame_ids, n_frames) → tuple[numpy.ndarray, numpy.ndarray]</p></td>
 <td><p>Collapse overlapping window predictions into one signal per frame.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.to_intervals" title="blinklinmult.train.events.to_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_intervals</span></code></a>(→ list[Interval])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.to_intervals" title="blinklinmult.train.events.to_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_intervals</span></code></a>(signal, mask, threshold[, low_threshold]) → list[Interval]</p></td>
 <td><p>Merge consecutive above-threshold frames into predicted intervals.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.temporal_iou" title="blinklinmult.train.events.temporal_iou"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temporal_iou</span></code></a>(→ float)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.temporal_iou" title="blinklinmult.train.events.temporal_iou"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temporal_iou</span></code></a>(a, b) → float</p></td>
 <td><p>Intersection over union of two inclusive frame intervals.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.segment_iou" title="blinklinmult.train.events.segment_iou"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_iou</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.segment_iou" title="blinklinmult.train.events.segment_iou"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_iou</span></code></a>(target, candidates) → numpy.ndarray</p></td>
 <td><p>Temporal IoU of one interval against many, in the authors' convention.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.interpolated_average_precision" title="blinklinmult.train.events.interpolated_average_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolated_average_precision</span></code></a>(→ float)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.interpolated_average_precision" title="blinklinmult.train.events.interpolated_average_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolated_average_precision</span></code></a>(precision, recall) → float</p></td>
 <td><p>Area under the precision-recall curve, VOC-style.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.to_exclusive" title="blinklinmult.train.events.to_exclusive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_exclusive</span></code></a>(→ tuple[float, float])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.to_exclusive" title="blinklinmult.train.events.to_exclusive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_exclusive</span></code></a>(interval) → tuple[float, float]</p></td>
 <td><p>Convert an inclusive frame interval to the authors' half-open one.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.blink_ap" title="blinklinmult.train.events.blink_ap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blink_ap</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.blink_ap" title="blinklinmult.train.events.blink_ap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blink_ap</span></code></a>(annotated, predicted[, tiou_thresholds]) → numpy.ndarray</p></td>
 <td><p>MPEblink's Blink-AP: average precision over a sweep of tIoU thresholds.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.blink_ap_summary" title="blinklinmult.train.events.blink_ap_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blink_ap_summary</span></code></a>(→ dict[str, float])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.blink_ap_summary" title="blinklinmult.train.events.blink_ap_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blink_ap_summary</span></code></a>(scores) → dict[str, float]</p></td>
 <td><p>Name the Blink-AP figures the authors report.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.matches" title="blinklinmult.train.events.matches"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matches</span></code></a>(→ bool)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.matches" title="blinklinmult.train.events.matches"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matches</span></code></a>(predicted, annotated, criterion) → bool</p></td>
 <td><p>Whether one prediction counts as detecting one annotated blink.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.match" title="blinklinmult.train.events.match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match</span></code></a>(→ MatchResult)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.match" title="blinklinmult.train.events.match"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match</span></code></a>(predicted, annotated[, criterion]) → MatchResult</p></td>
 <td><p>Count hits, misses, and false alarms under one criterion.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.froc" title="blinklinmult.train.events.froc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">froc</span></code></a>(→ dict[str, numpy.ndarray])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.froc" title="blinklinmult.train.events.froc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">froc</span></code></a>(signal, mask, annotated, minutes[, criterion, ...]) → dict[str, numpy.ndarray]</p></td>
 <td><p>Sweep the threshold, tracing recall against false alarms per minute.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.pool_curves" title="blinklinmult.train.events.pool_curves"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pool_curves</span></code></a>(→ dict[str, numpy.ndarray])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.pool_curves" title="blinklinmult.train.events.pool_curves"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pool_curves</span></code></a>(curves, minutes) → dict[str, numpy.ndarray]</p></td>
 <td><p>Combine per-recording FROC curves into one corpus curve.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.average_precision" title="blinklinmult.train.events.average_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_precision</span></code></a>(→ float)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.average_precision" title="blinklinmult.train.events.average_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_precision</span></code></a>(curve) → float</p></td>
 <td><p>Area under the precision-recall curve of a threshold sweep.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.event_metrics" title="blinklinmult.train.events.event_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">event_metrics</span></code></a>(→ dict[str, float])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.events.event_metrics" title="blinklinmult.train.events.event_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">event_metrics</span></code></a>(signal, mask, annotated, minutes[, ...]) → dict[str, float]</p></td>
 <td><p>Every event-level metric, under every criterion.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.annotated_intervals" title="blinklinmult.train.events.annotated_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotated_intervals</span></code></a>(→ list[Interval])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.events.annotated_intervals" title="blinklinmult.train.events.annotated_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotated_intervals</span></code></a>(blink_ids) → list[Interval]</p></td>
 <td><p>Recover annotated blink intervals from a per-frame id array.</p></td>
 </tr>
 </tbody>

@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/pipeline/index.html">
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.pipeline - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -455,13 +455,13 @@ can show progress without the pipeline knowing anything about a UI.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.ground_truth" title="blinklinmult.pipeline.ground_truth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ground_truth</span></code></a>(→ dict[str, numpy.ndarray] | None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.ground_truth" title="blinklinmult.pipeline.ground_truth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ground_truth</span></code></a>(tag_path, frames[, offset]) → dict[str, numpy.ndarray] | None</p></td>
 <td><p>Per-eye annotated eye state, for a corpus clip that ships a <code class="docutils literal notranslate"><span class="pre">.tag</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.pipeline.occluded_side" title="blinklinmult.pipeline.occluded_side"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occluded_side</span></code></a>(→ str | None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.pipeline.occluded_side" title="blinklinmult.pipeline.occluded_side"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occluded_side</span></code></a>(yaw[, limit]) → str | None</p></td>
 <td><p>Which eye a head turn hides, if any.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.run" title="blinklinmult.pipeline.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(→ collections.abc.Iterator[Stage | Result])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.pipeline.run" title="blinklinmult.pipeline.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(video_path, detector[, stats, tag_path, ...]) → collections.abc.Iterator[Stage | Result]</p></td>
 <td><p>Analyse a video, yielding each stage as it completes.</p></td>
 </tr>
 </tbody>

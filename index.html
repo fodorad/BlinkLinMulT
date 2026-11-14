@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/index.html">
         <link rel="prefetch" href="_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -352,7 +352,7 @@
 </div>
 <p>This matters because the corpora do not agree on what they annotate. Some label per-frame closure, others label blink <em>intervals</em>. A model trained on one and scored against the other measures a convention gap rather than its own quality: a <strong>perfect</strong> closure detector scores 0.033 at <code class="docutils literal notranslate"><span class="pre">iou50</span></code> on TalkingFace, because a closure covers only 19–34% of the event it belongs to. Predicting the score and deriving events puts every corpus on one footing.</p>
 <section id="what-s-in-this-repository">
-<h2>What’s in this repository<a class="headerlink" href="#what-s-in-this-repository" title="Link to this heading">¶</a></h2>
+<span id="whats-in-this-repository"></span><h2>What’s in this repository<a class="headerlink" href="#what-s-in-this-repository" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Public inference API</strong> — <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">blinklinmult</span></code>, then <code class="docutils literal notranslate"><span class="pre">BlinkDetector.from_pretrained(&quot;blinkcnn&quot;)</span></code>. Weights download from the Hugging Face Hub on first use; one class serves all four models, ONNX and PyTorch alike.</p></li>
 <li><p><strong>Statistical model comparison</strong> — not a table of point estimates. A recording-clustered paired bootstrap with confidence intervals and Holm-corrected p-values across all six model pairs, because “model A scored higher” is not the same claim as “model A is better”. See <a class="reference internal" href="#model-comparison">Model comparison</a>.</p></li>
@@ -530,7 +530,7 @@ make<span class="w"> </span>compare-shipped<span class="w">   </span><span class
 </pre></div>
 </div>
 <section id="what-this-comparison-is-and-is-not">
-<h3>⚠️ What this comparison is, and is not<a class="headerlink" href="#what-this-comparison-is-and-is-not" title="Link to this heading">¶</a></h3>
+<span id="-what-this-comparison-is-and-is-not"></span><h3>⚠️ What this comparison is, and is not<a class="headerlink" href="#what-this-comparison-is-and-is-not" title="Link to this heading">¶</a></h3>
 <p><strong>The 1.x models were not retrained.</strong> These are the published 2023 weights, run under v2 conditions. Three things differ from the paper, and all three favour the v2 model:</p>
 <ol class="arabic simple">
 <li><p><strong>Features are computed with different tools.</strong> The 1.x work used <strong>TDDFA_V2</strong> for landmarks and head pose; v2 uses <strong>FaceMesh</strong> (478 landmarks) and <strong>6DRepNet</strong>. <code class="docutils literal notranslate"><span class="pre">blinklinmult-union</span></code> consumes a 160-d descriptor built from those, so it is being fed features <em>analogous to</em> — not identical to — what it trained on.</p></li>
@@ -930,14 +930,14 @@ make<span class="w"> </span>docs-serve<span class="w">     </span><span class="c
 </ul>
 </section>
 <section id="linmult">
-<h3>(2022) LinMulT<a class="headerlink" href="#linmult" title="Link to this heading">¶</a></h3>
+<span id="2022-linmult"></span><h3>(2022) LinMulT<a class="headerlink" href="#linmult" title="Link to this heading">¶</a></h3>
 <p>General-purpose Multimodal Transformer with Linear Complexity Attention Mechanism. This base model is further modified and trained for various tasks and datasets. <code class="docutils literal notranslate"><span class="pre">LinT</span></code> is its single-stream form, used by <code class="docutils literal notranslate"><span class="pre">blinklint-union</span></code>.</p>
 <ul class="simple">
 <li><p>code: https://github.com/fodorad/LinMulT</p></li>
 </ul>
 </section>
 <section id="personalitylinmult">
-<h3>(2022) PersonalityLinMulT<a class="headerlink" href="#personalitylinmult" title="Link to this heading">¶</a></h3>
+<span id="2022-personalitylinmult"></span><h3>(2022) PersonalityLinMulT<a class="headerlink" href="#personalitylinmult" title="Link to this heading">¶</a></h3>
 <p>LinMulT trained for Big Five personality trait and sentiment estimation.</p>
 <ul class="simple">
 <li><p>paper: Multimodal Sentiment and Personality Perception Under Speech: A Comparison of Transformer-based Architectures (<a class="reference external" href="https://proceedings.mlr.press/v173/fodor22a/fodor22a.pdf">pdf</a>, <a class="reference external" href="https://proceedings.mlr.press/v173/fodor22a.html">website</a>)</p></li>
@@ -946,10 +946,10 @@ make<span class="w"> </span>docs-serve<span class="w">     </span><span class="c
 </section>
 </section>
 <section id="citation-bibtex">
-<h2>Citation - BibTex<a class="headerlink" href="#citation-bibtex" title="Link to this heading">¶</a></h2>
+<span id="citation---bibtex"></span><h2>Citation - BibTex<a class="headerlink" href="#citation-bibtex" title="Link to this heading">¶</a></h2>
 <p>If you found our research helpful or influential please consider citing:</p>
 <section id="blinklinmult-for-blink-presence-detection-and-eye-state-recognition">
-<h3>(2023) BlinkLinMulT for blink presence detection and eye state recognition<a class="headerlink" href="#blinklinmult-for-blink-presence-detection-and-eye-state-recognition" title="Link to this heading">¶</a></h3>
+<span id="2023-blinklinmult-for-blink-presence-detection-and-eye-state-recognition"></span><h3>(2023) BlinkLinMulT for blink presence detection and eye state recognition<a class="headerlink" href="#blinklinmult-for-blink-presence-detection-and-eye-state-recognition" title="Link to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Article</span><span class="p">{</span><span class="n">fodor2023blinklinmult</span><span class="p">,</span>
   <span class="n">title</span> <span class="o">=</span> <span class="p">{</span><span class="n">BlinkLinMulT</span><span class="p">:</span> <span class="n">Transformer</span><span class="o">-</span><span class="n">Based</span> <span class="n">Eye</span> <span class="n">Blink</span> <span class="n">Detection</span><span class="p">},</span>
   <span class="n">author</span> <span class="o">=</span> <span class="p">{</span><span class="n">Fodor</span><span class="p">,</span> <span class="n">Ádám</span> <span class="ow">and</span> <span class="n">Fenech</span><span class="p">,</span> <span class="n">Kristian</span> <span class="ow">and</span> <span class="n">Lőrincz</span><span class="p">,</span> <span class="n">András</span><span class="p">},</span>
@@ -967,7 +967,7 @@ make<span class="w"> </span>docs-serve<span class="w">     </span><span class="c
 </div>
 </section>
 <section id="linmult-for-personality-trait-and-sentiment-estimation">
-<h3>(2022) LinMulT for personality trait and sentiment estimation<a class="headerlink" href="#linmult-for-personality-trait-and-sentiment-estimation" title="Link to this heading">¶</a></h3>
+<span id="2022-linmult-for-personality-trait-and-sentiment-estimation"></span><h3>(2022) LinMulT for personality trait and sentiment estimation<a class="headerlink" href="#linmult-for-personality-trait-and-sentiment-estimation" title="Link to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@InProceedings</span><span class="p">{</span><span class="n">pmlr</span><span class="o">-</span><span class="n">v173</span><span class="o">-</span><span class="n">fodor22a</span><span class="p">,</span>
   <span class="n">title</span> <span class="o">=</span> <span class="p">{</span><span class="n">Multimodal</span> <span class="n">Sentiment</span> <span class="ow">and</span> <span class="n">Personality</span> <span class="n">Perception</span> <span class="n">Under</span> <span class="n">Speech</span><span class="p">:</span> <span class="n">A</span> <span class="n">Comparison</span> <span class="n">of</span> <span class="n">Transformer</span><span class="o">-</span><span class="n">based</span> <span class="n">Architectures</span><span class="p">},</span>
   <span class="n">author</span> <span class="o">=</span> <span class="p">{</span><span class="n">Fodor</span><span class="p">,</span> <span class="p">{</span>\<span class="s1">'A}d{</span><span class="se">\'</span><span class="s1">a}m and Saboundji, Rachid R. and Jacques Junior, Julio C. S. and Escalera, Sergio and Gallardo-Pujol, David and L{\H</span><span class="si">{o}</span><span class="s1">}rincz, Andr{</span><span class="se">\'</span><span class="s1">a}s},</span>

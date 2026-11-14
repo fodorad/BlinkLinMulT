@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/live/index.html">
         <link rel="prefetch" href="../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.live - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -391,16 +391,16 @@ the same side as the eye that closed, which is the whole point of the view.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.live.draw_plot" title="blinklinmult.live.draw_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_plot</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.live.draw_plot" title="blinklinmult.live.draw_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_plot</span></code></a>(history, threshold, label, width[, height]) → numpy.ndarray</p></td>
 <td><p>Draw one eye's scrolling score plot.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.live.compose" title="blinklinmult.live.compose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compose</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.live.compose" title="blinklinmult.live.compose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compose</span></code></a>(frame, left, right) → numpy.ndarray</p></td>
 <td><p>Stack the frame above the two eye plots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.live.draw_overlay" title="blinklinmult.live.draw_overlay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_overlay</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.live.draw_overlay" title="blinklinmult.live.draw_overlay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_overlay</span></code></a>(frame, detection, scores, threshold[, lines]) → numpy.ndarray</p></td>
 <td><p>Annotate a live frame with the face, the eyes and a readout.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.live.eye_crops" title="blinklinmult.live.eye_crops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eye_crops</span></code></a>(→ numpy.ndarray | None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.live.eye_crops" title="blinklinmult.live.eye_crops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eye_crops</span></code></a>(detection, frame[, image_size]) → numpy.ndarray | None</p></td>
 <td><p>Cut both eye crops into the layout the models take.</p></td>
 </tr>
 </tbody>

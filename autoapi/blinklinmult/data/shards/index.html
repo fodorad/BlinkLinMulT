@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/data/shards/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.data.shards - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -354,22 +354,22 @@ minutes rather than hours.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.shards.shard_dir" title="blinklinmult.data.shards.shard_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_dir</span></code></a>(→ pathlib.Path)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.shards.shard_dir" title="blinklinmult.data.shards.shard_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_dir</span></code></a>(h5_path) → pathlib.Path</p></td>
 <td><p>Where a corpus's shards live.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.shards.shard_path" title="blinklinmult.data.shards.shard_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_path</span></code></a>(→ pathlib.Path)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.shards.shard_path" title="blinklinmult.data.shards.shard_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_path</span></code></a>(h5_path, clip_id) → pathlib.Path</p></td>
 <td><p>The shard for one clip.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.shards.completed_clips" title="blinklinmult.data.shards.completed_clips"><code class="xref py py-obj docutils literal notranslate"><span class="pre">completed_clips</span></code></a>(→ set[str])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.shards.completed_clips" title="blinklinmult.data.shards.completed_clips"><code class="xref py py-obj docutils literal notranslate"><span class="pre">completed_clips</span></code></a>(h5_path) → set[str]</p></td>
 <td><p>Which clips already have a shard.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.shards.merge_shards" title="blinklinmult.data.shards.merge_shards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_shards</span></code></a>(→ int)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.shards.merge_shards" title="blinklinmult.data.shards.merge_shards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_shards</span></code></a>(h5_path, attrs[, remove]) → int</p></td>
 <td><p>Combine every shard into the corpus file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.shards.shard_attrs" title="blinklinmult.data.shards.shard_attrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_attrs</span></code></a>(→ dict)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.shards.shard_attrs" title="blinklinmult.data.shards.shard_attrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_attrs</span></code></a>(h5_path) → dict</p></td>
 <td><p>Root attributes from any one shard, for the merged file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.shards.pending" title="blinklinmult.data.shards.pending"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pending</span></code></a>(→ list)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.shards.pending" title="blinklinmult.data.shards.pending"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pending</span></code></a>(entries, h5_path, clip_id) → list</p></td>
 <td><p>The entries whose clips have no shard yet.</p></td>
 </tr>
 </tbody>

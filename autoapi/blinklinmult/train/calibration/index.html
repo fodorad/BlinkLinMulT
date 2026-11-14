@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/calibration/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.calibration - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -428,19 +428,19 @@ patched at the output.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.logit" title="blinklinmult.train.calibration.logit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logit</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.logit" title="blinklinmult.train.calibration.logit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logit</span></code></a>(probability) → numpy.ndarray</p></td>
 <td><p>Inverse sigmoid, clamped away from the asymptotes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.apply_temperature" title="blinklinmult.train.calibration.apply_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_temperature</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.apply_temperature" title="blinklinmult.train.calibration.apply_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_temperature</span></code></a>(probability, temperature) → numpy.ndarray</p></td>
 <td><p>Rescale probabilities by a temperature on the logit.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.fit_threshold" title="blinklinmult.train.calibration.fit_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_threshold</span></code></a>(→ tuple[float, float])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.fit_threshold" title="blinklinmult.train.calibration.fit_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_threshold</span></code></a>(probability, target[, thresholds]) → tuple[float, float]</p></td>
 <td><p>Pick the decision boundary that maximises F1.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.fit_temperature" title="blinklinmult.train.calibration.fit_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_temperature</span></code></a>(→ tuple[float, float])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.fit_temperature" title="blinklinmult.train.calibration.fit_temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_temperature</span></code></a>(probability, target[, temperatures]) → tuple[float, float]</p></td>
 <td><p>Fit one temperature by validation negative log-likelihood.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.expected_calibration_error" title="blinklinmult.train.calibration.expected_calibration_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expected_calibration_error</span></code></a>(→ float)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.calibration.expected_calibration_error" title="blinklinmult.train.calibration.expected_calibration_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expected_calibration_error</span></code></a>(probability, target[, bins]) → float</p></td>
 <td><p>Gap between confidence and accuracy, averaged over score bins.</p></td>
 </tr>
 </tbody>

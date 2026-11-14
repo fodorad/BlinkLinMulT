@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/data/embeddings/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.data.embeddings - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -399,19 +399,19 @@ wanted.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.encoder_digest" title="blinklinmult.data.embeddings.encoder_digest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">encoder_digest</span></code></a>(→ str)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.encoder_digest" title="blinklinmult.data.embeddings.encoder_digest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">encoder_digest</span></code></a>(encoder) → str</p></td>
 <td><p>Hash an encoder's parameters, to key a cache by the weights that built it.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.shard_path" title="blinklinmult.data.embeddings.shard_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_path</span></code></a>(→ pathlib.Path)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.shard_path" title="blinklinmult.data.embeddings.shard_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shard_path</span></code></a>(root, key, corpus, subset) → pathlib.Path</p></td>
 <td><p>Where one corpus-split's embeddings live.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.write_shard" title="blinklinmult.data.embeddings.write_shard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_shard</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.write_shard" title="blinklinmult.data.embeddings.write_shard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_shard</span></code></a>(path, key, keys, embeddings, masks) → None</p></td>
 <td><p>Write one corpus-split's embeddings and its manifest.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.read_shard" title="blinklinmult.data.embeddings.read_shard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_shard</span></code></a>(→ dict[str, numpy.ndarray])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.read_shard" title="blinklinmult.data.embeddings.read_shard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_shard</span></code></a>(path, key) → dict[str, numpy.ndarray]</p></td>
 <td><p>Load a shard, refusing one built by a different encoder or config.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.describe" title="blinklinmult.data.embeddings.describe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe</span></code></a>(→ list[dict[str, object]])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.embeddings.describe" title="blinklinmult.data.embeddings.describe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe</span></code></a>(root) → list[dict[str, object]]</p></td>
 <td><p>Every shard under a cache root, with what it holds.</p></td>
 </tr>
 </tbody>

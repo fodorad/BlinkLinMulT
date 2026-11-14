@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/data/omni/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.data.omni - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -362,16 +362,16 @@ duration.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.omni.eye_image_shape" title="blinklinmult.data.omni.eye_image_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eye_image_shape</span></code></a>(→ tuple[int, int, int])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.omni.eye_image_shape" title="blinklinmult.data.omni.eye_image_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eye_image_shape</span></code></a>(image_size) → tuple[int, int, int]</p></td>
 <td><p>Trailing shape of one frame's eye crop.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.omni.dataset_schema" title="blinklinmult.data.omni.dataset_schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset_schema</span></code></a>(→ omniloader.DatasetSchema)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.omni.dataset_schema" title="blinklinmult.data.omni.dataset_schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset_schema</span></code></a>(spec, time_dim, image_size, feature_dim) → omniloader.DatasetSchema</p></td>
 <td><p>Build the OmniLoader schema for one corpus.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.omni.unified_specs" title="blinklinmult.data.omni.unified_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unified_specs</span></code></a>(→ tuple[int, int, int | None])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.omni.unified_specs" title="blinklinmult.data.omni.unified_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unified_specs</span></code></a>(specs[, time_dim, image_size, stills]) → tuple[int, int, int | None]</p></td>
 <td><p>Resolve the shared shape a joint run brings every corpus to.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.omni.build_schemas" title="blinklinmult.data.omni.build_schemas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_schemas</span></code></a>(→ tuple[list[omniloader.DatasetSchema], ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.omni.build_schemas" title="blinklinmult.data.omni.build_schemas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_schemas</span></code></a>(specs[, time_dim, image_size, stills, ...]) → tuple[list[omniloader.DatasetSchema], int, int, int | None]</p></td>
 <td><p>Resolve the run's shared shape and build every corpus's schema.</p></td>
 </tr>
 </tbody>

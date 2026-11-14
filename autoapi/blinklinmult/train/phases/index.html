@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/phases/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.phases - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -383,16 +383,16 @@ downstream state estimation, never in a benchmark column.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.phases.smooth" title="blinklinmult.train.phases.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.phases.smooth" title="blinklinmult.train.phases.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a>(signal[, window]) → numpy.ndarray</p></td>
 <td><p>Moving average, for a derivative that is not dominated by noise.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.phases.phases" title="blinklinmult.train.phases.phases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phases</span></code></a>(→ numpy.ndarray)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.phases.phases" title="blinklinmult.train.phases.phases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phases</span></code></a>(signal[, window, motion_epsilon, closed_level]) → numpy.ndarray</p></td>
 <td><p>Label every frame open, closing, closed, or opening.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.phases.describe_event" title="blinklinmult.train.phases.describe_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe_event</span></code></a>(→ dict[str, float])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.phases.describe_event" title="blinklinmult.train.phases.describe_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe_event</span></code></a>(signal, start, stop) → dict[str, float]</p></td>
 <td><p>Measure the shape of one predicted event.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.phases.classify_event" title="blinklinmult.train.phases.classify_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">classify_event</span></code></a>(→ str)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.phases.classify_event" title="blinklinmult.train.phases.classify_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">classify_event</span></code></a>(shape[, complete_peak, min_frames]) → str</p></td>
 <td><p>Name an event from its measured shape.</p></td>
 </tr>
 </tbody>

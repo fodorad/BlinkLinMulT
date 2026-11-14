@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/data/collate/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.data.collate - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -362,25 +362,25 @@ unchanged.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.check_eye_images" title="blinklinmult.data.collate.check_eye_images"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_eye_images</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.check_eye_images" title="blinklinmult.data.collate.check_eye_images"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_eye_images</span></code></a>(images, image_size) → torch.Tensor</p></td>
 <td><p>Verify a batch's eye crops match the configured crop size.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.collate.fold_time_into_batch" title="blinklinmult.data.collate.fold_time_into_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fold_time_into_batch</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.collate.fold_time_into_batch" title="blinklinmult.data.collate.fold_time_into_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fold_time_into_batch</span></code></a>(images) → torch.Tensor</p></td>
 <td><p>Flatten the batch and time axes so a 2-D CNN can consume the crops.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.unfold_time_from_batch" title="blinklinmult.data.collate.unfold_time_from_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfold_time_from_batch</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.unfold_time_from_batch" title="blinklinmult.data.collate.unfold_time_from_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfold_time_from_batch</span></code></a>(flat, batch, time) → torch.Tensor</p></td>
 <td><p>Undo <a class="reference internal" href="#blinklinmult.data.collate.fold_time_into_batch" title="blinklinmult.data.collate.fold_time_into_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">fold_time_into_batch()</span></code></a> on the backbone's output.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.collate.occluded_eyes" title="blinklinmult.data.collate.occluded_eyes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occluded_eyes</span></code></a>(→ torch.Tensor)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.collate.occluded_eyes" title="blinklinmult.data.collate.occluded_eyes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occluded_eyes</span></code></a>(head_pose, eye_side[, threshold]) → torch.Tensor</p></td>
 <td><p>Which positions show an eye hidden by the head's own rotation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.apply_occlusion" title="blinklinmult.data.collate.apply_occlusion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_occlusion</span></code></a>(→ dict[str, Any])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.apply_occlusion" title="blinklinmult.data.collate.apply_occlusion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_occlusion</span></code></a>(batch[, threshold]) → dict[str, Any]</p></td>
 <td><p>Mask the eye-image validity of self-occluded positions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.collate.unpack_batch" title="blinklinmult.data.collate.unpack_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unpack_batch</span></code></a>(→ tuple[list[torch.Tensor], ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.data.collate.unpack_batch" title="blinklinmult.data.collate.unpack_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unpack_batch</span></code></a>(batch, feature_names) → tuple[list[torch.Tensor], list[torch.Tensor]]</p></td>
 <td><p>Split a batch into the <code class="docutils literal notranslate"><span class="pre">(inputs,</span> <span class="pre">masks)</span></code> the model consumes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.target_and_mask" title="blinklinmult.data.collate.target_and_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target_and_mask</span></code></a>(→ tuple[torch.Tensor, torch.Tensor])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.data.collate.target_and_mask" title="blinklinmult.data.collate.target_and_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target_and_mask</span></code></a>(batch, name) → tuple[torch.Tensor, torch.Tensor]</p></td>
 <td><p>Read one target and its validity mask.</p></td>
 </tr>
 </tbody>

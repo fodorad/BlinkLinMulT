@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://fodorad.github.io/BlinkLinMulT/autoapi/blinklinmult/train/model/index.html">
         <link rel="prefetch" href="../../../../_static/logo.svg" as="image">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>blinklinmult.train.model - BlinkLinMulT</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
@@ -440,16 +440,16 @@ the model learns rather than discarding it at the head.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.model.build_backbone" title="blinklinmult.train.model.build_backbone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_backbone</span></code></a>(→ tuple[torch.nn.Module, int])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.model.build_backbone" title="blinklinmult.train.model.build_backbone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_backbone</span></code></a>(name[, pretrained, wide_stem, freeze_hint]) → tuple[torch.nn.Module, int]</p></td>
 <td><p>Construct an image backbone and report its embedding width.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.model.load_encoder_weights" title="blinklinmult.train.model.load_encoder_weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_encoder_weights</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.model.load_encoder_weights" title="blinklinmult.train.model.load_encoder_weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_encoder_weights</span></code></a>(encoder, path) → None</p></td>
 <td><p>Initialise an eye encoder from a trained frame-wise checkpoint.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.model.check_targets" title="blinklinmult.train.model.check_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_targets</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blinklinmult.train.model.check_targets" title="blinklinmult.train.model.check_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_targets</span></code></a>(target_names) → None</p></td>
 <td><p>Reject targets the single head cannot serve.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.model.build_model" title="blinklinmult.train.model.build_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_model</span></code></a>(→ BlinkModel)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#blinklinmult.train.model.build_model" title="blinklinmult.train.model.build_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_model</span></code></a>(config, target_names, image_size[, ...]) → BlinkModel</p></td>
 <td><p>Construct the model for the configured family.</p></td>
 </tr>
 </tbody>
